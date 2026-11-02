@@ -4,10 +4,10 @@ A premium e-commerce experience for SEEN EYEWEAR, inspired by Maui Jim’s edito
 
 ## Current Prototype
 
-- Arabic-first, right-to-left storefront with an English-ready layout.
-- Product discovery, product details, cart, branch pickup, customer reviews, and loyalty messaging.
-- Virtual Try-On is a required launch feature. The current interface shows the intended entry points; a production camera experience requires a dedicated AR Try-On provider and prepared 3D assets.
-- Sample product information and prices are placeholders until the approved catalogue is connected.
+- English storefront in a single page (`index.html`): home, catalog with filters, product page, bag and checkout (branch pick-up or home delivery).
+- Interactive 3D section (`seen-3d-preview.html`) and a live camera try-on with face tracking (`seen-tryon-3d.html`), using the demo models `sunglasses.glb` and `seen-glasses.glb`.
+- Product names, prices and stock come from the real catalogue; photos, descriptions and color names are still pending. The 3D models are generic demos, not SEEN products.
+- Checkout, payments and sign-in are demo only: no real order or payment is made.
 
 ## Run in GitHub Codespaces
 

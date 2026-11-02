@@ -15,14 +15,14 @@ function findIndexHtml() {
   return f;
 }
 
-// Products come from the featured `const P=[...]` list plus the compact `CAT` rows (brand index, eyeglasses flag,
+// Products come from the featured `const P=[...]` list plus the compact `CAT` rows (brand index, optical flag,
 // model, price, size, [[colour, stock]]) expanded the same way the page does; brands hidden on the site are not sold.
 export function loadCatalog(html = readFileSync(findIndexHtml(), 'utf8')) {
   if (CATALOG && arguments.length === 0) return CATALOG;
   const m = html.match(/^const P=(\[.*\]);$/m), br = html.match(/const BR=(\[.*?\]);/), cr = html.match(/const CAT=(\[.*\]);$/m);
   if (!m || !br || !cr) throw new Error('Product list not found in index.html');
   const B = JSON.parse(br[1]);
-  const rows = JSON.parse(cr[1]).map(r => ({ b: B[r[0]], n: r[2], p: r[3], z: r[4], t: [r[1] ? 'Eyeglasses' : 'Sunglasses'], k: r[5].map(c => ['', '', c[0], '', c[1]]) }));
+  const rows = JSON.parse(cr[1]).map(r => ({ b: B[r[0]], n: r[2], p: r[3], z: r[4], t: [r[1] ? 'Optical' : 'Sunglasses'], k: r[5].map(c => ['', '', c[0], '', c[1]]) }));
   const hide = new Set((html.match(/const HIDE=new Set\(\[([^\]]*)\]\)/) || [, ''])[1].match(/'[^']*'/g)?.map(s => s.slice(1, -1)) || []);
   const list = JSON.parse(m[1]).concat(rows).filter(p => !hide.has(p.b));
   const cat = new Map(list.map(p => [p.b + '|' + p.n, p]));
@@ -42,7 +42,7 @@ export function priceOrder(body, cat = loadCatalog()) {
     const q = Math.max(1, Math.min(10, parseInt(x.q, 10) || 1));
     if (!p || !k) { errors.push('Item not found: ' + x.b + ' ' + x.n + ' ' + x.col); return null; }
     if (k[4] && q > k[4]) errors.push('Only ' + k[4] + ' left of ' + p.n + ' ' + k[2]);
-    return { b: p.b, n: p.n, col: k[2], q, p: p.p, rx: p.t && p.t[0] === 'Eyeglasses' };
+    return { b: p.b, n: p.n, col: k[2], q, p: p.p, rx: p.t && p.t[0] === 'Optical' };
   }).filter(Boolean);
   if (!items.length) errors.push('Your bag is empty');
   const home = body.delivery === 'home';

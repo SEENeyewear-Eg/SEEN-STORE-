@@ -9,6 +9,10 @@ A premium e-commerce experience for SEEN EYEWEAR, inspired by Maui Jim’s edito
 - Product names, prices and stock come from the real catalogue; photos, descriptions and color names are still pending. The 3D models are generic demos, not SEEN products.
 - Checkout, payments and sign-in are demo only: no real order or payment is made.
 
+## 3D model credits
+
+- `sunglasses-khronos.glb`: "Sunglasses Khronos" by Eric Chadwick, © 2024 Darmstadt Graphics Group GmbH, CC BY 4.0, from the Khronos glTF Sample Assets (https://github.com/KhronosGroup/glTF-Sample-Assets). Khronos and 3D Commerce logos © Khronos Group.
+
 ## Run in GitHub Codespaces
 
 From the project directory, run:

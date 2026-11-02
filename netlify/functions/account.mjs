@@ -1,4 +1,4 @@
-// /api/account/{signup,login,logout,me} — customer accounts kept in Netlify Blobs (one record per mobile number).
+// /api/account/{signup,login,logout,me,update} — customer accounts kept in Netlify Blobs (one record per mobile number).
 // Passwords are stored as scrypt hashes; the session is an HttpOnly cookie signed with SESSION_SECRET.
 // Points and order history come from the store system once it is connected.
 import { getStore } from '@netlify/blobs';
@@ -10,7 +10,22 @@ const PHONE = /^01[0125]\d{8}$/, EMAIL = /^\S+@\S+\.\S+$/;
 
 const hash = (pw, salt) => scryptSync(pw, salt, 64).toString('hex');
 const sign = v => createHmac('sha256', env('SESSION_SECRET')).update(v).digest('hex');
-const pub = u => ({ name: u.name, phone: u.phone, email: u.email || '', points: u.points || 0 });
+const pub = u => ({ name: u.name, phone: u.phone, email: u.email || '', points: u.points || 0, birthday: u.birthday || '',
+  addresses: u.addresses || [], rx: u.rx || null, saved: u.saved || [], orders: u.orders || [] });
+const str = (v, n) => String(v ?? '').trim().slice(0, n);
+const eye = e => ({ sph: str(e?.sph, 6), cyl: str(e?.cyl, 6), axis: str(e?.axis, 4), add: str(e?.add, 6) });
+
+// Profile fields the customer may change; each is checked and trimmed before it is stored.
+function applyUpdate(u, b) {
+  if ('name' in b) { const n = str(b.name, 80); if (!n) return 'Enter your name'; u.name = n; }
+  if ('email' in b) { const e = str(b.email, 120); if (e && !EMAIL.test(e)) return 'Enter a valid email'; u.email = e; }
+  if ('birthday' in b) { const d = str(b.birthday, 10); if (d && !/^\d{4}-\d{2}-\d{2}$/.test(d)) return 'Enter a valid birthday'; u.birthday = d; }
+  if (Array.isArray(b.addresses)) u.addresses = b.addresses.slice(0, 5).map(a => ({ label: str(a.label, 30), gov: str(a.gov, 40),
+    city: str(a.city, 60), addr: str(a.addr, 200), phone: str(a.phone, 15), def: !!a.def }));
+  if (b.rx && typeof b.rx === 'object') u.rx = { od: eye(b.rx.od), os: eye(b.rx.os), pd: str(b.rx.pd, 6), date: str(b.rx.date, 10), note: str(b.rx.note, 200) };
+  if (Array.isArray(b.saved)) u.saved = b.saved.slice(0, 200).map(x => str(x, 80));
+  return '';
+}
 
 function session(phone) {
   const v = phone + '.' + (Date.now() + 30 * DAY);
@@ -41,8 +56,16 @@ export default async req => {
   if (req.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   const b = await req.json().catch(() => ({}));
+  if (action === 'update') {
+    const me = readSession(req), u = me && await store.get(me, { type: 'json' });
+    if (!u) return json({ error: 'Not signed in' }, 401);
+    const err = applyUpdate(u, b);
+    if (err) return json({ error: err }, 400);
+    await store.setJSON(me, u);
+    return json(pub(u));
+  }
   const phone = String(b.phone || '').replace(/\s/g, ''), pw = String(b.password || '');
-  if (!PHONE.test(phone)) return json({ error: 'Enter a valid Egyptian mobile number' }, 400);
+  if (!PHONE.test(phone)) return json({ error: 'Enter an 11-digit mobile number starting with 010, 011, 012 or 015' }, 400);
 
   if (action === 'signup') {
     const name = String(b.name || '').trim().slice(0, 80), email = String(b.email || '').trim().slice(0, 120);
@@ -70,4 +93,4 @@ export default async req => {
   return json({ error: 'Not found' }, 404);
 };
 
-export const config = { path: ['/api/account/signup', '/api/account/login', '/api/account/logout', '/api/account/me'] };
+export const config = { path: ['/api/account/signup', '/api/account/login', '/api/account/logout', '/api/account/me', '/api/account/update'] };

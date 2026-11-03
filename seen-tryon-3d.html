@@ -32,12 +32,41 @@ const scene=new T.Scene(),cam=new T.OrthographicCamera(-aspect,aspect,1,-1,.01,2
 const renderer=new T.WebGLRenderer({canvas:c,alpha:true,antialias:true});renderer.setPixelRatio(Math.min(devicePixelRatio||1,2));renderer.toneMapping=T.ACESFilmicToneMapping;scene.environment=new T.PMREMGenerator(renderer).fromScene(new RoomEnvironment(),.04).texture;scene.add(new T.HemisphereLight(0xffffff,0x666666,1.2));const sun=new T.DirectionalLight(0xffffff,1.6);sun.position.set(0,1,4);scene.add(sun);
 const frame=new T.Group();scene.add(frame);frame.visible=false;
 const isLens=(o,m)=>/lens|glass/i.test(m.name+' '+o.name)||m.transparent||m.transmission;
-const tint=(f,l)=>frame.traverse(o=>{if(o.isMesh)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(!m||!m.color)return;if(isLens(o,m)){if(l)m.color.set(l)}else if(f)m.color.set(f)})});
+// Colours with official photos (ph = front~side per colour) are built from the photos instead of tinting the 3D model.
+const PH=(q.get('ph')||'').split('|').map(s=>s?s.split('~'):null),photo=PH.some(Boolean);
+const tint=(f,l)=>!photo&&frame.traverse(o=>{if(o.isMesh)(Array.isArray(o.material)?o.material:[o.material]).forEach(m=>{if(!m||!m.color)return;if(isLens(o,m)){if(l)m.color.set(l)}else if(f)m.color.set(f)})});
 let ci=Math.min(+q.get('j')||0,CS.length-1);
-function pick(i){ci=i;const[f,l,code]=CS[i];tint(f,l);$('#fc').textContent=code;$('#lr').hidden=!l;$('#lc').innerHTML='<i class="dot" style="background:'+l+'"></i>';document.querySelectorAll('.swatch').forEach((b,j)=>b.setAttribute('aria-pressed',String(j==i)))}
+function pick(i){ci=i;const[f,l,code]=CS[i];tint(f,l);if(PH[i])build(PH[i]);$('#fc').textContent=code;$('#lr').hidden=!l;$('#lc').innerHTML='<i class="dot" style="background:'+l+'"></i>';document.querySelectorAll('.swatch').forEach((b,j)=>b.setAttribute('aria-pressed',String(j==i)))}
 $('#sw').innerHTML=CS.map((s,i)=>'<button class="swatch" aria-label="'+s[2]+'" style="background:'+s[0]+'"></button>').join('');document.querySelectorAll('.swatch').forEach((b,i)=>b.onclick=()=>pick(i));
-const modelUrl=q.get('model')||'sunglasses-khronos.glb';if(modelUrl.includes('khronos'))$('#privacy').insertAdjacentHTML('beforeend','<br>3D model: Sunglasses Khronos © 2024 Darmstadt Graphics Group GmbH (Eric Chadwick), CC BY 4.0.');
-new GLTFLoader().load(modelUrl,g=>{const model=g.scene,bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3()),k=2.15/size.x;model.scale.setScalar(k);model.position.set(-center.x*k,-center.y*k-.1,-bounds.max.z*k);frame.add(model);pick(ci)},undefined,()=>{badge.textContent=tt('The 3D frame could not be loaded.')});
+const modelUrl=q.get('model')||'sunglasses-khronos.glb';if(photo)$('#privacy').insertAdjacentHTML('beforeend','<br>'+(AR?'شكل ثلاثي الأبعاد مبني من صور البراند الرسمية.':'3D view built from the brand’s official photos.'));else if(modelUrl.includes('khronos'))$('#privacy').insertAdjacentHTML('beforeend','<br>3D model: Sunglasses Khronos © 2024 Darmstadt Graphics Group GmbH (Eric Chadwick), CC BY 4.0.');
+// Keys out the white studio background and its grey drop shadow (only what touches the edges, so silver parts mostly stay) and crops to the frame.
+function cut(u,trim){return new Promise((ok,no)=>{const m=new Image();m.crossOrigin='anonymous';m.onload=()=>{const w=m.naturalWidth,h=m.naturalHeight,c=document.createElement('canvas');c.width=w;c.height=h;const x=c.getContext('2d');x.drawImage(m,0,0);const d=x.getImageData(0,0,w,h),a=d.data,bg=new Uint8Array(w*h),st=[],lit=p=>{const r=a[p*4],g=a[p*4+1],b=a[p*4+2],lo=Math.min(r,g,b);return lo>226||lo>135&&Math.max(r,g,b)-lo<16};
+for(let i=0;i<w;i++)st.push(i,(h-1)*w+i);for(let j=0;j<h;j++)st.push(j*w,j*w+w-1);while(st.length){const p=st.pop();if(bg[p]||!lit(p))continue;bg[p]=1;const px=p%w;if(px>0)st.push(p-1);if(px<w-1)st.push(p+1);if(p>=w)st.push(p-w);if(p<w*(h-1))st.push(p+w)}
+let x0=w,x1=0,y0=h,y1=0;for(let p=0;p<w*h;p++){if(bg[p]){a[p*4+3]=0;continue}const v=Math.min(a[p*4],a[p*4+1],a[p*4+2]);if(v>200&&(bg[p-1]||bg[p+1]||bg[p-w]||bg[p+w]))a[p*4+3]=(255-v)*4.6;const px=p%w,py=p/w|0;if(px<x0)x0=px;if(px>x1)x1=px;if(py<y0)y0=py;if(py>y1)y1=py}
+x.putImageData(d,0,0);const hc=px=>{let n=0;for(let py=y0;py<=y1;py++)if(!bg[py*w+px])n++;return n},H=[];for(let px=x0;px<=x1;px++)H.push(hc(px));
+const sum=(s,e)=>H.slice(s,e).reduce((t,n)=>t+n,0),k=Math.round(H.length*.08),frontLeft=sum(0,k)>=sum(H.length-k,H.length);
+// A side profile keeps only the temple: the lens seen edge-on is cut where the column height drops to a third of the front's.
+if(trim){const mx=Math.max(...H),o=H.length;let i=0;const at=j=>H[frontLeft?j:o-1-j];while(i<o*.6&&!(at(i)<mx*.33&&at(i+1)<mx*.33&&at(i+2)<mx*.33))i++;if(frontLeft)x0+=i;else x1-=i}
+const cw=x1-x0+1,ch=y1-y0+1,o=document.createElement('canvas');o.width=cw;o.height=ch;o.getContext('2d').drawImage(c,x0,y0,cw,ch,0,0,cw,ch);
+// Measurements for the temples: hinge height at each outer edge (0 top, 1 bottom), temple thickness (median first run per column) and average colour.
+const op=(px,py)=>!bg[py*w+px],eg=(s,e)=>{let t=0,n=0;for(let px=s;px<=e;px++)for(let py=y0;py<=y1;py++)if(op(px,py)){t+=py-y0;n++}return n?t/n/ch:.3},ew=Math.max(2,Math.round(cw*.03));
+const runs=[];let r=0,g=0,b=0,n=0;for(let px=x0;px<=x1;px++){let py=y0;while(py<=y1&&!op(px,py))py++;let l=0;while(py<=y1&&op(px,py)){const q=(py*w+px)*4;if(a[q+3]>200){r+=a[q];g+=a[q+1];b+=a[q+2];n++}l++;py++}if(l)runs.push(l)}runs.sort((p,q)=>p-q);
+ok({c:o,w:cw,h:ch,frontLeft,edge:[eg(x0,x0+ew),eg(x1-ew,x1)],t:runs[runs.length>>1]||4,rgb:n?[r/n,g/n,b/n]:[40,40,40]})};m.onerror=no;m.src=u})}
+const sheet=(cv,geo)=>{const t=new T.CanvasTexture(cv);t.colorSpace=T.SRGBColorSpace;t.anisotropy=8;return new T.Mesh(geo,new T.MeshBasicMaterial({map:t,transparent:true,alphaTest:.04,side:T.DoubleSide,toneMapped:false}))};
+// Size "lens · bridge · temple" in mm sets the temple length against the frame width.
+const MM=(q.get('z')||'').match(/\d+(\.\d+)?/g)?.map(Number)||[];
+let bn=0;async function build([fu,su]){const n=++bn;try{const[f,s,full]=await Promise.all([cut(fu),cut(su,1),cut(su)]);if(n!=bn)return;frame.clear();
+// The front photo wraps around the face (bend) and each lens bulges outward like a curved lens (base curve).
+const W=2.15,H=W*f.h/f.w,g=new T.Group(),bend=.16,bulge=.07,geo=new T.PlaneGeometry(W,H,72,28),V=geo.attributes.position,zAt=x=>-bend*(x/(W/2))**2;
+for(let i=0;i<V.count;i++){const x=V.getX(i),y=V.getY(i),dx=(Math.abs(x)-W*.257)/(W*.215),dy=y/(H*.5),r=dx*dx+dy*dy;V.setZ(i,zAt(x)+(r<1?bulge*(1-r)**1.5:0))}geo.computeVertexNormals();g.add(sheet(f.c,geo));
+// Temples are built in 3D (one per side) from the hinge on the front photo's outer edge; the side photo gives their thickness and colour.
+const u=H/full.h,mm=MM.length>2?W/(2*MM[0]+MM[1]+12):W/142,L=(MM[2]||140)*mm,th=T.MathUtils.clamp(s.t*u,.014,.07),col=new T.Color().setRGB(...s.rgb.map(v=>v/255),T.SRGBColorSpace);
+const mat=new T.MeshStandardMaterial({color:col,metalness:th<.03?.85:.15,roughness:th<.03?.3:.45});
+[[1,f.edge[1]],[-1,f.edge[0]]].forEach(([sd,ey])=>{const x=sd*(W/2-th*.6),y=H/2-ey*H,z=zAt(W/2)-th*.5,c=new T.CatmullRomCurve3([new T.Vector3(x,y,z),new T.Vector3(x+sd*.02,y,z-L*.3),new T.Vector3(x+sd*.05,y-.01,z-L*.65),new T.Vector3(x+sd*.06,y-.04,z-L*.82),new T.Vector3(x+sd*.05,y-.16,z-L*.95),new T.Vector3(x+sd*.03,y-.26,z-L)]);
+g.add(new T.Mesh(new T.TubeGeometry(c,64,th/2,10),mat),new T.Mesh(new T.SphereGeometry(th*.75,12,10),mat).translateX(x).translateY(y).translateZ(z))});
+g.position.y=-.1;frame.add(g)}catch(e){badge.textContent=tt('The 3D frame could not be loaded.')}}
+if(!photo)new GLTFLoader().load(modelUrl,g=>{const model=g.scene,bounds=new T.Box3().setFromObject(model),size=bounds.getSize(new T.Vector3()),center=bounds.getCenter(new T.Vector3()),k=2.15/size.x;model.scale.setScalar(k);model.position.set(-center.x*k,-center.y*k-.1,-bounds.max.z*k);frame.add(model);pick(ci)},undefined,()=>{badge.textContent=tt('The 3D frame could not be loaded.')});
+if(photo)pick(ci);
 function resize(){const w=inner.clientWidth,h=inner.clientHeight;renderer.setSize(w,h,false);aspect=w/h;cam.left=-aspect;cam.right=aspect;cam.updateProjectionMatrix();pc.aspect=aspect;pc.updateProjectionMatrix()}new ResizeObserver(resize).observe(inner);
 const pt=p=>new T.Vector3((p.x*2-1)*aspect,1-p.y*2,-p.z*2*aspect),mid=(a,b)=>a.clone().add(b).multiplyScalar(.5);
 function track(r){const p=r.faceLandmarks?.[0];stage.classList.toggle('tracked',!!p);if(!p){frame.visible=false;badge.textContent=tt('Place your face inside the frame');return}const a=mid(pt(p[33]),pt(p[133])),b=mid(pt(p[362]),pt(p[263])),x=b.clone().sub(a).normalize(),y=pt(p[10]).sub(pt(p[152])).normalize();y.addScaledVector(x,-y.dot(x)).normalize();const z=new T.Vector3().crossVectors(x,y).normalize();frame.quaternion.setFromRotationMatrix(new T.Matrix4().makeBasis(x,y,z));frame.position.copy(mid(a,b));frame.scale.setScalar(T.MathUtils.clamp(a.distanceTo(b),.08,.95)*GF);frame.visible=true;badge.textContent=tt('Move your head slowly')}

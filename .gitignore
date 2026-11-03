@@ -1,3 +1,6 @@
 node_modules/
 .env
 .netlify/
+# Private notes that must not reach the public repo
+CLAUDE.local.md
+docs/

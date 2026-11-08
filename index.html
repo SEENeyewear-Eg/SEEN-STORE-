@@ -1,7 +1,21 @@
 <!doctype html>
 <html lang="en"><head><meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
-<title>SEEN — Home prototype</title><script>try{if(localStorage.seenTheme=="dark")document.documentElement.classList.add("dk");if(localStorage.seenLang=="ar"){document.documentElement.lang="ar";document.documentElement.dir="rtl"}}catch(e){}</script>
+<title>SEEN Eyewear | Sunglasses & Optical Frames in Egypt — نظارات شمسية وطبية</title>
+<meta name="description" content="Authentic sunglasses and optical frames from 40+ brands: Ray-Ban, Maui Jim, Carrera, Polaroid and more. Delivery across Egypt or pickup from SEEN branches. نظارات شمسية وطبية أصلية من أكثر من 40 علامة.">
+<link rel="canonical" href="https://seeneyeweareg.com/">
+<link rel="icon" href="favicon.svg" type="image/svg+xml">
+<meta name="theme-color" content="#F6F8F9">
+<meta property="og:type" content="website">
+<meta property="og:site_name" content="SEEN Eyewear">
+<meta property="og:title" content="SEEN Eyewear | Sunglasses & Optical Frames in Egypt">
+<meta property="og:description" content="Authentic sunglasses and optical frames from 40+ brands. Delivery across Egypt or pickup from our branches.">
+<meta property="og:url" content="https://seeneyeweareg.com/">
+<meta property="og:image" content="https://seeneyeweareg.com/img/og.jpg">
+<meta property="og:image:width" content="1200"><meta property="og:image:height" content="630">
+<meta property="og:locale" content="en_US"><meta property="og:locale:alternate" content="ar_EG">
+<meta name="twitter:card" content="summary_large_image">
+<script type="application/ld+json">{"@context":"https://schema.org","@type":"Organization","name":"SEEN Eyewear","url":"https://seeneyeweareg.com/","logo":"https://seeneyeweareg.com/favicon.svg"}</script><script>try{if(localStorage.seenTheme=="dark")document.documentElement.classList.add("dk");if(localStorage.seenLang=="ar"){document.documentElement.lang="ar";document.documentElement.dir="rtl"}}catch(e){}</script>
 <link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
 :root{color-scheme:light;--ink:#0b0b0b;--gray:#606060;--line:#E2E9ED;--sky:#5AC8FA;--card:#f2f2f2}
@@ -279,7 +293,7 @@ act:{l:['Driving','Beach','Diving','Running','Fishing','Golf','Tennis'],t:[['Dri
 exp:{l:['Virtual try-on','Lens tint guide','Prescription frames','Our branches','Brands'],t:[['Try on with your camera','way',0,'aa3935f3-184a-4e17-a880-b35d00c65c8a/0RB2140__901__P21__shad__qt.png|298c1087-b9f4-4c25-9a73-b35d00c66100/0RB2140__901__P21__shad__fr.png|93a83ecf-12ff-41d7-b7bb-b35d00c65b5c/0RB2140__901__P21__shad__lt.png'],['Find your lens tint','round',0,'a5410c76-c6b3-482b-bf78-b35d00d09da3/0RB3447__001__STD__shad__qt.png|24703641-72a8-4584-925f-b35d00d0a474/0RB3447__001__STD__shad__fr.png|81189c3f-06a6-489d-90b3-b35d00d09d67/0RB3447__001__STD__shad__lt.png']],big:1}};
 const hd=$('hd'),mega=$('mega'),nb=[...document.querySelectorAll('#nav button')];let ot,ct2,last=0,tk=false;
 const solid=()=>hd.classList.toggle('solid',scrollY>40||cur!==null||(!$('pdp').hidden||!$('col').hidden||!$('cv').hidden||!$('acp').hidden));
-function openM(k){clearTimeout(ct2);if(cur===k)return;const d=D[k];mega.innerHTML='<div class="mg"><div class="ml"><ul>'+d.l.map(x=>'<li><a href="#shop">'+x+'</a></li>').join('')+'</ul><div class="mu"><a href="#">'+ico('tool')+'Repairs &amp; adjustments</a><a href="#">'+ico('search')+'Support</a><a href="#">'+ico('bag')+'Gift cards</a></div></div><div class="mt'+(d.big?' mbig':'')+'">'+d.t.map(t=>'<a href="#shop" class="tl"><div class="tg">'+(t[3]?'<div class="ti">'+t[3].split('|').map((s,i)=>'<img src="'+BIMG['Ray-Ban'][0]+s+'?impolicy=RB_Product_clone&width=480&bgc=%23ffffff" alt="" onerror="'+(i?'this.remove()':'this.parentNode.remove()')+'">').join('')+'</div>':'')+'<span>'+gl(t[1],'#10202b','#5a7a8e',t[2]||4)+'</span></div><span>'+t[0]+'</span></a>').join('')+'</div></div>';cur=k;mega.classList.add('open');nb.forEach(b=>b.setAttribute('aria-expanded',b.dataset.m===k));hd.classList.remove('hide');solid()}
+function openM(k){clearTimeout(ct2);if(cur===k)return;const d=D[k];mega.innerHTML='<div class="mg"><div class="ml"><ul>'+d.l.map(x=>'<li><a href="#shop">'+x+'</a></li>').join('')+'</ul><div class="mu"><a href="#">'+ico('tool')+'Repairs &amp; adjustments</a><a href="#">'+ico('search')+'Support</a><a href="#">'+ico('bag')+'Gift cards</a></div></div><div class="mt'+(d.big?' mbig':'')+'">'+d.t.map(t=>'<a href="#shop" class="tl"><div class="tg">'+(t[3]?'<div class="ti">'+t[3].split('|').map((s,i)=>'<img src="img/m/'+s.split('/').pop().replace(/\.png$/,'.jpg')+'" alt="" onerror="'+(i?'this.remove()':'this.parentNode.remove()')+'">').join('')+'</div>':'')+'<span>'+gl(t[1],'#10202b','#5a7a8e',t[2]||4)+'</span></div><span>'+t[0]+'</span></a>').join('')+'</div></div>';cur=k;mega.classList.add('open');nb.forEach(b=>b.setAttribute('aria-expanded',b.dataset.m===k));hd.classList.remove('hide');solid()}
 function closeM(){cur=null;mega.classList.remove('open');nb.forEach(b=>b.setAttribute('aria-expanded','false'));solid()}
 // Below 900px the top menu is replaced by a ☰ button that opens the same categories in a side panel.
 $('mml').innerHTML=nb.map(b=>'<details><summary>'+b.textContent+'</summary><ul>'+D[b.dataset.m].l.map(x=>'<li><a href="#shop">'+x+'</a></li>').join('')+'</ul></details>').join('')+'<a class="ms" href="#sale">Sale</a>';
@@ -425,9 +439,9 @@ $('fbt').onclick=togF;$('so').onchange=e=>{F.sort=e.target.value;colRender()};$(
 const isShop=()=>/^#shop(\?|$)/.test(location.hash);
 function goShop(){if(isShop())colRender();else location.hash='shop'+qs()}
 function pick(b){clearF();F.brands=new Set([b]);F.q='';ov(null);goShop()}
-// Brand logos from Wikimedia Commons; brands without one there show their name as a wordmark (also the fallback if a logo fails to load).
+// Brand logos (originally from Wikimedia Commons) saved in img/logo/ with non [A-Za-z0-9_.-] characters turned into _; brands without one there show their name as a wordmark (also the fallback if a logo fails to load).
 const LOGO={'Maui Jim':'Maui Jim logo.svg','Gucci':'Gucci logo.svg','Bottega Veneta':'Logo Bottega Veneta.svg','Alexander McQueen':'McQueen 2024 logo.svg','Puma':'Puma-logo-(text).svg','Dunhill':'Dunhill logo.svg','Saint Laurent':'Saint Laurent logo.svg','Chloé':'Chloé logo.svg','Balenciaga':'Balenciaga Logo.svg','Valentino':'Valentino logo.svg','Lacoste':'Lacoste wordmark 2011.svg','Fila':'Fila logo.svg','Converse':'Converse logo.svg','BOSS':'Boss logo 2021.svg','Carrera':'Logo carrera.svg','Carrera | Ducati':'Ducati red logo.svg','DSQUARED2':'DSQUARED2.png','HUGO':'Hugo logo 2021.svg','Polaroid':'Polaroid Logo 2023.svg','Tommy Hilfiger':'Tommy Hilfiger logo.svg','A|X Armani Exchange':'Armani Exchange logo.svg','Ray-Ban':'Ray-Ban logo.svg','Scuderia Ferrari':'Ferrari wordmark.svg','Calvin Klein':'Calvin klein logo.svg'};
-const lg=b=>LOGO[b]?'<img src="https://commons.wikimedia.org/wiki/Special:FilePath/'+encodeURIComponent(LOGO[b])+'?width=400" alt="'+b+'" loading="lazy" onerror="this.outerHTML=\'<span>\'+this.alt+\'</span>\'">':'<span>'+b+'</span>',L0=b=>b.normalize('NFD')[0].toUpperCase();
+const lg=b=>LOGO[b]?'<img src="img/logo/'+LOGO[b].replace(/[^A-Za-z0-9_.-]/g,'_')+'" alt="'+b+'" loading="lazy" onerror="this.outerHTML=\'<span>\'+this.alt+\'</span>\'">':'<span>'+b+'</span>',L0=b=>b.normalize('NFD')[0].toUpperCase();
 // Each brand is a clear optical lens with its logo; hovering turns it over to show how many styles it has.
 // The lens outline is an optical-frame shape (flat top, rounded corners, deeper bottom); the shine layer is the crystal bevel, top streak, sparkle and lower reflection.
 const LP='M8,10C20,3 80,3 93,9C99,12 100,22 98,36C96,56 88,72 66,76C48,79 26,78 14,68C4,59 1,40 2,26C2,17 3,13 8,10Z',

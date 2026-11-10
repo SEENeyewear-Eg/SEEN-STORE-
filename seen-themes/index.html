@@ -1,0 +1,696 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SEEN EYEWEAR — Themes</title>
+<meta name="description" content="SEEN EYEWEAR — eyewear designed to be seen.">
+<meta name="robots" content="noindex">
+<link rel="icon" href="../favicon.svg">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500&display=swap" rel="stylesheet">
+<script>
+  // Apply saved theme / mode / language before paint (light is the default).
+  (function () {
+    var h = document.documentElement, c = window.SEEN_THEMES_CONFIG;
+    try {
+      h.setAttribute('data-skin', localStorage.seenThemesSkin || 'white');
+      if (localStorage.seenThemesMode === 'dark') h.setAttribute('data-mode', 'dark');
+      if (localStorage.seenLang === 'ar') { h.lang = 'ar'; h.dir = 'rtl'; }
+    } catch (e) { h.setAttribute('data-skin', 'white'); }
+  })();
+</script>
+<link rel="stylesheet" href="brand.css">
+<link rel="stylesheet" href="brand-strip.css">
+<style>
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  html { scroll-behavior: smooth; }
+  body {
+    background: var(--paper); color: var(--ink);
+    font-family: var(--font-latin); font-weight: 300;
+    line-height: 1.5; overflow-x: hidden;
+    transition: background-color .5s var(--ease), color .5s var(--ease);
+  }
+  html[lang="ar"] body { font-family: var(--font-arabic); }
+  a { color: inherit; text-decoration: none; }
+  button, input, select { font: inherit; color: inherit; }
+  img { display: block; max-width: 100%; }
+  .wrap { padding: 0 16px; max-width: 1200px; margin: 0 auto; }
+  :focus-visible { outline: 2px solid var(--highlight); outline-offset: 3px; }
+
+  /* Custom cursor (fine pointers only) */
+  .cursor {
+    display: none; position: fixed; left: 0; top: 0; width: 14px; height: 14px; border-radius: 50%;
+    background: var(--ink); pointer-events: none; z-index: 100; mix-blend-mode: difference;
+    transform: translate(-50%, -50%); transition: width .25s var(--ease), height .25s var(--ease), opacity .25s;
+  }
+  .cursor.big { width: 56px; height: 56px; }
+  @media (pointer: fine) { html.fx .cursor { display: block; } html.fx body, html.fx a, html.fx button, html.fx .card, html.fx .slide { cursor: none; } }
+
+  /* ---------- Header: no bar at the top of the page (floats over the hero);
+     after scrolling it turns into a rounded glass capsule floating over the content ---------- */
+  header.nav {
+    position: fixed; top: 0; left: 0; right: 0; z-index: 1000;
+    display: flex; align-items: center; justify-content: space-between; gap: 12px;
+    padding: 22px clamp(16px, 3vw, 36px); color: var(--ink);
+    background: transparent; border: 1px solid transparent; border-radius: 0;
+    transition: top .5s var(--ease), left .5s var(--ease), right .5s var(--ease), padding .5s var(--ease),
+      border-radius .5s var(--ease), background-color .5s var(--ease), border-color .5s, box-shadow .5s, color .5s;
+  }
+  header.nav.scrolled {
+    top: 12px; left: clamp(10px, 2vw, 24px); right: clamp(10px, 2vw, 24px);
+    padding: 8px 10px 8px clamp(16px, 2vw, 26px); border-radius: 999px;
+    background: color-mix(in srgb, var(--paper) 70%, transparent);
+    backdrop-filter: blur(18px) saturate(1.4); -webkit-backdrop-filter: blur(18px) saturate(1.4);
+    border-color: color-mix(in srgb, var(--line) 80%, transparent);
+    box-shadow: 0 18px 40px -26px color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+  [dir="rtl"] header.nav.scrolled { padding: 8px clamp(16px, 2vw, 26px) 8px 10px; }
+  /* Official logo SVG (injected from the store header), animation as on the store. */
+  .brandlink { display: inline-flex; align-items: center; min-height: 40px; }
+  .brandlink .logo { width: clamp(220px, 26vw, 320px); height: auto; display: block; transition: width .5s var(--ease); }
+  header.nav.scrolled .brandlink .logo { width: clamp(170px, 18vw, 230px); }
+  .logo .ck { transform-box: fill-box; transform-origin: center; animation: ck 5s infinite; }
+  @keyframes ck { 0%, 91.2% { transform: scaleX(1); animation-timing-function: ease-in } 95.6% { transform: scaleX(0); animation-timing-function: ease-out } 100% { transform: scaleX(1) } }
+  @media (max-width: 480px) { .brandlink .logo, header.nav.scrolled .brandlink .logo { width: 170px; } }
+  .navr { display: flex; align-items: center; gap: 4px; }
+  /* Links: light, like the page headings; a thin line draws in on hover */
+  nav.links { display: flex; gap: 28px; font-size: 16px; font-weight: 300; margin-inline-end: 14px; }
+  nav.links a { position: relative; padding: 6px 0; opacity: .78; transition: opacity .3s; }
+  nav.links a:hover { opacity: 1; }
+  nav.links a::after {
+    content: ""; position: absolute; left: 0; right: 0; bottom: 0; height: 1px; background: currentColor;
+    transform: scaleX(0); transform-origin: right; transition: transform .45s var(--ease);
+  }
+  nav.links a:hover::after { transform: scaleX(1); transform-origin: left; }
+  /* Icon buttons: bare icons (no outline circles); a soft disc appears only on hover */
+  .ib {
+    min-width: 40px; height: 40px; border-radius: 999px; border: 0; background: transparent; color: inherit;
+    display: inline-grid; place-items: center; padding: 0 10px; font-size: 15px; font-weight: 400;
+    transition: transform .4s var(--ease), background-color .3s;
+  }
+  .ib:hover { background: color-mix(in srgb, var(--ink) 7%, transparent); }
+  #mode:hover { transform: rotate(20deg); }
+  .ib svg { width: 19px; height: 19px; }
+  @media (max-width: 760px) { nav.links { display: none; } }
+
+  /* Theme list */
+  .tmenu { position: relative; }
+  .tlist {
+    position: absolute; top: calc(100% + 8px); inset-inline-end: 0; min-width: 210px; list-style: none;
+    background: var(--paper); color: var(--ink); border: 1px solid var(--line); border-radius: 16px; padding: 6px;
+    box-shadow: 0 20px 40px -20px color-mix(in srgb, var(--ink) 45%, transparent);
+  }
+  .tlist[hidden] { display: none; }
+  .tlist a, .tlist button { display: flex; width: 100%; align-items: center; gap: 10px; padding: 10px 12px; border: 0; background: none; border-radius: 10px; text-align: start; font-size: 15px; }
+  .tlist a:hover, .tlist button:hover, .tlist [aria-checked="true"] { background: var(--surface); }
+  .tlist .sw { width: 18px; height: 18px; border-radius: 50%; border: 1px solid var(--line); flex: none; }
+  .tlist [aria-checked="true"]::after { content: "✓"; margin-inline-start: auto; color: var(--brand-sky); font-weight: 700; }
+
+  /* ---------- Hero ---------- */
+  .hero { position: relative; min-height: 100vh; overflow: hidden; display: grid; align-items: center; padding-top: 84px; }
+  .spot {
+    position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(600px circle at var(--mx, 70%) var(--my, 40%), color-mix(in srgb, var(--highlight) 16%, transparent), transparent 60%);
+  }
+  .hero-inner { position: relative; width: 100%; max-width: 1200px; margin: 0 auto; padding: 24px 16px 60px; display: grid; gap: 32px; }
+  @media (min-width: 900px) { .hero-inner { grid-template-columns: 1.1fr .9fr; align-items: center; } }
+  .eyebrow { font-size: 14px; color: var(--muted); }
+  .hero h1 { font-size: clamp(48px, 8vw, 88px); line-height: 1; font-weight: 300; margin: 8px 0 12px; }
+  .hero h1 .word { display: inline-block; transition: transform .6s var(--ease); }
+  .hero h1 .word:hover { transform: translateY(-4px); }
+  .hero p.lead { max-width: 440px; font-size: 20px; color: var(--muted); }
+
+  .btn {
+    position: relative; display: inline-flex; align-items: center; gap: 10px; margin-top: 24px;
+    padding: 0 28px; height: 48px; border-radius: 999px; border: 0;
+    background: var(--accent); color: var(--accent-ink); font-weight: 400; font-size: 17px;
+    transition: transform .35s var(--ease), box-shadow .35s var(--ease);
+  }
+  .btn:hover { box-shadow: 0 16px 30px -12px color-mix(in srgb, var(--ink) 50%, transparent); }
+  .btn .arr { transition: transform .35s var(--ease); }
+  .btn:hover .arr { transform: translateX(6px); }
+  [dir="rtl"] .btn .arr { transform: scaleX(-1); }
+  [dir="rtl"] .btn:hover .arr { transform: scaleX(-1) translateX(6px); }
+
+  /* Half-circle carousel on the right: drag, scroll the wheel or use the arrows to turn it */
+  .hero-inner { overflow: visible; }
+  .stage {
+    position: relative; height: min(78vh, 680px); min-height: 440px; user-select: none; touch-action: pan-x;
+    outline: none; cursor: grab;
+  }
+  .stage.dragging { cursor: grabbing; }
+  .arc-ring {
+    position: absolute; top: 50%; inset-inline-end: calc(var(--R, 300px) * -1); width: calc(var(--R, 300px) * 2); aspect-ratio: 1;
+    transform: translateY(-50%); border-radius: 50%; border: 1px dashed var(--line); pointer-events: none;
+  }
+  /* Each frame is the glasses alone (no card, no price): big, and the brand name appears on hover */
+  /* Product photos have white backgrounds. Light mode: the whole frame multiplies onto the page so
+     the white disappears (no box). Dark mode: the white fades out softly at the edges like a spotlight. */
+  .slide {
+    position: absolute; top: 50%; inset-inline-end: 0; width: var(--cw, 300px); height: calc(var(--cw, 300px) * .5);
+    margin-top: calc(var(--cw, 300px) * -.25); will-change: transform, opacity; mix-blend-mode: multiply;
+  }
+  .slide .pic { width: 100%; height: 100%; display: grid; place-items: center; transition: transform .45s var(--ease); }
+  .slide .pic img { width: 100%; height: 100%; object-fit: contain; pointer-events: none; }
+  :root[data-mode="dark"] .slide { mix-blend-mode: normal; }
+  :root[data-mode="dark"] .slide .pic img {
+    -webkit-mask-image: radial-gradient(ellipse 50% 50% at center, #000 55%, transparent 100%);
+            mask-image: radial-gradient(ellipse 50% 50% at center, #000 55%, transparent 100%);
+  }
+  .slide .bn {
+    position: absolute; left: 50%; top: 100%; transform: translate(-50%, 4px); white-space: nowrap;
+    font-size: 15px; font-weight: 400; color: var(--ink); padding: 6px 14px; border-radius: 999px;
+    background: color-mix(in srgb, var(--paper) 85%, transparent); border: 1px solid var(--line);
+    opacity: 0; pointer-events: none; transition: opacity .3s var(--ease), transform .3s var(--ease);
+  }
+  .slide:hover .pic, .slide:focus-visible .pic { transform: scale(1.18); }
+  .slide:hover { mix-blend-mode: normal; }
+  .slide:hover .pic img { -webkit-mask-image: radial-gradient(ellipse 50% 50% at center, #000 55%, transparent 100%); mask-image: radial-gradient(ellipse 50% 50% at center, #000 55%, transparent 100%); }
+  .slide:hover .bn, .slide:focus-visible .bn { opacity: 1; transform: translate(-50%, 30px); }
+  .slide:hover { z-index: 300 !important; }
+  @media (hover: none) { .slide.front .bn { opacity: 1; transform: translate(-50%, 12px); } }
+  .arc-ctl { position: absolute; bottom: 6px; inset-inline-start: 0; display: flex; align-items: center; gap: 10px; z-index: 5; }
+  .arc-ctl button { width: 44px; height: 44px; border-radius: 50%; border: 1px solid var(--line); background: var(--paper); color: var(--ink); display: grid; place-items: center; }
+  .arc-ctl button:hover { border-color: var(--ink); }
+  .arc-ctl svg { width: 18px; height: 18px; }
+  [dir="rtl"] .arc-ctl svg { transform: scaleX(-1); }
+  .arc-ctl .pos { font-size: 14px; color: var(--muted); min-width: 56px; text-align: center; }
+  .hint { margin-top: 10px; font-size: 14px; color: var(--muted); text-align: center; }
+  @media (max-width: 899px) { .stage { height: 520px; min-height: 0; } }
+
+
+  /* ---------- Sections ---------- */
+  section { padding: 96px 0; }
+  .kicker { font-size: 14px; color: var(--muted); }
+  h2 { font-size: 48px; font-weight: 300; line-height: 1.1; margin: 8px 0 18px; }
+  @media (max-width: 640px) { h2 { font-size: 34px; } }
+  .reveal { opacity: 0; transform: translateY(40px); transition: opacity .9s var(--ease), transform .9s var(--ease); }
+  .reveal.in { opacity: 1; transform: none; }
+
+  /* Products */
+  .grid { display: grid; gap: 18px; grid-template-columns: 1fr; margin-top: 40px; }
+  @media (min-width: 560px) { .grid { grid-template-columns: repeat(2, 1fr); } }
+  @media (min-width: 900px) { .grid { grid-template-columns: repeat(3, 1fr); } }
+  .card {
+    position: relative; border-radius: var(--radius); padding: 22px; min-height: 400px; overflow: hidden;
+    display: flex; flex-direction: column; justify-content: space-between;
+    background: var(--surface); border: 1px solid var(--line);
+    transform-style: preserve-3d; transition: transform .5s var(--ease), box-shadow .5s var(--ease), background .5s;
+  }
+  .card::after {
+    content: ""; position: absolute; inset: 0; pointer-events: none;
+    background: radial-gradient(360px circle at var(--gx, 50%) var(--gy, 50%), rgba(255,255,255,.18), transparent 60%);
+    opacity: 0; transition: opacity .4s;
+  }
+  .card:hover::after { opacity: 1; }
+  .card:hover { box-shadow: 0 30px 60px -24px color-mix(in srgb, var(--ink) 45%, transparent); }
+  .card .top { display: flex; justify-content: space-between; gap: 8px; align-items: center; }
+  .badge { font-size: 12px; padding: 4px 10px; border-radius: 999px; border: 1px solid var(--line); color: var(--muted); }
+  .badge.low { border-color: var(--highlight); color: var(--ink); }
+  .card .frame {
+    flex: 1; min-height: 180px; margin: 18px 0; border-radius: 14px; background: #fff;
+    display: grid; place-items: center; overflow: hidden; transform: translateZ(30px);
+  }
+  .card .frame img { width: 100%; height: 100%; max-height: 220px; object-fit: contain; padding: 10px; }
+  .card .frame svg { width: 80%; }
+  .card h3 { font-size: 22px; font-weight: 400; transform: translateZ(20px); font-family: var(--font-latin); direction: ltr; text-align: start; }
+  [dir="rtl"] .card h3 { text-align: right; }
+  .card p { font-size: 14px; color: var(--muted); }
+  .dots { display: flex; gap: 6px; margin-top: 10px; flex-wrap: wrap; }
+  .dots i { width: 14px; height: 14px; border-radius: 50%; border: 1px solid var(--line); }
+  .card .price { font-weight: 500; margin-top: 8px; font-size: 17px; }
+  .card .price s { color: var(--muted); font-weight: 400; margin-inline-start: 8px; font-size: 14px; }
+  .card .add {
+    display: inline-block; margin-top: 16px; padding: 10px 18px; border-radius: 999px; border: 1px solid var(--ink);
+    background: transparent; font-size: 15px; font-weight: 400; transition: background .3s, color .3s;
+  }
+  .card .add:hover { background: var(--ink); color: var(--paper); }
+
+  /* Shop filters */
+  .filters { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 24px; }
+  .filters input, .filters select {
+    padding: 12px 16px; border-radius: 999px; border: 1px solid var(--line); background: var(--surface); color: var(--ink); min-width: 0;
+  }
+  .filters input { flex: 1 1 220px; }
+  .filters select { flex: 0 1 200px; }
+  .count { margin-top: 16px; font-size: 14px; color: var(--muted); }
+  .more { display: flex; justify-content: center; margin-top: 32px; }
+  .state { padding: 40px 0; color: var(--muted); text-align: center; }
+
+  /* Story */
+  .story { background: var(--ink); color: var(--paper); border-radius: 28px; margin: 0 16px; padding: 72px 24px; }
+  .story .wrap { padding: 0; }
+  .story p { font-size: clamp(22px, 3.2vw, 36px); line-height: 1.3; max-width: 900px; font-weight: 300; }
+  .story p .hl { background: linear-gradient(transparent 62%, color-mix(in srgb, var(--brand-sky) 45%, transparent) 62%); }
+
+  footer { padding: 40px 16px 60px; font-size: 13px; color: var(--muted); display: flex; justify-content: space-between; flex-wrap: wrap; gap: 12px; }
+
+  /* Reduced motion / no-JS-effects */
+  @media (prefers-reduced-motion: reduce) {
+    *, *::before, *::after { animation: none !important; transition: none !important; scroll-behavior: auto !important; }
+    .reveal { opacity: 1; transform: none; }
+  }
+</style>
+</head>
+<body>
+
+<div class="cursor" id="cursor" aria-hidden="true"></div>
+
+<header class="nav">
+  <a class="brandlink" id="brand" href="#top" aria-label="SEEN home"></a>
+  <div class="navr">
+    <nav class="links">
+      <a href="#products" data-t="navShop">Shop</a>
+      <a href="#story" data-t="navAbout">About</a>
+      <a href="#join" data-t="navContact">Contact</a>
+    </nav>
+    <div class="tmenu">
+      <button class="ib" id="tbtn" aria-haspopup="true" aria-expanded="false" aria-controls="tlist" data-t-title="themes" title="Themes">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M12 3a9 9 0 1 0 0 18c1.1 0 1.6-.8 1.6-1.6 0-.9-.7-1.4-.7-2.3 0-.9.7-1.6 1.6-1.6H17a4 4 0 0 0 4-4C21 6.6 17 3 12 3z"/><circle cx="7.5" cy="11" r="1"/><circle cx="10" cy="7" r="1"/><circle cx="15" cy="7" r="1"/></svg>
+      </button>
+      <ul class="tlist" id="tlist" role="menu" hidden></ul>
+    </div>
+    <button class="ib" id="lang" aria-label="العربية">ع</button>
+    <button class="ib" id="mode" data-t-label="mode" aria-label="Light / dark" aria-pressed="false">
+      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
+    </button>
+  </div>
+</header>
+
+<section class="hero" id="top">
+  <div class="spot" id="spot" aria-hidden="true"></div>
+  <div class="hero-inner">
+    <div class="copy">
+      <div class="eyebrow" id="eyebrow">Eyewear — Egypt</div>
+      <h1 id="h1"><span class="word">Be</span> <span class="word">seen</span></h1>
+      <p class="lead" data-t="lead">Eyewear designed for people who want to be noticed for the right reasons. Sharp frames, clear lenses, everyday comfort.</p>
+      <a class="btn magnetic" href="#products"><span data-t="cta">Explore the collection</span> <span class="arr">→</span></a>
+    </div>
+    <div>
+      <div class="stage" id="stage" tabindex="0" role="region" aria-roledescription="carousel" data-t-label="carousel" aria-label="Featured frames">
+        <div class="arc-ring" aria-hidden="true"></div>
+        <div id="stack"></div>
+        <div class="arc-ctl">
+          <button id="prev" data-t-label="prev" aria-label="Previous"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M15 5l-7 7 7 7"/></svg></button>
+          <span class="pos" id="pos" aria-live="polite"></span>
+          <button id="next" data-t-label="next" aria-label="Next"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M9 5l7 7-7 7"/></svg></button>
+        </div>
+      </div>
+      <div class="hint" data-t="hint">Hover · drag · click a card</div>
+    </div>
+  </div>
+</section>
+
+<section id="brands" aria-label="Our brands" data-t-label="ourBrands"></section>
+
+<section id="products">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker" data-t="kFeat">The collection</div>
+      <h2 data-t="hFeat">Featured frames</h2>
+    </div>
+    <div class="grid" id="featured"><div class="state" data-t="loading">Loading frames…</div></div>
+  </div>
+</section>
+
+<section id="shop">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker" data-t="kShop">All frames</div>
+      <h2 data-t="hShop">Shop</h2>
+    </div>
+    <div class="filters">
+      <input id="q" type="search" data-t-ph="search" placeholder="Search brand or model" aria-label="Search">
+      <select id="fb" aria-label="Brand"><option value="" data-t="allBrands">All brands</option></select>
+      <select id="ft" aria-label="Type"><option value="" data-t="allTypes">All types</option></select>
+    </div>
+    <div class="count" id="count"></div>
+    <div class="grid" id="all"></div>
+    <div class="more"><button class="btn magnetic" id="more" hidden><span data-t="more">Show more</span></button></div>
+  </div>
+</section>
+
+<section id="story">
+  <div class="story reveal">
+    <div class="wrap">
+      <div class="kicker" style="opacity:.6" data-t="kStory">Our story</div>
+      <p style="margin-top:18px" data-t-html="story">SEEN is built on one idea: <span class="hl">what you wear on your face says who you are before you say a word.</span> We pick frames that are bold, honest and made to last.</p>
+    </div>
+  </div>
+</section>
+
+<section id="join">
+  <div class="wrap">
+    <div class="reveal">
+      <div class="kicker" data-t="kJoin">Talk to us</div>
+      <h2 data-t="hJoin">Ask about a frame</h2>
+      <p style="color:var(--muted);max-width:480px" data-t="pJoin">Questions about sizes, lenses or stock? Message the store directly.</p>
+      <a class="btn magnetic" id="wa" target="_blank" rel="noopener"><span data-t="wa">Chat on WhatsApp</span> <span class="arr">→</span></a>
+    </div>
+  </div>
+</section>
+
+<footer>
+  <span>© SEEN EYEWEAR</span>
+  <a href="../index.html" data-t="back">Back to the store</a>
+</footer>
+
+<script src="config.js"></script>
+<script src="data.js"></script>
+<script src="brand-strip.js"></script>
+<script>
+(function () {
+  'use strict';
+  var C = window.SEEN_THEMES_CONFIG || { themes: [], featured: [], featuredCount: 6 };
+  var root = document.documentElement;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var fine = window.matchMedia('(pointer: fine)').matches;
+  if (fine && !reduce) root.classList.add('fx');
+  var $ = function (id) { return document.getElementById(id); };
+  var esc = function (s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); };
+  var store = function (k, v) { try { if (v === undefined) return localStorage[k]; localStorage[k] = v; } catch (e) { return undefined; } };
+
+  /* ---------- Text (EN / AR) ---------- */
+  var T = {
+    en: {
+      navShop: 'Shop', navAbout: 'About', navContact: 'Contact', themes: 'Themes', mode: 'Light / dark',
+      eyebrow: 'Eyewear — Egypt', est: 'Eyewear — Est. ', lead: 'Eyewear designed for people who want to be noticed for the right reasons. Sharp frames, clear lenses, everyday comfort.',
+      cta: 'Explore the collection', hint: 'Drag or scroll to turn · click a frame', prev: 'Previous', next: 'Next', carousel: 'Featured frames', kFeat: 'The collection', hFeat: 'Featured frames',
+      kShop: 'All frames', hShop: 'Shop', search: 'Search brand or model', allBrands: 'All brands', allTypes: 'All types',
+      more: 'Show more', loading: 'Loading frames…', none: 'No frames match your search.',
+      error: 'Frames could not be loaded right now. Please open the main store.', kStory: 'Our story',
+      story: 'SEEN is built on one idea: <span class="hl">what you wear on your face says who you are before you say a word.</span> We pick frames that are bold, honest and made to last.',
+      kJoin: 'Talk to us', hJoin: 'Ask about a frame', pJoin: 'Questions about sizes, lenses or stock? Message the store directly.',
+      wa: 'Chat on WhatsApp', back: 'Back to the store', view: 'View & buy', inStock: 'In stock', low: 'Last pieces', out: 'Ask for stock',
+      colours: function (n) { return n === 1 ? '1 colour' : n + ' colours'; }, count: function (a, b) { return 'Showing ' + a + ' of ' + b + ' frames'; },
+      ourBrands: 'Our brands', Sunglasses: 'Sunglasses', Optical: 'Optical', price: function (n) { return n.toLocaleString('en-US') + ' EGP'; }, noPrice: 'Price on request',
+      size: 'Size', photo: 'Photo coming soon'
+    },
+    ar: {
+      navShop: 'تسوّق', navAbout: 'عن SEEN', navContact: 'تواصل', themes: 'الثيمات', mode: 'فاتح / داكن',
+      eyebrow: 'نظارات — مصر', est: 'نظارات — منذ ', lead: 'نظارات معمولة للناس اللي عايزة تتشاف صح. فريمات حادة، عدسات صافية، وراحة كل يوم.',
+      cta: 'اكتشف المجموعة', hint: 'اسحب أو لِف بالماوس · اضغط على فريم', prev: 'السابق', next: 'التالي', carousel: 'فريمات مختارة', kFeat: 'المجموعة', hFeat: 'فريمات مختارة',
+      kShop: 'كل الفريمات', hShop: 'تسوّق', search: 'دوّر بالبراند أو الموديل', allBrands: 'كل البراندات', allTypes: 'كل الأنواع',
+      more: 'اعرض أكتر', loading: 'بنحمّل الفريمات…', none: 'مفيش فريمات بالبحث ده.',
+      error: 'مش قادرين نحمّل الفريمات دلوقتي. افتح المتجر الأساسي.', kStory: 'حكايتنا',
+      story: 'SEEN قايمة على فكرة واحدة: <span class="hl">اللي بتلبسه على وشك بيقول إنت مين قبل ما تتكلم.</span> بنختار فريمات جريئة وصادقة وتعيش.',
+      kJoin: 'كلّمنا', hJoin: 'اسأل عن فريم', pJoin: 'عندك سؤال عن مقاس أو عدسات أو المخزون؟ ابعت للمحل على طول.',
+      wa: 'كلّمنا واتساب', back: 'ارجع للمتجر', view: 'شوف واشتري', inStock: 'متاح', low: 'آخر قطع', out: 'اسأل عن التوفر',
+      colours: function (n) { return n === 1 ? 'لون واحد' : n + ' ألوان'; }, count: function (a, b) { return 'معروض ' + a + ' من ' + b + ' فريم'; },
+      ourBrands: 'البراندات بتاعتنا', Sunglasses: 'شمسي', Optical: 'طبي', price: function (n) { return n.toLocaleString('en-US') + ' ج.م'; }, noPrice: 'السعر عند الطلب',
+      size: 'المقاس', photo: 'الصورة قريباً'
+    }
+  };
+  var L = function () { return root.lang === 'ar' ? 'ar' : 'en'; };
+  var t = function (k) { return T[L()][k] != null ? T[L()][k] : T.en[k]; };
+
+  function applyText() {
+    document.querySelectorAll('[data-t]').forEach(function (el) { el.textContent = t(el.dataset.t); });
+    document.querySelectorAll('[data-t-html]').forEach(function (el) { el.innerHTML = t(el.dataset.tHtml); });
+    document.querySelectorAll('[data-t-ph]').forEach(function (el) { el.placeholder = t(el.dataset.tPh); });
+    document.querySelectorAll('[data-t-title]').forEach(function (el) { el.title = t(el.dataset.tTitle); el.setAttribute('aria-label', t(el.dataset.tTitle)); });
+    document.querySelectorAll('[data-t-label]').forEach(function (el) { el.setAttribute('aria-label', t(el.dataset.tLabel)); });
+    $('eyebrow').textContent = C.established ? t('est') + C.established : t('eyebrow');
+    $('h1').innerHTML = L() === 'ar'
+      ? '<span class="word">خلّيك</span> <span class="word">SEEN</span>'
+      : '<span class="word">Be</span> <span class="word">seen</span>';
+    var lb = $('lang'); lb.textContent = L() === 'ar' ? 'EN' : 'ع'; lb.setAttribute('aria-label', L() === 'ar' ? 'English' : 'العربية');
+    renderThemes();
+  }
+
+  /* ---------- Theme list (visitor picks) ---------- */
+  var SWATCH = { classic: '#ffffff', white: '#0b0b0b', sky: '#5AC8FA' };
+  function renderThemes() {
+    var cur = root.getAttribute('data-skin');
+    $('tlist').innerHTML = (C.themes || []).map(function (th) {
+      var name = esc(th[L()] || th.en || th.id), sw = '<i class="sw" style="background:' + (SWATCH[th.id] || '#ccc') + '"></i>';
+      return th.href
+        ? '<li role="none"><a role="menuitem" href="' + esc(th.href) + '">' + sw + name + '</a></li>'
+        : '<li role="none"><button role="menuitemradio" aria-checked="' + (cur === th.id) + '" data-skin="' + esc(th.id) + '">' + sw + name + '</button></li>';
+    }).join('');
+  }
+  function openThemes(open) { $('tlist').hidden = !open; $('tbtn').setAttribute('aria-expanded', String(open)); }
+  $('tbtn').addEventListener('click', function (e) { e.stopPropagation(); openThemes($('tlist').hidden); });
+  $('tlist').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-skin]'); if (!b) return;
+    root.setAttribute('data-skin', b.dataset.skin); store('seenThemesSkin', b.dataset.skin); renderThemes(); openThemes(false);
+  });
+  document.addEventListener('click', function (e) { if (!e.target.closest('.tmenu')) openThemes(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape') openThemes(false); });
+  if (!(C.themes || []).some(function (th) { return th.id === root.getAttribute('data-skin') && !th.href; })) root.setAttribute('data-skin', C.defaultTheme || 'white');
+
+  /* ---------- Light (default) / dark ---------- */
+  function syncMode() { $('mode').setAttribute('aria-pressed', String(root.getAttribute('data-mode') === 'dark')); }
+  $('mode').addEventListener('click', function () {
+    var dark = root.getAttribute('data-mode') !== 'dark';
+    if (dark) root.setAttribute('data-mode', 'dark'); else root.removeAttribute('data-mode');
+    store('seenThemesMode', dark ? 'dark' : 'light'); syncMode();
+  });
+  syncMode();
+
+  /* ---------- Language ---------- */
+  $('lang').addEventListener('click', function () {
+    var ar = L() !== 'ar'; root.lang = ar ? 'ar' : 'en'; root.dir = ar ? 'rtl' : 'ltr'; store('seenLang', root.lang);
+    applyText(); if (DB) { renderFeatured(); renderShop(false); renderStack(); }
+  });
+
+  /* ---------- Product rendering ---------- */
+  // Safe drawn frame when a model has no photo yet
+  function drawn(p) {
+    var c = (p.colours[0] || {}), f = esc(c.frame || '#2b2b2b'), l = esc(c.lens || '#4a4a4a');
+    return '<svg viewBox="0 0 200 84" role="img" aria-label="' + esc(t('photo')) + '"><g fill="' + l + '" fill-opacity=".8" stroke="' + f + '" stroke-width="5" stroke-linejoin="round">' +
+      '<path d="M10 22Q50 16 90 22L86 54Q60 70 22 56Z"/><path d="M190 22Q150 16 110 22L114 54Q140 70 178 56Z"/></g>' +
+      '<path d="M90 26Q100 18 110 26" fill="none" stroke="' + f + '" stroke-width="5"/></svg>';
+  }
+  function picture(p) {
+    if (!p.photo) return drawn(p);
+    return '<img src="' + esc(p.photo) + '" alt="' + esc(p.brand + ' ' + p.model) + '" loading="lazy" decoding="async" data-fallback="1">';
+  }
+  // Replace broken photos with the drawn frame (one listener for all images)
+  document.addEventListener('error', function (e) {
+    var img = e.target; if (!(img instanceof HTMLImageElement) || !img.dataset.fallback) return;
+    var p = DB && DB.products[+img.closest('[data-i]').dataset.i]; img.outerHTML = p ? drawn(p) : '';
+  }, true);
+  function priceHtml(p) {
+    if (p.price == null) return esc(t('noPrice'));
+    return esc(t('price')(p.price)) + (p.oldPrice && p.oldPrice > p.price ? '<s>' + esc(t('price')(p.oldPrice)) + '</s>' : '');
+  }
+  function stockBadge(p) {
+    if (!p.stock) return '<span class="badge">' + esc(t('out')) + '</span>';
+    if (p.stock <= p.colours.length && p.colours.length === 1) return '<span class="badge low">' + esc(t('low')) + '</span>';
+    return '<span class="badge">' + esc(t('inStock')) + '</span>';
+  }
+  function card(p, n) {
+    var dots = p.colours.slice(0, 8).map(function (c) { return '<i style="background:' + esc(c.frame) + '" title="' + esc(c.name || c.code) + '"></i>'; }).join('');
+    var sz = [p.size.lens, p.size.bridge, p.size.temple].filter(Boolean).join(' · ');
+    var desc = [t(p.type) || p.type, p.colours.length ? t('colours')(p.colours.length) : '', sz ? t('size') + ' ' + sz : ''].filter(Boolean).join(' — ');
+    return '<article class="card reveal in tilt" data-i="' + p.index + '">' +
+      '<div class="top"><span class="kicker">' + (n != null ? String(n + 1).padStart(2, '0') + ' · ' : '') + esc(p.brand || '—') + '</span>' + stockBadge(p) + '</div>' +
+      '<div class="frame">' + picture(p) + '</div>' +
+      '<div><h3>' + esc(p.model || '—') + '</h3><p>' + esc(desc) + '</p><div class="dots">' + dots + '</div>' +
+      '<div class="price">' + priceHtml(p) + '</div>' +
+      '<a class="add" href="' + esc(p.storeUrl) + '">' + esc(t('view')) + '</a></div></article>';
+  }
+
+  var DB = null, FEAT = [];
+  function renderFeatured() {
+    $('featured').innerHTML = FEAT.length ? FEAT.map(card).join('') : '<div class="state">' + esc(t('none')) + '</div>';
+  }
+
+  /* ---------- Hero: half-circle carousel on the right ----------
+     Frames sit on a circle whose centre is at the right edge of the stage; only the left half shows.
+     pos (a float) is the frame at the front. Drag (up/down or left/right), mouse wheel, arrow keys
+     and the buttons turn it; it eases to the nearest frame when you let go. */
+  var HERO = [], N = 0, slides = [], pos = 0, target = 0, raf = 0, STEP = 20; // degrees between frames
+  var stack = $('stack'), stage = $('stage');
+  var rtl = function () { return root.dir === 'rtl'; };
+  function renderStack() {
+    if (!HERO.length) { stack.innerHTML = ''; N = 0; return; }
+    stack.innerHTML = HERO.map(function (p, i) {
+      return '<div class="slide" data-n="' + i + '" data-i="' + p.index + '" title="' + esc(p.brand) + '">' +
+        '<div class="pic">' + picture(p) + '</div>' +
+        '<span class="bn">' + esc(p.brand) + '</span></div>';
+    }).join('');
+    slides = Array.from(stack.querySelectorAll('.slide')); N = slides.length; layout();
+  }
+  function geom() {
+    var w = stage.clientWidth, h = stage.clientHeight;
+    var cw = Math.max(190, Math.min(390, w * .62, h * .6));          // glasses width
+    var R = Math.max(cw * .9, Math.min(h * .44, w * .78));
+    // vertical spacing along the arc ≈ 1.35 × glasses height, so they never touch
+    STEP = Math.min(48, Math.max(20, (cw * .5 * 1.35 / R) * 180 / Math.PI));
+    stage.style.setProperty('--cw', cw + 'px'); stage.style.setProperty('--R', R + 'px');
+    return { R: R, cw: cw };
+  }
+  var G = null;
+  function layout() {
+    if (!N) return;
+    G = G || geom();
+    var front = ((Math.round(pos) % N) + N) % N, dirX = rtl() ? 1 : -1;
+    slides.forEach(function (el, i) {
+      var d = i - pos; d = ((d % N) + N + N / 2) % N - N / 2;          // shortest way round
+      var a = d * STEP, rad = a * Math.PI / 180, vis = Math.abs(a) <= 96;
+      var x = (G.R * Math.cos(rad) - G.cw / 2) * dirX;                  // from the circle centre on the edge
+      var y = G.R * Math.sin(rad);
+      var s = 1 - Math.min(Math.abs(a), 90) / 170;
+      el.style.transform = 'translate(' + x + 'px,' + y + 'px) scale(' + s + ') rotate(' + (rtl() ? -a : a) * .35 + 'deg)';
+      el.style.opacity = vis ? Math.max(0, 1 - Math.abs(a) / 110) : 0;
+      el.style.visibility = vis ? 'visible' : 'hidden';
+      el.style.zIndex = 100 - Math.round(Math.abs(d) * 4);
+      el.classList.toggle('front', i === front);
+      el.setAttribute('aria-hidden', i === front ? 'false' : 'true');
+    });
+    $('pos').textContent = (front + 1) + ' / ' + N;
+  }
+  function animate() {
+    cancelAnimationFrame(raf);
+    if (reduce) { pos = target; layout(); return; }
+    (function tick() {
+      pos += (target - pos) * .16;
+      if (Math.abs(target - pos) < .002) pos = target;
+      layout();
+      if (pos !== target) raf = requestAnimationFrame(tick);
+    })();
+  }
+  function go(n) { target = n; animate(); }
+  function step(dir) { go(Math.round(target) + dir); }
+  $('prev').addEventListener('click', function () { step(-1); stopAuto(); });
+  $('next').addEventListener('click', function () { step(1); stopAuto(); });
+
+  // Drag with mouse or finger (vertical or horizontal movement both turn it)
+  var dragging = false, sx = 0, sy = 0, startPos = 0, moved = false;
+  stage.addEventListener('pointerdown', function (e) {
+    if (e.target.closest('.arc-ctl')) return;
+    dragging = true; moved = false; sx = e.clientX; sy = e.clientY; startPos = target; stopAuto();
+    stage.classList.add('dragging');
+  });
+  window.addEventListener('pointermove', function (e) {
+    if (!dragging || !G) return;
+    var dx = e.clientX - sx, dy = e.clientY - sy;
+    if (Math.abs(dx) + Math.abs(dy) > 6) moved = true;
+    var main = Math.abs(dy) > Math.abs(dx) ? dy : (rtl() ? dx : -dx);
+    target = startPos - main / (G.R * STEP * Math.PI / 180);
+    pos = target; layout();
+  });
+  window.addEventListener('pointerup', function () {
+    if (!dragging) return; dragging = false; stage.classList.remove('dragging'); go(Math.round(target));
+  });
+  // Mouse wheel / trackpad over the carousel
+  var wheelT;
+  stage.addEventListener('wheel', function (e) {
+    if (!N) return;
+    e.preventDefault(); stopAuto();
+    target += (Math.abs(e.deltaY) > Math.abs(e.deltaX) ? e.deltaY : e.deltaX) / 240;
+    animate(); clearTimeout(wheelT); wheelT = setTimeout(function () { go(Math.round(target)); }, 140);
+  }, { passive: false });
+  // Keyboard
+  stage.addEventListener('keydown', function (e) {
+    if (e.key === 'ArrowDown' || e.key === (rtl() ? 'ArrowLeft' : 'ArrowRight')) { e.preventDefault(); step(1); stopAuto(); }
+    if (e.key === 'ArrowUp' || e.key === (rtl() ? 'ArrowRight' : 'ArrowLeft')) { e.preventDefault(); step(-1); stopAuto(); }
+    if (e.key === 'Enter') { var f = stack.querySelector('.slide.front'); if (f) location.href = '../index.html#product-' + f.dataset.i; }
+  });
+  // Click: side frame → turn to it; front frame → open it in the store
+  stack.addEventListener('click', function (e) {
+    var s = e.target.closest('.slide'); if (!s || moved) return;
+    if (s.classList.contains('front')) { location.href = '../index.html#product-' + s.dataset.i; return; }
+    var n = +s.dataset.n, d = n - Math.round(target); d = ((d % N) + N + N / 2) % N - N / 2;
+    go(Math.round(target) + Math.round(d)); stopAuto();
+  });
+  // Glare follows the mouse on any frame
+  stack.addEventListener('pointermove', function (e) {
+    var s = e.target.closest('.slide'); if (!s) return; var r = s.getBoundingClientRect();
+    s.style.setProperty('--gx', (e.clientX - r.left) + 'px'); s.style.setProperty('--gy', (e.clientY - r.top) + 'px');
+  });
+  // Slow auto-turn until the visitor touches it (off with reduced motion)
+  var timer = null;
+  function startAuto() { if (!reduce && !timer && N > 1) timer = setInterval(function () { if (!dragging) step(1); }, 3200); }
+  function stopAuto() { clearInterval(timer); timer = null; }
+  stage.addEventListener('mouseenter', stopAuto);
+  stage.addEventListener('mouseleave', function () { if (!dragging) startAuto(); });
+  window.addEventListener('resize', function () { G = null; layout(); });
+
+  /* Hero spotlight */
+  $('top').addEventListener('mousemove', function (e) {
+    var r = this.getBoundingClientRect();
+    $('spot').style.setProperty('--mx', (e.clientX - r.left) + 'px'); $('spot').style.setProperty('--my', (e.clientY - r.top) + 'px');
+  });
+
+  /* ---------- Shop (all frames) ---------- */
+  var PAGE = 24, shown = PAGE, results = [];
+  function renderShop(reset) {
+    if (!DB) return;
+    if (reset) shown = PAGE;
+    results = SeenData.list(DB, { q: $('q').value, brand: $('fb').value, type: $('ft').value });
+    var part = results.slice(0, shown);
+    $('all').innerHTML = part.length ? part.map(function (p) { return card(p); }).join('') : '<div class="state">' + esc(t('none')) + '</div>';
+    $('count').textContent = t('count')(part.length, results.length);
+    $('more').hidden = shown >= results.length;
+  }
+  var qt; $('q').addEventListener('input', function () { clearTimeout(qt); qt = setTimeout(function () { renderShop(true); }, 200); });
+  $('fb').addEventListener('change', function () { renderShop(true); });
+  $('ft').addEventListener('change', function () { renderShop(true); });
+  $('more').addEventListener('click', function () { shown += PAGE; renderShop(false); });
+
+  /* ---------- Pointer effects (delegated so new cards work too) ---------- */
+  if (fine && !reduce) {
+    var cursor = $('cursor'), cx = 0, cy = 0, tx = 0, ty = 0;
+    window.addEventListener('mousemove', function (e) { tx = e.clientX; ty = e.clientY; }, { passive: true });
+    (function loop() { cx += (tx - cx) * .25; cy += (ty - cy) * .25; cursor.style.left = cx + 'px'; cursor.style.top = cy + 'px'; requestAnimationFrame(loop); })();
+    document.addEventListener('mouseover', function (e) { cursor.classList.toggle('big', !!e.target.closest('a, button, select, input, .card, .slide')); });
+
+    document.addEventListener('mousemove', function (e) {
+      var b = e.target.closest('.magnetic');
+      if (b) { var r = b.getBoundingClientRect(); b.style.transform = 'translate(' + (e.clientX - r.left - r.width / 2) * .25 + 'px,' + (e.clientY - r.top - r.height / 2) * .35 + 'px)'; }
+      var c = e.target.closest('.tilt');
+      if (c) {
+        var q = c.getBoundingClientRect(), x = (e.clientX - q.left) / q.width, y = (e.clientY - q.top) / q.height;
+        c.style.transform = 'perspective(900px) rotateX(' + (.5 - y) * 12 + 'deg) rotateY(' + (x - .5) * 14 + 'deg) translateY(-4px)';
+        c.style.setProperty('--gx', x * 100 + '%'); c.style.setProperty('--gy', y * 100 + '%');
+      }
+    });
+    document.addEventListener('mouseout', function (e) {
+      ['.magnetic', '.tilt'].forEach(function (s) {
+        var el = e.target.closest(s); if (el && !el.contains(e.relatedTarget)) el.style.transform = '';
+      });
+    });
+  }
+
+  /* Header: transparent at the top, floating glass capsule once you scroll */
+  var hdr = document.querySelector('header.nav');
+  function onScroll() { hdr.classList.toggle('scrolled', window.scrollY > 24); }
+  window.addEventListener('scroll', onScroll, { passive: true }); onScroll();
+
+  /* Reveal on scroll */
+  var io = 'IntersectionObserver' in window ? new IntersectionObserver(function (en) {
+    en.forEach(function (x) { if (x.isIntersecting) { x.target.classList.add('in'); io.unobserve(x.target); } });
+  }, { threshold: .15 }) : null;
+  document.querySelectorAll('.reveal').forEach(function (el) { if (io) io.observe(el); else el.classList.add('in'); });
+
+  /* WhatsApp (no form, nothing collected) */
+  $('wa').href = C.whatsapp ? 'https://wa.me/' + encodeURIComponent(C.whatsapp) : '../index.html';
+  if (!C.whatsapp) $('wa').removeAttribute('target');
+
+  /* ---------- Load real data (read-only) ---------- */
+  applyText();
+  SeenData.load().then(function (db) {
+    DB = db;
+    var bs = db.brands;
+    var BS = C.brandStrip || {};
+    SeenBrandStrip.mount($('brands'), (BS.brands && BS.brands.length) ? BS.brands : db.brandInfo, BS);
+    $('fb').insertAdjacentHTML('beforeend', bs.map(function (b) { return '<option>' + esc(b) + '</option>'; }).join(''));
+    $('ft').insertAdjacentHTML('beforeend', db.types.map(function (x) { return '<option value="' + esc(x) + '" data-t="' + esc(x) + '">' + esc(t(x) || x) + '</option>'; }).join(''));
+    if (db.logo) $('brand').innerHTML = db.logo; else $('brand').textContent = 'SEEN';
+    FEAT = SeenData.featured(db, C.featured, C.featuredCount || 6);
+    HERO = SeenData.featured(db, [], C.heroCount || 18);
+    renderFeatured(); renderStack(); renderShop(true); startAuto();
+  }).catch(function (err) {
+    console.warn('seen-themes: product data not available', err);
+    var msg = '<div class="state">' + esc(t('error')) + ' <a href="../index.html" style="text-decoration:underline">SEEN</a></div>';
+    $('featured').innerHTML = msg; $('all').innerHTML = ''; $('count').textContent = ''; $('brand').textContent = 'SEEN';
+  });
+})();
+</script>
+</body>
+</html>

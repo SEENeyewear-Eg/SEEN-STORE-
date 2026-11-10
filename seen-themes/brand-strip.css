@@ -1,0 +1,71 @@
+/* Brands strip, "black hole" style: big logos (no cards); the centre logo is flat and full colour,
+   logos toward the edges turn away and sink back like the walls of a tunnel. Colours from brand.css. */
+.bstrip {
+  --bs-cw: 180px;               /* slot width per brand (mobile) */
+  --bs-gap: 10px;
+  --bs-logo: 60px;              /* logo height (mobile) */
+  --bs-ink: var(--ink);
+  --bs-muted: var(--muted);
+  --bs-focus: var(--highlight);
+  position: relative; overflow: hidden; padding: 30px 0 26px; background: transparent;
+  touch-action: pan-y; user-select: none; -webkit-user-select: none; cursor: grab;
+  -webkit-mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+          mask-image: linear-gradient(90deg, transparent, #000 10%, #000 90%, transparent);
+  direction: ltr;               /* motion maths is left-to-right in both languages */
+}
+@media (min-width: 768px) { .bstrip { --bs-cw: 280px; --bs-gap: 16px; --bs-logo: 100px; padding: 46px 0 38px; } }
+.bstrip.dragging { cursor: grabbing; }
+.bstrip-track { display: flex; align-items: center; width: max-content; will-change: transform; }
+.bstrip-set { display: flex; align-items: center; gap: var(--bs-gap); padding-inline-end: var(--bs-gap); }
+
+/* Outer button: receives the tunnel warp every frame (inline transform) */
+.bstrip-item {
+  position: relative; flex: none; width: var(--bs-cw); padding: 0; border: 0; background: none;
+  color: var(--bs-ink); font: inherit; cursor: inherit; transform-origin: center; will-change: transform;
+}
+.bstrip-no { display: block; font-size: 11px; color: var(--bs-muted); text-align: center; margin-bottom: 10px; font-family: var(--font-latin); opacity: .7; }
+/* Logo box: active / hover scale lives here so it stacks with the warp */
+.bstrip-card {
+  display: grid; place-items: center; height: calc(var(--bs-logo) * 1.35);
+  transition: transform .4s cubic-bezier(.2, .7, .1, 1), opacity .4s, filter .4s;
+  opacity: .45; filter: grayscale(1);
+}
+.bstrip-card img { height: var(--bs-logo); width: auto; max-width: 92%; object-fit: contain; pointer-events: none; -webkit-user-drag: none; }
+.bstrip-card .bstrip-word { font-family: var(--font-latin); font-weight: 300; font-size: calc(var(--bs-logo) * .36); color: var(--bs-ink); text-align: center; line-height: 1.1; padding: 0 10px; max-width: 100%; overflow-wrap: anywhere; }
+/* Brand name: hidden, appears only while you point at / touch / focus the logo */
+.bstrip-name {
+  display: block; margin-top: 12px; font-size: 14px; font-weight: 400; text-align: center;
+  color: var(--bs-ink); white-space: nowrap; overflow: hidden; text-overflow: ellipsis;
+  opacity: 0; transform: translateY(-6px); transition: opacity .3s, transform .35s cubic-bezier(.2, .7, .1, 1);
+}
+
+.bstrip-item.is-active .bstrip-card {
+  opacity: 1; filter: drop-shadow(0 10px 14px color-mix(in srgb, var(--ink) 18%, transparent));
+  transform: scale(var(--bs-scale, 1.12));
+}
+.bstrip-item.is-active { z-index: 200 !important; }
+
+/* Pointed at (mouse), touched (finger) or keyboard focus: the logo pops out clearly */
+.bstrip-item.is-pressed .bstrip-card,
+.bstrip-item:focus-visible .bstrip-card {
+  opacity: 1; filter: drop-shadow(0 18px 22px color-mix(in srgb, var(--ink) 30%, transparent));
+  transform: translateY(-8px) scale(var(--bs-pop, 1.4));
+}
+.bstrip-item.is-pressed .bstrip-name,
+.bstrip-item:focus-visible .bstrip-name { opacity: 1; transform: translateY(6px); }
+.bstrip-item.is-pressed, .bstrip-item:focus-visible { z-index: 300 !important; }
+@media (hover: hover) {
+  .bstrip-item:hover .bstrip-card {
+    opacity: 1; filter: drop-shadow(0 18px 22px color-mix(in srgb, var(--ink) 30%, transparent));
+    transform: translateY(-8px) scale(var(--bs-pop, 1.4));
+  }
+  .bstrip-item:hover .bstrip-name { opacity: 1; transform: translateY(6px); }
+  .bstrip-item:hover { z-index: 300 !important; }
+}
+.bstrip-item:focus-visible { outline: none; }
+.bstrip-item:focus-visible .bstrip-card { outline: 2px solid var(--bs-focus); outline-offset: 6px; border-radius: 12px; }
+
+/* Dark mode: flip the logos' lightness but keep their colours (black logos turn white) */
+:root[data-mode="dark"] .bstrip-card img { filter: invert(1) hue-rotate(180deg); }
+/* …except logos that have their own coloured box (Ray-Ban): they stay exactly as designed */
+:root[data-mode="dark"] .bstrip-item.is-badge .bstrip-card img { filter: none; }

@@ -1,0 +1,60 @@
+/* SEEN EYEWEAR brand tokens — the only place colours and fonts are defined for seen-themes/.
+   Values are copied from the live store (index.html): --ink #0b0b0b, --gray #606060, --line #E2E9ED,
+   --sky #5AC8FA, --card #f2f2f2, header grey #F6F8F9, dark background #0e0f10, fonts Jost + IBM Plex Sans Arabic.
+   TODO: replace with the official brand book values if the owner has one (none found in the project). */
+
+:root {
+  /* Brand palette */
+  --brand-ink: #0b0b0b;
+  --brand-gray: #606060;
+  --brand-line: #E2E9ED;
+  --brand-sky: #5AC8FA;
+  --brand-card: #f2f2f2;
+  --brand-header: #F6F8F9;
+  --brand-white: #ffffff;
+  --brand-night: #0e0f10;
+
+  /* Fonts */
+  --font-latin: "Jost", "Helvetica Neue", Arial, sans-serif;
+  --font-arabic: "IBM Plex Sans Arabic", "Jost", Tahoma, sans-serif;
+
+  /* Semantic tokens used by the page (theme "white", light mode = default) */
+  --paper: var(--brand-white);
+  --surface: var(--brand-card);
+  --ink: var(--brand-ink);
+  --muted: var(--brand-gray);
+  --line: var(--brand-line);
+  --accent: var(--brand-ink);
+  --accent-ink: var(--brand-white);
+  --highlight: var(--brand-sky);
+  --header: var(--brand-header);
+  --header-ink: var(--brand-ink);
+  --radius: 20px;
+  --ease: cubic-bezier(.2, .7, .1, 1);
+  color-scheme: light;
+}
+
+/* Theme "sky": brand blue buttons on the header grey */
+:root[data-skin="sky"] {
+  --paper: var(--brand-header);
+  --surface: var(--brand-white);
+  --accent: var(--brand-sky);
+  --accent-ink: var(--brand-ink);
+}
+
+/* Dark mode (only when the visitor turns it on). Header stays grey in both modes, as on the store. */
+:root[data-mode="dark"] {
+  --paper: var(--brand-night);
+  --surface: #1a1c1e;
+  --ink: #f1f1f1;
+  --muted: #9aa1a6;
+  --line: #2b2f33;
+  --accent: #f1f1f1;
+  --accent-ink: var(--brand-night);
+  color-scheme: dark;
+}
+:root[data-mode="dark"][data-skin="sky"] {
+  --surface: #15181b;
+  --accent: var(--brand-sky);
+  --accent-ink: var(--brand-ink);
+}

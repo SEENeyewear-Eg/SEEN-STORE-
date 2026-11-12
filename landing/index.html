@@ -18,8 +18,12 @@
   // Language (saved choice, else the browser's) and mode (light by default) before paint
   (function () {
     var h = document.documentElement, l = null;
-    try { l = localStorage.seenLpLang; if (localStorage.seenLpMode === 'dark') h.setAttribute('data-mode', 'dark'); } catch (e) {}
-    if (!l) l = /^ar/i.test(navigator.language || '') ? 'ar' : 'en';
+    h.removeAttribute('data-mode'); // light theme only
+    try { l = localStorage.seenLpLang; } catch (e) {}
+    var ok = ['ar', 'en', 'de', 'ru', 'es', 'fr'];
+    var q = null; try { q = new URLSearchParams(location.search).get('lang'); } catch (e) {}
+    if (q && ok.indexOf(q) > -1) { l = q; try { localStorage.seenLpLang = q; } catch (e) {} }
+    if (ok.indexOf(l) < 0) l = 'en'; // English by default; the visitor changes it from the language menu
     h.lang = l; h.dir = l === 'ar' ? 'rtl' : 'ltr';
   })();
 </script>
@@ -32,6 +36,8 @@
   {"@type":"Store","name":"SEEN Eyewear — Sheraton Miramar","address":{"@type":"PostalAddress","addressLocality":"El Gouna","addressCountry":"EG"}},
   {"@type":"Store","name":"SEEN Eyewear — El Kawthar","address":{"@type":"PostalAddress","addressLocality":"Hurghada","addressCountry":"EG"}}]}
 </script>
+<script async src="https://www.googletagmanager.com/gtag/js?id=AW-18461690499"></script>
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments);}gtag('js',new Date());gtag('config','AW-18461690499');</script>
 </head>
 <body>
 <div class="cursor" id="cursor" aria-hidden="true"></div>
@@ -42,13 +48,17 @@
     <nav aria-label="Sections">
       <a href="#about" data-t="navAbout">About</a>
       <a href="#services" data-t="navServices">E-shop</a>
+      <a href="#booking" data-t="navBook">Book</a>
       <a href="#branches" data-t="navBranches">Branches</a>
       <a href="#follow" data-t="navFollow">Follow us</a>
     </nav>
-    <button class="ib" id="lang" type="button">ع</button>
-    <button class="ib" id="mode" type="button" aria-pressed="false" data-t-label="mode" aria-label="Light / dark">
-      <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.8"><path d="M21 12.8A9 9 0 1 1 11.2 3a7 7 0 0 0 9.8 9.8z"/></svg>
-    </button>
+    <div class="lang-wrap">
+      <button class="ib lang-btn" id="lang" type="button" aria-haspopup="menu" aria-expanded="false" aria-controls="langMenu">
+        <svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><circle cx="12" cy="12" r="9"/><path d="M3 12h18M12 3c2.6 2.5 4 5.6 4 9s-1.4 6.5-4 9c-2.6-2.5-4-5.6-4-9s1.4-6.5 4-9z"/></svg>
+        <span id="langCode">EN</span>
+      </button>
+      <div class="lang-menu" id="langMenu" role="menu" hidden></div>
+    </div>
   </div>
 </header>
 
@@ -56,6 +66,20 @@
   <!-- HERO -->
   <section class="hero" id="hero">
     <div class="glow" id="glow" aria-hidden="true"></div>
+    <div class="offer" id="offer"></div>
+    <!-- hotel pick-up card (every language except Arabic): takes the place of the photo strip, which moves below the try-on -->
+    <div class="hotel" id="hotel" hidden>
+      <div class="wrap">
+        <div class="hotel-card reveal">
+          <div class="hotel-txt">
+            <h2 id="hotelT"></h2>
+            <ul id="hotelL"></ul>
+          </div>
+          <a class="btn solid" id="hotelBtn" href="#" target="_blank" rel="noopener"><svg viewBox="0 0 32 32" fill="currentColor" stroke="none" aria-hidden="true"><path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.3.6 4.5 1.8 6.5L3 29l6.9-1.8c1.9 1 4.1 1.6 6.1 1.6 7.2 0 13-5.7 13-12.8S23.2 3 16 3zm0 23.4c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4 1.1 1.1-3.9-.3-.4c-1.1-1.7-1.6-3.6-1.6-5.6 0-5.8 4.8-10.5 10.6-10.5S26.6 10 26.6 15.8 21.8 26.4 16 26.4zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg><span id="hotelBtnT"></span></a>
+        </div>
+      </div>
+    </div>
+    <div class="rot" id="rot" aria-hidden="true"></div>
     <div class="wrap hero-grid">
       <div>
         <div class="eyebrow"><span class="pulse" aria-hidden="true"></span><span data-t="eyebrow">The SEEN e-shop · Launching soon</span></div>
@@ -74,8 +98,14 @@
       </div>
       <div class="lens-stage" id="lensStage">
         <div class="ring"></div><div class="ring r2"></div>
+        <div class="dial" id="frameWheel" role="group" aria-label="Frames"></div>
+        <div class="dial" id="faceWheel" role="group" aria-label="Face shapes"></div>
+        <div class="fit-face" id="fitFace" aria-hidden="true"></div>
+        <div class="seg" id="kindSeg" role="radiogroup"></div>
+        <div class="seg" id="genderSeg" role="radiogroup"></div>
+        <div class="fit-name" id="fitName"></div>
+        <p class="fit-note" data-t="fitNote">Pick a frame from the left wheel to try it on.</p>
         <div class="lens" id="lens"><span class="mark"><svg class="logo" viewBox="102.5 92.15 515 78" aria-hidden="true"><path fill="currentColor" d="M134.4,164.23c-13.63,0-23.35-3.4-27.9-6.59l2.21-3.15c4.07,2.85,12.95,5.89,25.69,5.89,15.41,0,26.18-5.64,26.18-13.71,0-3.85-1.92-9.45-18.56-13.61l-11.4-2.85c-14.82-3.76-23.4-7.76-23.4-17.04s10.92-15.02,28.49-15.02c9.46,0,18.6,1.45,26.43,4.19l-1.27,3.63c-7.43-2.6-16.13-3.97-25.16-3.97-14.97,0-24.64,4.38-24.64,11.17,0,6.06,5.17,9.41,20.49,13.3l11.39,2.85c9.22,2.31,21.48,6.61,21.48,17.34s-12.35,17.56-30.03,17.56Z"/><path fill="currentColor" d="M260.06,164.23h-51.59c-1.06,0-1.93-.86-1.93-1.93v-63.53h53.52v3.85h-49.67v26.95h41.2v3.85h-41.2v26.95h49.67v3.85Z"/><path fill="currentColor" d="M305.88,102.63v26.95h43.51v3.85h-43.51v26.95h51.21v3.85h-53.13c-1.06,0-1.93-.86-1.93-1.93v-63.53h55.06v3.85h-51.21Z"/><path fill="currentColor" d="M462.58,164.23c-.5,0-.99-.19-1.35-.56l-59.09-58.36v56.99h-3.85v-61.6c0-.78.47-1.48,1.18-1.78.72-.3,1.54-.14,2.09.41l59.09,58.36v-56.99h3.85v61.6c0,.78-.47,1.48-1.18,1.78-.24.1-.49.15-.74.15Z"/><g class="ck"><path fill="#5AC8FA" d="M518.02,156.15c-.06,0-.12,0-.18,0-1.03-.05-1.99-.51-2.68-1.27l-13.86-15.4c-1.42-1.58-1.29-4.01.29-5.44,1.58-1.42,4.01-1.29,5.44.29l11.25,12.5,37.18-34.32c1.56-1.44,4-1.34,5.44.22,1.44,1.56,1.35,4-.22,5.44l-40.04,36.96c-.71.66-1.65,1.02-2.61,1.02Z"/><path fill="#5AC8FA" d="M568.84,156.15c-.99,0-1.97-.38-2.72-1.13l-15.4-15.4c-1.5-1.5-1.5-3.94,0-5.44,1.5-1.5,3.94-1.5,5.44,0l12.81,12.81,38.09-34.5c1.58-1.43,4.01-1.31,5.44.27,1.43,1.58,1.31,4.01-.27,5.44l-40.81,36.96c-.74.67-1.66,1-2.58,1Z"/></g></svg></span></div>
-        <div class="orbit" id="orbit" aria-hidden="true"></div>
       </div>
     </div>
     <span class="scroll-cue" aria-hidden="true"></span>
@@ -95,6 +125,7 @@
         <div class="stat reveal tilt" style="--d:.26s"><b data-count="3">0</b><span data-t="sBranches">Branches</span></div>
       </div>
     </div>
+    <div class="wrap"><div class="about-feat" id="aboutFeat"></div></div>
   </section>
 
   <!-- SERVICES -->
@@ -106,6 +137,23 @@
         <p class="sub" data-t="pSvc">Here is what you will be able to do on seeneyeweareg.com from launch day.</p>
       </div>
       <div class="svc" id="svc"></div>
+    </div>
+  </section>
+
+  <!-- SHOWROOM (magazine) -->
+  <section class="sec mag" id="showroom">
+    <div class="wrap">
+      <div class="mag-head reveal">
+        <span class="kicker" data-t="kMag">Showroom · Issue 01</span>
+        <h2 data-t="hMag">Inside SEEN</h2>
+        <p class="sub" data-t="pMag">Step into our boutiques.</p>
+      </div>
+      <div class="book-wrap">
+        <button class="bk-btn bk-prev" id="bkPrev" type="button" aria-label="Previous page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M15 5l-7 7 7 7"/></svg></button>
+        <div class="book" id="book" tabindex="0" aria-label="Showroom magazine"></div>
+        <button class="bk-btn bk-next" id="bkNext" type="button" aria-label="Next page"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="M9 5l7 7-7 7"/></svg></button>
+      </div>
+      <div class="bk-count" id="bkCount" aria-live="polite"></div>
     </div>
   </section>
 
@@ -138,6 +186,32 @@
       <p class="sub" data-t="pFollow">New arrivals, offers and the opening day of the online store, first on our pages.</p>
       <div class="social" id="social"></div>
       <div class="contact-line" id="contact"></div>
+    </div>
+  </section>
+
+  <!-- RATE -->
+  <!-- BOOKING -->
+  <section class="sec" id="booking" style="padding-top:0">
+    <div class="wrap">
+      <div class="reveal">
+        <span class="kicker" data-t="kBook">Book a visit</span>
+        <h2 data-t="hBook">Book your visit</h2>
+        <p class="sub" data-t="pBook">Choose a branch and a time, and we will confirm your booking on WhatsApp.</p>
+      </div>
+      <form class="fb bk-form reveal" id="bkForm" novalidate>
+        <label class="fld"><span data-t="bkName">Full name *</span><input name="name" autocomplete="name" required minlength="2" maxlength="80"></label>
+        <label class="fld"><span data-t="bkPhone">WhatsApp number *</span><input name="phone" type="tel" autocomplete="tel" required maxlength="20" dir="ltr" placeholder="+20 1xx xxx xxxx"></label>
+        <label class="fld"><span data-t="bkBranch">Branch *</span><select name="branch" required></select></label>
+        <label class="fld"><span data-t="bkService">Service *</span><select name="service" required></select></label>
+        <div class="bk-row">
+          <label class="fld"><span data-t="bkDate">Preferred date *</span><input name="date" type="date" required dir="ltr"></label>
+          <label class="fld"><span data-t="bkTime">Preferred time *</span><input name="time" type="time" required dir="ltr"></label>
+        </div>
+        <label class="fld"><span data-t="bkNote">Notes</span><textarea name="note" rows="3" maxlength="500"></textarea></label>
+        <p class="fb-note" data-t="bkFoot">Your booking opens in WhatsApp with the details ready. Just press send.</p>
+        <button class="btn solid" type="submit"><span data-t="bkSend">Book on WhatsApp</span></button>
+        <p class="fb-status" id="bkStatus" role="status" aria-live="polite"></p>
+      </form>
     </div>
   </section>
 
@@ -183,7 +257,9 @@
   <span>© <span id="yr"></span> SEEN Eyewear · <span data-t="foot">Hurghada · El Gouna · Egypt</span></span>
 </footer>
 
+<a class="wa-float" id="waFloat" href="#" target="_blank" rel="noopener" data-t-label="waLabel" aria-label="Chat with us on WhatsApp"><svg viewBox="0 0 32 32" aria-hidden="true"><path d="M16 3C8.8 3 3 8.7 3 15.8c0 2.3.6 4.5 1.8 6.5L3 29l6.9-1.8c1.9 1 4.1 1.6 6.1 1.6 7.2 0 13-5.7 13-12.8S23.2 3 16 3zm0 23.4c-1.9 0-3.8-.5-5.4-1.5l-.4-.2-4 1.1 1.1-3.9-.3-.4c-1.1-1.7-1.6-3.6-1.6-5.6 0-5.8 4.8-10.5 10.6-10.5S26.6 10 26.6 15.8 21.8 26.4 16 26.4zm5.8-7.9c-.3-.2-1.9-.9-2.2-1-.3-.1-.5-.2-.7.2-.2.3-.8 1-.9 1.2-.2.2-.3.2-.6.1-.3-.2-1.3-.5-2.4-1.5-.9-.8-1.5-1.8-1.7-2.1-.2-.3 0-.5.1-.6l.4-.5c.2-.2.2-.3.3-.5.1-.2 0-.4 0-.5l-1-2.4c-.3-.6-.5-.5-.7-.5h-.6c-.2 0-.5.1-.8.4-.3.3-1 1-1 2.5s1.1 2.9 1.2 3.1c.1.2 2.1 3.2 5.1 4.5.7.3 1.3.5 1.7.6.7.2 1.4.2 1.9.1.6-.1 1.9-.8 2.2-1.5.3-.7.3-1.4.2-1.5-.1-.2-.3-.3-.6-.4z"/></svg></a>
 <script src="config.js"></script>
+<script src="lang.js"></script>
 <script src="brand-strip.js"></script>
 <script src="landing.js"></script>
 </body>

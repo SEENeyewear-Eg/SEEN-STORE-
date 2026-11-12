@@ -69,3 +69,7 @@
 :root[data-mode="dark"] .bstrip-card img { filter: invert(1) hue-rotate(180deg); }
 /* …except logos that have their own coloured box (Ray-Ban): they stay exactly as designed */
 :root[data-mode="dark"] .bstrip-item.is-badge .bstrip-card img { filter: none; }
+
+/* Logos marked mono in config (one flat colour, e.g. Puma, Chloé): solid black in light mode, solid white in dark mode */
+.bstrip-item.is-mono .bstrip-card img { filter: brightness(0); }
+:root[data-mode="dark"] .bstrip-item.is-mono .bstrip-card img { filter: brightness(0) invert(1); }

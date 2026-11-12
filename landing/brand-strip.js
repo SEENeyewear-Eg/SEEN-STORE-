@@ -14,7 +14,7 @@
     var inner = b.logoUrl
       ? '<img src="' + esc(b.logoUrl) + '" alt="' + esc(b.name) + '" decoding="async" draggable="false" data-fb="1">'
       : '<span class="bstrip-word">' + esc(b.name) + '</span>';
-    return '<button type="button" class="bstrip-item" data-k="' + i + '"' +
+    return '<button type="button" class="bstrip-item' + (b.mono ? ' is-mono' : '') + '" data-k="' + i + '"' +
       (clone ? ' aria-hidden="true" tabindex="-1"' : ' aria-label="' + esc(b.name) + '"') + '>' +
       '<span class="bstrip-no" aria-hidden="true">No. ' + String(i + 1).padStart(2, '0') + '</span>' +
       '<span class="bstrip-card">' + inner + '</span>' +
@@ -52,7 +52,7 @@
       if (img instanceof HTMLImageElement) {
         var src = img.getAttribute('src');
         if (badge[src] == null) badge[src] = isBadge(img);
-        if (badge[src]) img.closest('.bstrip-item').classList.add('is-badge');
+        if (badge[src] && !img.closest('.is-mono')) img.closest('.bstrip-item').classList.add('is-badge');
       }
       measure();
     }, true);

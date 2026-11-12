@@ -10,77 +10,9 @@
   var save = function (k, v) { try { localStorage[k] = v; } catch (e) {} };
 
   /* ---------- Text ---------- */
-  var T = {
-    en: {
-      navAbout: 'About', navServices: 'E-shop', navBranches: 'Branches', navFollow: 'Follow us', mode: 'Light / dark',
-      eyebrow: 'The SEEN e-shop · Launching soon',
-      h1: ['Our online', 'store is', '<em>coming soon.</em>'],
-      lead: 'Authentic sunglasses, optical frames and contact lenses from 40+ international brands. Soon you can browse, try on and order online.',
-      ctaVisit: 'Visit a branch', ctaWa: 'Message us on WhatsApp', ctaFollow: 'Follow us on social media', launch: 'Building the online store',
-      kAbout: 'About <b class="seen-w">SEEN</b>',
-      about: '<b class="seen-w">SEEN</b> is a leading name on the Red Sea coast, <mark>presenting more than 40 international brands, 100% authentic,</mark> across Egypt and the Middle East — 12 years of expertise in optical services, and soon, our online store at your fingertips.',
-      sBrands: 'International brands', sAuth: 'Authentic', sFrames: 'Frames in our collection', sBranches: 'Branches',
-      kSvc: 'What the e-shop brings', hSvc: 'Everything SEEN, online', pSvc: 'Here is what you will be able to do on seeneyeweareg.com from launch day.',
-      soon: 'Soon',
-      svc: [
-        ['bag', 'Shop 40+ brands', 'Ray-Ban, Maui Jim, Gucci, Carrera, Polaroid and more — every frame 100% authentic.'],
-        ['cam', 'Try on with your camera', 'See any frame on your face live, before you decide.'],
-        ['cube', 'See frames in 3D', 'Turn a frame around and look at every angle up close.'],
-        ['truck', 'Delivery across Egypt', 'Order online and get your frames delivered to your door.'],
-        ['store', 'Order online, pick up in store', 'Reserve online and collect from City Center, El Gouna or El Kawthar.'],
-        ['eye', 'Save your prescription', 'Keep your eyesight prescription in your account for optical orders.']
-      ],
-      kBrands: 'Our brands', hBrands: 'The names you love',
-      kLoc: 'Visit us', hLoc: 'Our branches', pLoc: 'Come try any frame in person. Every piece is 100% authentic.',
-      directions: 'Get directions', call: 'Call',
-      kFollow: 'Stay close', hFollow: 'Follow SEEN on social media', pFollow: 'New arrivals, offers and the opening day of the online store, first on our pages.',
-      hBand: 'An experience worth seeing is on its way to you.', pBand: 'Until then, we look forward to welcoming you at our boutiques, where our specialists will help you select your next frame and the contact lenses best suited to you.',
-      foot: 'Hurghada · El Gouna · Egypt',
-      review: 'Rate us on Google', googleTip: 'Google reviews',
-      kRate: 'Your opinion matters', hRate: 'Rate your SEEN experience', pRate: 'Tell us how we did and how we can serve you better.',
-      gTitle: 'Review us on Google', gText: 'A few words from you on Google help others find their perfect frame.',
-      fbTitle: 'Rate the website & suggest an improvement', fbRate: 'Your rating', fbName: 'Full name *', fbEmail: 'Email *', fbPhone: 'Phone number *', fbMsg: 'Your suggestion',
-      fbNote: 'We use your details only to reply to your suggestion.', fbSend: 'Send',
-      star: ['Poor', 'Fair', 'Good', 'Very good', 'Excellent'],
-      eRate: 'Please choose a rating.', eName: 'Please enter your full name.', eEmail: 'Please enter a valid email.', ePhone: 'Please enter a valid phone number.',
-      fbOk: 'Thank you! We received your feedback.', fbWa: 'WhatsApp is opening with your message ready — just press send.', fbOff: 'This form will be activated very soon. Thank you for your patience.', fbErr: 'Something went wrong. Please try again or message us on WhatsApp.'
-    },
-    ar: {
-      navAbout: 'عن SEEN', navServices: 'المتجر الأونلاين', navBranches: 'الفروع', navFollow: 'تابعنا', mode: 'فاتح / داكن',
-      eyebrow: 'متجر SEEN الإلكتروني · قريباً',
-      h1: ['متجرنا', 'الإلكتروني', '<em>قريباً جداً.</em>'],
-      lead: 'نظارات شمسية وطبية وعدسات لاصقة أصلية من أكثر من 40 علامة عالمية. قريباً يمكنكم التصفح والتجربة والطلب عبر متجرنا الإلكتروني.',
-      ctaVisit: 'زور فرع', ctaWa: 'كلّمنا واتساب', ctaFollow: 'تابعنا على منصات التواصل', launch: 'بنجهّز المتجر الأونلاين',
-      kAbout: 'عن <b class="seen-w">SEEN</b>',
-      about: '<b class="seen-w">SEEN</b> علامة رائدة على ساحل البحر الأحمر، <mark>تقدّم لكم أكثر من 40 علامة من البراندات العالمية الأصلية 100%</mark> في مصر والشرق الأوسط — خبرة 12 عام بتقديم خدمات البصريات، وقريباً بين أيديكم المتجر الإلكتروني.',
-      sBrands: 'براند عالمي', sAuth: 'أصلي', sFrames: 'فريم في مجموعتنا', sBranches: 'فروع',
-      kSvc: 'المتجر الأونلاين هيقدّم', hSvc: 'كل SEEN، أونلاين', pSvc: 'ده اللي هتقدر تعمله على seeneyeweareg.com من أول يوم.',
-      soon: 'قريباً',
-      svc: [
-        ['bag', 'تسوّق أكتر من 40 براند', 'Ray-Ban وMaui Jim وGucci وCarrera وPolaroid وغيرهم — كل فريم أصلي 100%.'],
-        ['cam', 'جرّب بالكاميرا', 'شوف أي فريم على وشك لايف قبل ما تقرر.'],
-        ['cube', 'شوف الفريم 3D', 'لِف الفريم وشوفه من كل زاوية عن قرب.'],
-        ['truck', 'توصيل لكل مصر', 'اطلب أونلاين ويوصلك لحد باب البيت.'],
-        ['store', 'اطلب أونلاين واستلم من الفرع', 'احجز أونلاين واستلم من سيتي سنتر أو الجونة أو الكوثر.'],
-        ['eye', 'احفظ مقاس نظرك', 'خلّي مقاس النظر محفوظ في حسابك للطلبات الطبية.']
-      ],
-      kBrands: 'البراندات بتاعتنا', hBrands: 'الأسامي اللي بتحبها',
-      kLoc: 'زورنا', hLoc: 'فروعنا', pLoc: 'تعالى جرّب أي فريم بنفسك. كل قطعة أصلية 100%.',
-      directions: 'الاتجاهات', call: 'اتصل',
-      kFollow: 'خليك قريب', hFollow: 'تابعوا SEEN على منصات التواصل', pFollow: 'الموديلات الجديدة والعروض ويوم افتتاح المتجر الأونلاين، أول حاجة على صفحاتنا.',
-      hBand: 'تجربة تستحق أن تُرى… في طريقها إليكم.', pBand: 'وإلى ذلك الحين، يسعدنا استقبالكم في فروعنا، حيث يرافقكم خبراؤنا في اختيار إطاركم القادم والعدسات اللاصقة الأنسب لكم.',
-      foot: 'الغردقة · الجونة · مصر',
-      review: 'قيّمنا على جوجل', googleTip: 'تقييمات جوجل',
-      kRate: 'رأيكم يهمنا', hRate: 'قيّموا تجربتكم مع SEEN', pRate: 'شاركونا رأيكم، وكيف يمكننا أن نخدمكم بصورة أفضل.',
-      gTitle: 'قيّمونا على جوجل', gText: 'كلماتكم على جوجل تساعد غيركم في العثور على إطارهم المثالي.',
-      fbTitle: 'قيّموا الموقع واقترحوا تحسيناً للخدمة', fbRate: 'تقييمكم', fbName: 'الاسم بالكامل *', fbEmail: 'البريد الإلكتروني *', fbPhone: 'رقم الهاتف *', fbMsg: 'اقتراحكم',
-      fbNote: 'نستخدم بياناتكم فقط للرد على اقتراحكم.', fbSend: 'إرسال',
-      star: ['ضعيف', 'مقبول', 'جيد', 'جيد جداً', 'ممتاز'],
-      eRate: 'برجاء اختيار التقييم.', eName: 'برجاء إدخال الاسم بالكامل.', eEmail: 'برجاء إدخال بريد إلكتروني صحيح.', ePhone: 'برجاء إدخال رقم هاتف صحيح.',
-      fbOk: 'شكراً لكم! تم استلام رأيكم.', fbWa: 'جاري فتح واتساب ورسالتكم جاهزة — اضغطوا إرسال فقط.', fbOff: 'سيتم تفعيل هذا النموذج قريباً جداً. شكراً لتفهمكم.', fbErr: 'حدث خطأ، برجاء المحاولة مرة أخرى أو التواصل معنا عبر واتساب.'
-    }
-  };
-  var L = function () { return root.lang === 'ar' ? 'ar' : 'en'; };
+  var T = window.SEEN_TEXT || { en: {} };
+  var LANGS = window.SEEN_LANGS || [{ code: 'en', name: 'English', short: 'EN' }];
+  var L = function () { return T[root.lang] ? root.lang : 'en'; };
   var t = function (k) { var v = T[L()][k]; return v != null ? v : T.en[k]; };
 
   /* ---------- Icons ---------- */
@@ -170,92 +102,387 @@
     if (C.phone) c.push('<a href="tel:' + esc(C.phone.replace(/[^+0-9]/g, '')) + '" dir="ltr">' + esc(C.phone) + '</a>');
     if (C.email) c.push('<a href="mailto:' + esc(C.email) + '">' + esc(C.email) + '</a>');
     $('contact').innerHTML = c.join(''); $('contact').hidden = !c.length;
-    if (C.whatsapp) { var w = $('ctaWa'); w.hidden = false; w.href = 'https://wa.me/' + encodeURIComponent(C.whatsapp); w.target = '_blank'; w.rel = 'noopener noreferrer'; }
+    var w = $('ctaWa'); w.hidden = false; w.href = '#booking'; w.removeAttribute('target'); w.removeAttribute('rel');
   }
-  function orbit() {
-    var f = (C.frames || []).map(function (x) { return typeof x === 'string' ? { src: x } : x; });
-    $('orbit').innerHTML = f.map(function (x) {
-      return '<span class="fr"><img src="' + esc(x.src) + '" alt="" decoding="async" draggable="false" onerror="this.parentNode.remove()">' +
-        (x.brand ? '<span class="bn">' + esc(x.brand) + '</span>' : '') + '</span>';
-    }).join('');
-  }
-  /* Wheel: turns slowly by itself; drag, flick or the mouse wheel turn it; hovering or tapping a frame enlarges it */
-  function wheel() {
-    var stage = $('lensStage'), cfg = C.wheel || {}, fr = cfg.friction || 2.4;
-    var speed = reduce ? 0 : (cfg.speed == null ? 7 : cfg.speed);
-    var rot = 0, vel = 0, drag = null, hover = null, last = 0, visible = true;
-    function items() { return stage.querySelectorAll('.fr'); }
+  /* ---------- Find your frame: a dial is a half-circle; its centre sits on the edge of the half it shows ---------- */
+  function dial(stage, o) {
+    var rot = 0, vel = 0, drag = null, moved = 0, hovI = -1, last = 0, vis = true, sp = o.spin || 0, fr = o.friction || 2.4;
+    function els() { return stage.querySelectorAll('.dl'); }
     function place() {
-      var it = items(), n = it.length, R = stage.clientWidth * .45;
+      var W = stage.clientWidth, H = stage.clientHeight, cx = W * .5, cy = H / 2, R = H * .42, it = els(), n = it.length;
       for (var i = 0; i < n; i++) {
         var a = (rot + 360 / n * i - 90) * Math.PI / 180;
-        it[i].style.setProperty('--x', (Math.cos(a) * R).toFixed(1) + 'px');
-        it[i].style.setProperty('--y', (Math.sin(a) * R).toFixed(1) + 'px');
+        var px = Math.cos(a) * R;
+        it[i].style.left = (cx + px).toFixed(1) + 'px';
+        if (o.side) {   // fade out towards the line where the two half wheels meet, instead of a hard cut
+          var op = Math.max(0, Math.min(1, (px * o.side - W * .09) / (W * .11)));
+          it[i].style.opacity = op.toFixed(2); it[i].style.pointerEvents = op < .35 ? 'none' : '';
+        }
+        it[i].style.top = (cy + Math.sin(a) * R).toFixed(1) + 'px';
       }
     }
-    function angle(e) {
+    function ang(e) {
       var r = stage.getBoundingClientRect();
-      return Math.atan2(e.clientY - r.top - r.height / 2, e.clientX - r.left - r.width / 2) * 180 / Math.PI;
+      return Math.atan2(e.clientY - (r.top + r.height / 2), e.clientX - (r.left + r.width * .5)) * 180 / Math.PI;
     }
-    function setOn(el) { if (hover === el) return; if (hover) hover.classList.remove('on'); hover = el; if (el) el.classList.add('on'); }
-    stage.addEventListener('pointerdown', function (e) {
-      if (e.button) return;
-      drag = { a: angle(e), t: performance.now(), moved: 0, el: e.target.closest('.fr'), type: e.pointerType };
-      vel = 0; stage.setPointerCapture(e.pointerId);
-    });
-    stage.addEventListener('pointermove', function (e) {
-      if (!drag) { if (e.pointerType === 'mouse') setOn(e.target.closest('.fr')); return; }
-      var a = angle(e), d = a - drag.a; if (d > 180) d -= 360; if (d < -180) d += 360;
+    stage.addEventListener('pointerdown', function (e) { if (e.button) return; drag = { a: ang(e), t: performance.now() }; moved = 0; vel = 0; });
+    window.addEventListener('pointermove', function (e) {
+      if (!drag) return;
+      var a = ang(e), d = a - drag.a; if (d > 180) d -= 360; if (d < -180) d += 360;
       var now = performance.now(), dt = Math.max(1, now - drag.t) / 1000;
-      rot += d; vel = vel * .5 + (d / dt) * .5; drag.a = a; drag.t = now; drag.moved += Math.abs(d);
-      if (drag.moved > 3) { stage.classList.add('dragging'); setOn(null); }
+      rot += d; vel = vel * .5 + (d / dt) * .5; drag.a = a; drag.t = now; moved += Math.abs(d);
+      if (moved > 4) stage.classList.add('dragging');
       place();
     });
-    function end() {
+    var end = function () {
       if (!drag) return;
-      if (drag.moved <= 3 && drag.el) setOn(hover === drag.el && drag.type !== 'mouse' ? null : drag.el); // tap toggles the zoom
-      if (performance.now() - drag.t > 90) vel = 0; // held still before letting go: no flick
+      if (performance.now() - drag.t > 90) vel = 0;
       vel = Math.max(-900, Math.min(900, vel)); drag = null; stage.classList.remove('dragging');
-    }
-    stage.addEventListener('pointerup', end); stage.addEventListener('pointercancel', end);
-    stage.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && !drag) setOn(null); });
+    };
+    window.addEventListener('pointerup', end); window.addEventListener('pointercancel', end);
     stage.addEventListener('wheel', function (e) {
       var d = Math.abs(e.deltaX) > Math.abs(e.deltaY) ? e.deltaX : e.deltaY;
       if (!d) return; e.preventDefault(); vel = Math.max(-900, Math.min(900, vel + d * 1.4));
     }, { passive: false });
-    document.addEventListener('pointerdown', function (e) { if (!stage.contains(e.target)) setOn(null); });
-    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { visible = en[0].isIntersecting; }).observe(stage);
+    stage.addEventListener('click', function (e) {
+      if (moved > 4) { moved = 0; return; }
+      var b = e.target.closest && e.target.closest('.dl'); if (b && o.onPick) o.onPick(+b.dataset.i);
+    });
+    stage.addEventListener('pointerover', function (e) {
+      if (e.pointerType !== 'mouse') return;
+      var b = e.target.closest && e.target.closest('.dl'), i = b ? +b.dataset.i : -1;
+      if (i !== hovI) { hovI = i; if (o.onHover) o.onHover(i); }
+    });
+    stage.addEventListener('pointerleave', function (e) { if (e.pointerType === 'mouse' && hovI !== -1) { hovI = -1; if (o.onHover) o.onHover(-1); } });
+    if ('IntersectionObserver' in window) new IntersectionObserver(function (en) { vis = en[0].isIntersecting; }).observe(stage);
     window.addEventListener('resize', place);
-    place();
     (function loop(ts) {
       var dt = last ? Math.min(.05, (ts - last) / 1000) : 0; last = ts;
-      if (visible && !drag) {
+      if (vis && !drag) {
         vel *= Math.exp(-fr * dt); if (Math.abs(vel) < .5) vel = 0;
-        var step = vel + (hover ? 0 : speed);
+        var step = vel + (hovI >= 0 ? 0 : sp);
         if (step) { rot += step * dt; place(); }
       }
       requestAnimationFrame(loop);
     })(0);
+    return function setItems(items) {
+      stage.innerHTML = items.map(function (x, i) {
+        return '<button type="button" class="dl' + (x.cls ? ' ' + x.cls : '') + '" data-i="' + i + '" aria-label="' + esc(x.label) + '">' + x.html + '<span class="dl-tip" aria-hidden="true">' + esc(x.label) + '</span></button>';
+      }).join('');
+      place();
+    };
   }
+  var FACE_D = [
+    '<ellipse cx="150" cy="190" rx="98" ry="132"/>',
+    '<circle cx="150" cy="190" r="122"/>',
+    '<rect x="54" y="62" width="192" height="256" rx="70"/>',
+    '<path d="M150 326C92 288 56 240 56 172C56 112 102 74 150 110C198 74 244 112 244 172C244 240 208 288 150 326Z"/>',
+    '<rect x="82" y="50" width="136" height="280" rx="68"/>',
+    '<path d="M150 56C200 104 240 146 240 190C240 240 200 288 150 328C100 288 60 240 60 190C60 146 100 104 150 56Z"/>',
+    '<path d="M62 92C100 70 200 70 238 92C256 170 214 280 150 332C86 280 44 170 62 92Z"/>'
+  ];
+  var FACE_KEY = ['oval', 'round', 'square', 'heart', 'oblong', 'diamond', 'triangle'];
+  function faceImg(i) { var g = fitSt.gender === 'w' ? 'w' : 'm'; return '<img class="face-img" src="img/faces/' + g + '-' + FACE_KEY[i] + '.png" alt="" draggable="false" onerror="this.style.visibility=hidden">'; }
+  var headUid = 0;
+  var fitSt = { face: 0, hovF: -1, frame: -1, hov: -1, gender: 'm', kind: 'sun', chosen: false }, setFrames = null, setFaces = null;
+  function fitFrames() {
+    var all = (C.frames || []).map(function (x) { return typeof x === 'string' ? { src: x, brand: '' } : x; });
+    var some = all.filter(function (x) { return !x.kind || x.kind === fitSt.kind; });
+    return some.length ? some : all;
+  }
+  var KIND_TXT = { en: ['Sun', 'Optical'], ar: ['شمسي', 'طبي'], de: ['Sonne', 'Optik'], ru: ['Солнце', 'Оптика'], es: ['Sol', 'Óptica'], fr: ['Soleil', 'Optique'] };
+  // Frame width on the try-on photo (% of photo width) = head width in the photo * real frame mm / real face mm
+  function fitFramePct(f, fc) {
+    var F = C.fit || {}, g = fitSt.gender === 'w' ? 'w' : 'm';
+    var faceMM = ((F.faces || {})[g] || [])[fc] || 150, px = ((F.px || {})[g] || [])[fc] || 83.5;
+    return Math.round(px * (f.mm || faceMM * 0.9) / faceMM * 10) / 10;
+  }
+  function fitRender() {
+    var fr = fitFrames(), fi = fitSt.hov >= 0 ? fitSt.hov : fitSt.frame, f = fr[fi];
+    var fc = fitSt.hovF >= 0 ? fitSt.hovF : fitSt.face;
+    document.getElementById('lensStage').classList.toggle('previewing', !!(fitSt.chosen || fitSt.hov >= 0 || fitSt.hovF >= 0));
+    $('fitFace').innerHTML = faceImg(fc) +
+      (f ? '<img class="fit-frame" src="' + esc(f.src) + '" alt="" style="width:' + fitFramePct(f, fc) + '%" onerror="this.remove()">' : '');
+    var names = t('faceNames') || T.en.faceNames;
+    $('fitName').textContent = names[fc] + (f && f.brand ? ' · ' + f.brand + (f.model ? ' ' + f.model : '') + (f.size ? ' · ' + f.size : '') : '');
+  }
+  function segRender() {
+    var seg = $('genderSeg'), ks = $('kindSeg'), kt = KIND_TXT[L()] || KIND_TXT.en;
+    function btns(list, cur, attr) {
+      return list.map(function (g) {
+        return '<button type="button" role="radio" aria-checked="' + (cur === g[0]) + '" data-' + attr + '="' + g[0] + '">' + esc(g[1]) + '</button>';
+      }).join('');
+    }
+    if (seg) seg.innerHTML = btns([['m', t('genderM') || 'Men'], ['w', t('genderW') || 'Women']], fitSt.gender, 'g');
+    if (ks) ks.innerHTML = btns([['sun', kt[0]], ['opt', kt[1]]], fitSt.kind, 'k');
+  }
+  function fitInit() {
+    var cfg = C.wheel || {};
+    var setF = dial($('frameWheel'), { side: -1, spin: reduce ? 0 : (cfg.speed == null ? 7 : cfg.speed), friction: cfg.friction || 2.4,
+      onHover: function (i) { fitSt.hov = i; fitRender(); },
+      onPick: function (i) { fitSt.frame = i; fitRender(); } });
+    setFrames = function () {
+      setF(fitFrames().map(function (x) { return { label: x.brand || 'frame', html: '<img src="' + esc(x.src) + '" alt="" draggable="false" onerror="this.parentNode.remove()">' }; }));
+    };
+    setFaces = dial($('faceWheel'), { side: 1, spin: reduce ? 0 : (cfg.speed == null ? 7 : cfg.speed), friction: cfg.friction || 2.4,
+      onHover: function (i) { fitSt.hovF = i; fitRender(); },
+      onPick: function (i) { fitSt.face = i; fitSt.chosen = true; fitRender(); } });
+    $('kindSeg').addEventListener('click', function (e) {
+      var k = e.target.closest('[data-k]'); if (!k) return;
+      fitSt.kind = k.dataset.k; fitSt.frame = -1; fitSt.hov = -1; segRender(); setFrames(); fitRender();
+    });
+    $('genderSeg').addEventListener('click', function (e) {
+      var b = e.target.closest('[data-g]'); if (!b) return;
+      fitSt.gender = b.dataset.g; segRender(); fitSetFaces(); fitRender();
+    });
+    fitSetFaces(); setFrames(); fitRender();
+  }
+  function fitSetFaces() {
+    if (!setFaces) return;
+    var names = t('faceNames') || T.en.faceNames;
+    setFaces(names.map(function (n, i) {
+      return { label: n, cls: 'face', html: '<span class="fc">' + faceImg(i) + '</span>' };
+    }));
+    segRender();
+  }
+
+  var FI = {
+    shield: '<path d="M12 3l8 3v6c0 4.5-3.4 8.2-8 9-4.6-.8-8-4.5-8-9V6z"/><path d="M8.5 12l2.5 2.5 4.5-4.5"/>',
+    award: '<circle cx="12" cy="9" r="6"/><path d="M8.5 14L7 21l5-2.5L17 21l-1.5-7"/>',
+    pin: '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>',
+    eye: ICON.eye
+  };
+  var FI_ORDER = ['shield', 'award', 'pin', 'eye'];
+  function aboutFeat() {
+    var f = T[L()].feat || T.en.feat;
+    $('aboutFeat').innerHTML = f.map(function (x, i) {
+      return '<div class="feat-item reveal tilt" style="--d:' + (i * 0.1).toFixed(2) + 's"><span class="fi" aria-hidden="true"><svg viewBox="0 0 24 24">' +
+        FI[FI_ORDER[i]] + '</svg></span><h3>' + esc(x[0]) + '</h3><p>' + esc(x[1]) + '</p></div>';
+    }).join('');
+  }
+  /* Splits text into words (never letters, so Arabic keeps its joins). Each word gets --i for stagger. */
+  function split(node, st) {
+    Array.prototype.slice.call(node.childNodes).forEach(function (c) {
+      if (c.nodeType === 3) {
+        var frag = document.createDocumentFragment();
+        c.nodeValue.split(/(\s+)/).forEach(function (p) {
+          if (!p) return;
+          if (/^\s+$/.test(p)) { frag.appendChild(document.createTextNode(p)); return; }
+          var s = document.createElement('span'); s.className = 'w'; s.style.setProperty('--i', st.n++); s.textContent = p; frag.appendChild(s);
+        });
+        c.parentNode.replaceChild(frag, c);
+      } else if (c.nodeType === 1) split(c, st);
+    });
+  }
+  function wordify() {
+    document.querySelectorAll('.kicker, .sec .wrap h2, .band h2, #about p.big, #aboutFeat h3').forEach(function (el) { split(el, { n: 0 }); });
+  }
+
+  /* ---------- Showroom flip-book ---------- */
+  var bk = { i: 0, n: 0, drag: null };
+  function esc2(s) { return esc(s); }
+  function sheetHtml(i, front, back) { return '<div class="sheet" data-i="' + i + '">' + front + back + '</div>'; }
+  function buildBook() {
+    var Tt = T[L()], caps = Tt.caps || T.en.caps, mb = Tt.mb || T.en.mb;
+    var backs = [mb[0], mb[1], mb[2], mb[3], Tt.q, Tt.pMag, mb[0], mb[1], mb[2]];
+    var photos = ['s2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'];
+    var h2 = sheetHtml(0,
+      '<figure class="face front"><img src="img/showroom/s1.jpg" alt="" decoding="async"><div class="cov-t"><span class="kk">' + esc2(Tt.kMag) + '</span><h3>' + esc2(Tt.hMag) + '</h3></div><span class="vcap">' + esc2(caps[0]) + '</span><span class="fo">01</span></figure>',
+      '<div class="face back bpage"><span class="side">' + esc2(Tt.kMag) + '</span><div class="lines"><span style="--d:0s">' + esc2(Tt.pMag) + '</span></div><blockquote class="qb">' + esc2(Tt.q) + '</blockquote><span class="fo">02</span></div>');
+    photos.forEach(function (p, k) {
+      var no = String(k + 3).padStart(2, '0');
+      h2 += sheetHtml(k + 1,
+        '<figure class="face front"><img src="img/showroom/' + p + '.jpg" alt="" loading="lazy" decoding="async"><span class="vcap">' + esc2(caps[k + 1]) + '</span><span class="fo">' + no + '</span></figure>',
+        '<div class="face back bpage"><span class="side">' + esc2(caps[k + 1]) + '</span><div class="lines"><span>' + esc2(backs[k]) + '</span></div><span class="fo">' + no + '</span></div>');
+    });
+    h2 += sheetHtml(10,
+      '<figure class="face front cov end"><div class="cov-t"><span class="kk">SEEN EYEWEAR</span><h3>' + esc2(Tt.bkEnd || Tt.foot) + '</h3></div></figure>',
+      '<div class="face back bpage"></div>');
+    var book = $('book'); book.innerHTML = h2;
+    bk.n = book.querySelectorAll('.sheet').length;
+    if (bk.i > bk.n) bk.i = bk.n;
+    $('bkPrev').setAttribute('aria-label', Tt.bkPrev || 'Previous page');
+    $('bkNext').setAttribute('aria-label', Tt.bkNext || 'Next page');
+    applyState(bk.i, true);
+  }
+  function applyState(i, instant) {
+    bk.i = Math.max(0, Math.min(bk.n, i));
+    var sheets = $('book').querySelectorAll('.sheet');
+    sheets.forEach(function (s, k) {
+      if (instant) s.style.transition = 'none';
+      s.classList.toggle('flipped', k < bk.i);
+      s.style.zIndex = k < bk.i ? (k + 1) : (bk.n - k);
+      if (instant) { void s.offsetWidth; s.style.transition = ''; }
+    });
+    $('bkCount').textContent = (bk.i) + ' / ' + bk.n;
+    $('bkPrev').disabled = bk.i === 0; $('bkNext').disabled = bk.i >= bk.n;
+    /* Phones: pages sit side by side in a swipe row; bring the current page into view */
+    if (isMobileBook() && !bk.syncing && sheets[bk.i]) {
+      var bkEl = $('book'); bkEl.scrollTo({ left: sheets[bk.i].offsetLeft - bkEl.offsetLeft, behavior: instant || reduce ? 'auto' : 'smooth' }); // sideways only, never moves the page
+    }
+  }
+  function turn(d) { applyState(bk.i + d); }
+  function isMobileBook() { return window.matchMedia('(max-width: 719px)').matches; }
+  function sheetAt(k) { return $('book').querySelectorAll('.sheet')[k]; }
+  function bindBook() {
+    var book = $('book');
+    $('bkPrev').addEventListener('click', function () { turn(-1); });
+    $('bkNext').addEventListener('click', function () { turn(1); });
+    book.addEventListener('keydown', function (e) {
+      if (e.key === 'ArrowRight') { e.preventDefault(); turn(1); }
+      else if (e.key === 'ArrowLeft') { e.preventDefault(); turn(-1); }
+    });
+    /* Phones: when the reader swipes the page row, update the counter to the page now in the middle */
+    var st = 0;
+    book.addEventListener('scroll', function () {
+      if (!isMobileBook()) return;
+      clearTimeout(st);
+      st = setTimeout(function () {
+        var sheets = book.querySelectorAll('.sheet'), c = book.getBoundingClientRect().left + book.clientWidth / 2, best = 0, bd = 1e9;
+        sheets.forEach(function (s, k) { var r = s.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - c); if (d < bd) { bd = d; best = k; } });
+        if (best === bk.i) return;
+        bk.i = best; bk.syncing = true;
+        $('bkCount').textContent = bk.i + ' / ' + bk.n;
+        $('bkPrev').disabled = bk.i === 0; $('bkNext').disabled = bk.i >= bk.n;
+        bk.syncing = false;
+      }, 120);
+    });
+    book.addEventListener('pointerdown', function (e) {
+      if (e.button || isMobileBook()) return;
+      bk.drag = { x0: e.clientX, y0: e.clientY, moved: 0, id: e.pointerId, s: null, dir: 0 };
+      if (window.getSelection) window.getSelection().removeAllRanges();
+    });
+    book.addEventListener('pointermove', function (e) {
+      var d = bk.drag; if (!d || d.id !== e.pointerId) return;
+      var dx = e.clientX - d.x0, dy = e.clientY - d.y0;
+      if (!d.s) {
+        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
+        d.dir = dx < 0 ? 1 : -1;
+        var k = d.dir > 0 ? bk.i : bk.i - 1;
+        if (k < 0 || k >= bk.n) { d.dir = 0; return; }
+        d.s = sheetAt(k); d.k = k; book.setPointerCapture(e.pointerId);
+        d.s.style.transition = 'none'; d.s.style.zIndex = 900; book.style.cursor = 'grabbing';
+      }
+      d.moved = Math.max(d.moved, Math.abs(dx));
+      var W = book.clientWidth / 2, p = Math.max(0, Math.min(1, Math.abs(dx) / W));
+      d.p = p;
+      d.s.style.transform = 'rotateY(' + (d.dir > 0 ? -180 * p : -180 + 180 * p) + 'deg)';
+    });
+    function end(e) {
+      var d = bk.drag; if (!d || d.id !== e.pointerId) return; bk.drag = null; book.style.cursor = '';
+      if (!d.s) {
+        if (d.moved < 6) {
+          var r = book.getBoundingClientRect(), f = (e.clientX - r.left) / r.width;
+          if (f > 0.78) turn(1); else if (f < 0.22) turn(-1);
+        }
+        return;
+      }
+      var commit = d.p > 0.3, next = bk.i + (commit ? d.dir : 0);
+      d.s.style.transition = ''; d.s.style.transform = '';
+      applyState(next);
+    }
+    book.addEventListener('pointerup', end);
+    book.addEventListener('pointercancel', end);
+  }
+
+  /* Offer banner: two frames (1 + 1), headline, live countdown to the end date, button to the booking form */
+  function offerRender() {
+    var el = $('offer'); if (!el) return;
+    var note = t('offerNote') || '';
+    var u = t('offerUnits') || T.en.offerUnits;
+    var G = '<svg viewBox="0 0 120 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="44" height="30" rx="13" fill="rgba(255,255,255,.35)"/><rect x="70" y="10" width="44" height="30" rx="13" fill="rgba(255,255,255,.35)"/><path d="M50 22q10-8 20 0M6 20L1 15M114 20l5-5"/></svg>';
+    el.innerHTML =
+      '<span class="of-art" aria-hidden="true"><span class="of-g of-g1">' + G + '</span><span class="of-g of-g2">' + G + '</span><span class="of-plus">+</span><span class="of-s of-s1"></span><span class="of-s of-s2"></span></span>' +
+      '<span class="of-txt"><span class="of-kick"><i></i>' + esc(t('offerKick')) + '</span>' +
+      '<span class="of-h" role="heading" aria-level="2"><span class="of-l"><span>' + esc(t('offerA')) + '</span></span>' +
+      '<span class="of-l of-l2"><span>' + esc(t('offerB')) + ' <em class="of-free">' + esc(t('offerFree')) + '</em></span></span></span>' +
+      (note ? '<span class="of-note">' + esc(note) + '</span>' : '') + '</span>' +
+      '<span class="of-side"><span class="of-cd">' + [0, 1, 2, 3].map(function (i) {
+        return '<span class="of-u"><b data-u="' + i + '"><span>00</span></b><small>' + esc(u[i]) + '</small></span>';
+      }).join('') + '</span><span class="of-until">' + esc(t('offerUntil')) + '</span>' +
+      '<a class="of-cta" href="#booking"><span>' + esc(t('ctaWa')) + '</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></span>';
+    offerTick(true);
+  }
+  function offerTick(first) {
+    var el = $('offer'); if (!el || !C.offer || !C.offer.end) return;
+    var ms = new Date(C.offer.end + 'T23:59:59') - new Date();
+    if (ms <= 0) { el.hidden = true; return; }
+    var s = Math.floor(ms / 1000), v = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+    el.querySelectorAll('[data-u]').forEach(function (bx, i) {
+      var n = (v[i] < 10 ? '0' : '') + v[i], sp = bx.firstChild;
+      if (sp.textContent === n) return;
+      sp.textContent = n;
+      if (!first && !reduce) { bx.classList.remove('tick'); void bx.offsetWidth; bx.classList.add('tick'); }
+    });
+  }
+  setInterval(function () { offerTick(false); }, 1000);
+  (function offerMotion() {
+    var el = $('offer'); if (!el || !fine || reduce) return;
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      el.style.setProperty('--rx', (-y * 6).toFixed(2) + 'deg'); el.style.setProperty('--ry', (x * 8).toFixed(2) + 'deg');
+      el.style.setProperty('--gx', ((x + .5) * 100).toFixed(1) + '%');
+    });
+    el.addEventListener('pointerleave', function () { el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); });
+  })();
+
+  /* Hotel pick-up: shown in every language except Arabic */
+  var HOTEL_IC = [
+    '<path d="M5 16l1.6-5h10.8L19 16M4 16h16v3H4zM7 19v1.6M17 19v1.6"/>',
+    '<circle cx="12" cy="12" r="8.5"/><path d="M12 7.5V12l3 2"/>',
+    '<path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z"/><circle cx="12" cy="9.5" r="2.5"/>'
+  ];
+  function hotel() {
+    var s = $('hotel'); if (!s) return;
+    var show = L() !== 'ar' && !!C.whatsapp; // every language except Arabic
+    s.hidden = !show; if (!show) return;
+    $('hotelT').textContent = t('hotelT');
+    $('hotelL').innerHTML = t('hotelL').map(function (x, i) {
+      return '<li><span class="hi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + HOTEL_IC[i] + '</svg></span><span>' + esc(x) + '</span></li>';
+    }).join('');
+    $('hotelBtnT').textContent = t('hotelBtn');
+    $('hotelBtn').href = 'https://wa.me/' + encodeURIComponent(C.whatsapp) + '?text=' + encodeURIComponent(t('hotelMsg'));
+  }
+
   function applyText() {
+    offerRender(); hotel();
+    fitSetFaces(); fitRender();
+    bookForm(); waFloatSet();
     document.querySelectorAll('[data-t]').forEach(function (el) { var v = t(el.dataset.t); if (typeof v === 'string') el.textContent = v; });
     document.querySelectorAll('[data-t-html]').forEach(function (el) { el.innerHTML = t(el.dataset.tHtml); });
     document.querySelectorAll('[data-t-label]').forEach(function (el) { el.setAttribute('aria-label', t(el.dataset.tLabel)); });
-    var lb = $('lang'); lb.textContent = L() === 'ar' ? 'EN' : 'ع'; lb.setAttribute('aria-label', L() === 'ar' ? 'English' : 'العربية');
-    hero(); services(); branches(); social(); stars(); observe();
+    var cur = LANGS.filter(function (x) { return x.code === L(); })[0] || LANGS[0];
+    $('langCode').textContent = cur.short; $('lang').setAttribute('aria-label', t('langLabel') + ': ' + cur.name);
+    $('langMenu').innerHTML = LANGS.map(function (x) {
+      return '<button type="button" role="menuitemradio" aria-checked="' + (x.code === cur.code) + '" data-l="' + x.code + '" lang="' + x.code + '"' + (x.dir === 'rtl' ? ' dir="rtl"' : '') + '>' +
+        '<span class="lc">' + esc(x.short) + '</span><span class="ln2">' + esc(x.name) + '</span></button>';
+    }).join('');
+    hero(); services(); branches(); social(); stars(); aboutFeat(); wordify(); observe();
+    buildBook();
   }
 
   /* ---------- Language / mode ---------- */
-  $('lang').addEventListener('click', function () {
-    var ar = L() !== 'ar'; root.lang = ar ? 'ar' : 'en'; root.dir = ar ? 'rtl' : 'ltr'; save('seenLpLang', root.lang); applyText();
+  function setLang(code) {
+    var x = LANGS.filter(function (l) { return l.code === code; })[0]; if (!x) return;
+    root.lang = x.code; root.dir = x.dir === 'rtl' ? 'rtl' : 'ltr'; save('seenLpLang', x.code); applyText();
+  }
+  function menu(open) {
+    var m = $('langMenu'), b = $('lang'); open = open == null ? m.hidden : open;
+    m.hidden = !open; b.setAttribute('aria-expanded', String(open));
+    if (open) { var c = m.querySelector('[aria-checked="true"]') || m.querySelector('button'); if (c) c.focus(); }
+  }
+  $('lang').addEventListener('click', function (e) { e.stopPropagation(); menu(); });
+  $('langMenu').addEventListener('click', function (e) {
+    var b = e.target.closest('[data-l]'); if (!b) return; menu(false); setLang(b.dataset.l); $('lang').focus();
   });
-  function syncMode() { $('mode').setAttribute('aria-pressed', String(root.getAttribute('data-mode') === 'dark')); }
-  $('mode').addEventListener('click', function () {
-    var d = root.getAttribute('data-mode') !== 'dark';
-    if (d) root.setAttribute('data-mode', 'dark'); else root.removeAttribute('data-mode');
-    save('seenLpMode', d ? 'dark' : 'light'); syncMode();
+  $('langMenu').addEventListener('keydown', function (e) {
+    var it = Array.prototype.slice.call(this.querySelectorAll('button')), i = it.indexOf(document.activeElement);
+    if (e.key === 'ArrowDown') { e.preventDefault(); it[(i + 1) % it.length].focus(); }
+    else if (e.key === 'ArrowUp') { e.preventDefault(); it[(i - 1 + it.length) % it.length].focus(); }
+    else if (e.key === 'Escape') { menu(false); $('lang').focus(); }
   });
-
+  document.addEventListener('click', function (e) { if (!$('langMenu').hidden && !e.target.closest('.lang-wrap')) menu(false); });
+  document.addEventListener('keydown', function (e) { if (e.key === 'Escape' && !$('langMenu').hidden) { menu(false); $('lang').focus(); } });
   /* ---------- Header capsule on scroll ---------- */
   var hd = $('hd');
   function onScroll() { hd.classList.toggle('scrolled', window.scrollY > 24); }
@@ -307,6 +534,7 @@
     heroEl.addEventListener('mousemove', function (e) {
       var r = heroEl.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
       $('glow').style.setProperty('--mx', (e.clientX - r.left) + 'px'); $('glow').style.setProperty('--my', (e.clientY - r.top) + 'px');
+      y = e.clientY / window.innerHeight - .5;   // the hero is taller than the screen now: tilt by the mouse's place on screen
       lens.style.setProperty('--lx', (x * 30) + 'px'); lens.style.setProperty('--ly', (y * 30) + 'px');
       lens.style.setProperty('--rx', (-y * 14) + 'deg'); lens.style.setProperty('--ry', (x * 14) + 'deg');
     });
@@ -364,6 +592,7 @@
     if (fbc.send === 'whatsapp' && C.whatsapp) {
       var text = 'SEEN website feedback\nRating: ' + v.rating + '/5\nName: ' + v.name + '\nEmail: ' + v.email + '\nPhone: ' + v.phone + (v.msg ? '\nSuggestion: ' + v.msg : '');
       window.open('https://wa.me/' + encodeURIComponent(C.whatsapp) + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+      waConversion();
       return done('fbWa');
     }
     if (fbc.send === 'endpoint' && fbc.endpoint) {
@@ -374,8 +603,108 @@
     done('fbOff');
   });
 
+  /* ---------- Booking: sends the booking to the shop's WhatsApp ---------- */
+  function bookForm() {
+    var f = $('bkForm'); if (!f) return;
+    var keep = { branch: f.branch.value, service: f.service.value };
+    var ar = L() === 'ar';
+    f.branch.innerHTML = '<option value="">' + esc(t('bkBranchPick')) + '</option>' + (C.branches || []).map(function (b, i) {
+      return '<option value="' + i + '">' + esc(ar ? b.ar : b.en) + ' · ' + esc(ar ? b.cityAr : b.cityEn) + '</option>';
+    }).join('');
+    f.service.innerHTML = '<option value="">' + esc(t('bkServicePick')) + '</option>' + t('bkSvc').map(function (s, i) {
+      return '<option value="' + i + '">' + esc(s) + '</option>';
+    }).join('');
+    f.branch.value = keep.branch; f.service.value = keep.service;
+    var d = new Date(); d.setMinutes(d.getMinutes() - d.getTimezoneOffset());
+    f.date.min = d.toISOString().slice(0, 10);
+  }
+  function waFloatSet() {
+    var w = $('waFloat'); if (!w || !C.whatsapp) return;
+    w.href = 'https://wa.me/' + encodeURIComponent(C.whatsapp) + '?text=' + encodeURIComponent(t('waHello'));
+  }
+  $('bkForm').addEventListener('submit', function (e) {
+    e.preventDefault();
+    var f = e.target, st = $('bkStatus');
+    var v = { name: f.name.value.trim(), phone: f.phone.value.trim(), branch: f.branch.value, service: f.service.value, date: f.date.value, time: f.time.value, note: f.note.value.trim() };
+    var bad = function (field, key) { st.className = 'fb-status err'; st.textContent = t(key); if (field) { field.setAttribute('aria-invalid', 'true'); field.focus(); } return false; };
+    f.querySelectorAll('[aria-invalid]').forEach(function (x) { x.removeAttribute('aria-invalid'); });
+    if (v.name.length < 2) return bad(f.name, 'eBkName');
+    var digits = v.phone.replace(/[^0-9]/g, ''); if (digits.length < 8 || digits.length > 15 || /[^0-9+\s()-]/.test(v.phone)) return bad(f.phone, 'eBkPhone');
+    if (v.branch === '') return bad(f.branch, 'eBkBranch');
+    if (v.service === '') return bad(f.service, 'eBkService');
+    if (!v.date) return bad(f.date, 'eBkDate');
+    if (!v.time) return bad(f.time, 'eBkTime');
+    if (!C.whatsapp) return bad(null, 'eBkPhone');
+    var b = C.branches[+v.branch], svc = T.ar.bkSvc[+v.service];
+    // The shop team reads the booking in Arabic, whatever language the visitor uses
+    var text = 'حجز جديد من موقع SEEN\nالاسم: ' + v.name + '\nالواتساب: ' + v.phone + '\nالفرع: ' + b.ar + ' - ' + b.cityAr +
+      '\nالخدمة: ' + svc + '\nالتاريخ: ' + v.date + '\nالوقت: ' + v.time + (v.note ? '\nملاحظات: ' + v.note : '');
+    window.open('https://wa.me/' + encodeURIComponent(C.whatsapp) + '?text=' + encodeURIComponent(text), '_blank', 'noopener');
+    waConversion();
+    st.className = 'fb-status ok'; st.textContent = t('bkOk');
+    f.reset(); bookForm();
+  });
+
+  /* ---------- Header: full-width photo carousel, changes by itself, swipe or arrows to move ---------- */
+  function rotator() {
+    var box = $('rot'); if (!box) return;
+    var SRCS = ['https://images.unsplash.com/photo-1577803645773-f96470509666?w=2400&q=80&auto=format&fit=crop', 'https://images.unsplash.com/photo-1509695507497-903c140c43b0?w=2400&q=80&auto=format&fit=crop', 'https://images.unsplash.com/photo-1473496169904-658ba7c44d8a?w=2400&q=80&auto=format&fit=crop', 'https://images.pexels.com/photos/731070/pexels-photo-731070.jpeg?auto=compress&cs=tinysrgb&w=1600', 'https://images.pexels.com/photos/34091932/pexels-photo-34091932.jpeg?auto=compress&cs=tinysrgb&w=1600', 'https://images.pexels.com/photos/17626089/pexels-photo-17626089.jpeg?auto=compress&cs=tinysrgb&w=1600', 'https://images.pexels.com/photos/19431255/pexels-photo-19431255.jpeg?auto=compress&cs=tinysrgb&w=1600'], ORDER = SRCS.map(function (_, i) { return i; }), N = SRCS.length, chev = function (d) { return '<svg viewBox="0 0 24 24" width="20" height="20" fill="none" stroke="currentColor" stroke-width="1.6" aria-hidden="true"><path d="' + (d < 0 ? 'M15 6l-6 6 6 6' : 'M9 6l6 6-6 6') + '"/></svg>'; };
+
+    var slides = '', dots = '';
+    for (var k = 0; k < N; k++) {
+      var src = SRCS[k];
+      slides += '<figure class="rot-slide' + (k === 0 ? ' on' : '') + '"><img src="' + src + '" alt="" decoding="async"' + (k > 2 ? ' loading="lazy"' : '') + ' onerror="this.style.display=\'none\'"></figure>';
+      dots += '<button type="button" class="rot-dot' + (k === 0 ? ' on' : '') + '" data-i="' + k + '" aria-label="' + (k + 1) + '/' + N + '"></button>';
+    }
+    box.innerHTML = slides +
+      '<button type="button" class="rot-nav rot-prev" aria-label="Previous">' + chev(-1) + '</button>' +
+      '<button type="button" class="rot-nav rot-next" aria-label="Next">' + chev(1) + '</button>' +
+      '<div class="rot-dots">' + dots + '</div>';
+    var items = box.querySelectorAll('.rot-slide'), dl = box.querySelectorAll('.rot-dot'), n = 0, timer = null, drag = null;
+    function show(i) {
+      items[n].classList.remove('on'); dl[n].classList.remove('on');
+      n = (i + items.length) % items.length;
+      items[n].classList.add('on'); dl[n].classList.add('on');
+    }
+    function start() { if (!reduce && !timer) timer = setInterval(function () { show(n + 1); }, 5000); }
+    function stop() { clearInterval(timer); timer = null; }
+    function again() { stop(); start(); }
+    box.querySelector('.rot-prev').addEventListener('click', function () { show(n - 1); again(); });
+    box.querySelector('.rot-next').addEventListener('click', function () { show(n + 1); again(); });
+    box.querySelector('.rot-dots').addEventListener('click', function (e) {
+      var d = e.target.closest('.rot-dot'); if (d) { show(+d.dataset.i); again(); }
+    });
+    box.addEventListener('pointerdown', function (e) { if (e.target.closest('button')) return; drag = { x: e.clientX }; stop(); });
+    var end = function (e) {
+      if (!drag) return; var dx = e.clientX - drag.x; drag = null;
+      if (Math.abs(dx) > 40) show(dx < 0 ? n + 1 : n - 1);
+      start();
+    };
+    box.addEventListener('pointerup', end);
+    box.addEventListener('pointercancel', function () { drag = null; start(); });
+    box.addEventListener('mouseenter', stop); box.addEventListener('mouseleave', function () { if (!drag) start(); });
+    document.addEventListener('visibilitychange', function () { if (document.hidden) stop(); else start(); });
+    start();
+  }
+
+  /* ---------- Google Ads: conversion when a WhatsApp link is clicked (not on page load) ---------- */
+  function waConversion() {
+    if (typeof window.gtag !== 'function' || !C.ads) return;
+    window.gtag('event', 'conversion', { send_to: C.ads.waLabel ? C.ads.id + '/' + C.ads.waLabel : C.ads.id, value: 1.0, currency: 'EGP' });
+  }
+  document.addEventListener('click', function (e) {
+    var a = e.target.closest && e.target.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"], a[href*="whatsapp://"], #waFloat');
+    if (a) waConversion();
+  });
+
+  /* ---------- Offer line: shown until its end date, then hidden ---------- */
+  if (C.offer && C.offer.end) {
+    var endDay = new Date(C.offer.end + 'T23:59:59');
+    if (new Date() > endDay && $('offer')) $('offer').hidden = true;
+  }
+
   /* ---------- Start ---------- */
   $('yr').textContent = new Date().getFullYear();
-  orbit(); wheel(); applyText(); syncMode(); onScroll();
+  bindBook(); fitInit(); rotator(); applyText(); onScroll();
   if (window.SeenBrandStrip && C.brands) SeenBrandStrip.mount($('brands'), C.brands, C.brandStrip);
 })();

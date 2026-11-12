@@ -437,6 +437,7 @@
     var s = $('hotel'); if (!s) return;
     var show = L() !== 'ar' && !!C.whatsapp; // every language except Arabic
     s.hidden = !show; if (!show) return;
+    $('hotelK').textContent = t('hotelK') || '';
     $('hotelT').textContent = t('hotelT');
     $('hotelL').innerHTML = t('hotelL').map(function (x, i) {
       return '<li><span class="hi" aria-hidden="true"><svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round">' + HOTEL_IC[i] + '</svg></span><span>' + esc(x) + '</span></li>';

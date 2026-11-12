@@ -733,8 +733,9 @@ html[lang="ar"] .of-u small { letter-spacing: 0; font-size: 12px; }
 @property --hk { syntax: '<angle>'; inherits: false; initial-value: 0deg; }
 .hotel-card { position: relative; isolation: isolate; overflow: hidden; border-color: transparent;
   box-shadow: 0 24px 60px -34px color-mix(in srgb, var(--highlight) 70%, transparent), 0 2px 10px -6px rgba(0, 0, 0, .12); }
-.hotel-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 1.5px; z-index: -1; pointer-events: none;
-  background: conic-gradient(from var(--hk), #e2e9ed 0deg, #e2e9ed 200deg, #5AC8FA 262deg, #ffffff 290deg, #d9b97a 316deg, #e2e9ed 360deg);
+.hotel-card::before { content: ""; position: absolute; inset: 0; border-radius: inherit; padding: 3px; z-index: -1; pointer-events: none;
+  background: conic-gradient(from var(--hk), #e9d9a8 0deg, #d4a94a 70deg, #fff3c4 110deg, #e0b45a 150deg, #f6e3ad 190deg, #5AC8FA 250deg, #ffffff 276deg, #f0cf78 300deg, #b98a2e 320deg, #e9d9a8 360deg);
+  filter: drop-shadow(0 0 4px rgba(217, 169, 74, .55));
   -webkit-mask: linear-gradient(#000 0 0) content-box, linear-gradient(#000 0 0); -webkit-mask-composite: xor; mask: linear-gradient(#000 0 0) content-box exclude, linear-gradient(#000 0 0);
   animation: hotelRing 7s linear infinite; }
 .hotel-card::after { content: ""; position: absolute; top: -20%; bottom: -20%; left: 0; width: 34%; z-index: -1; pointer-events: none;
@@ -781,3 +782,7 @@ html[lang="ar"] .of-u small { letter-spacing: 0; font-size: 12px; }
 /* Hover fill of the hero / card / form buttons: light brand blue with dark text (not a dark fill) */
 .ctas .btn::before, .hotel-card .btn::before, form .btn::before, .btn.solid::before { background: #5AC8FA; }
 .ctas .btn:hover, .hotel-card .btn:hover, form .btn:hover, .btn.solid:hover { color: #0b0b0b; border-color: #0b0b0b; }
+
+/* Hotel card: welcome line above the title (makes clear the pick-up service is in Hurghada) */
+.hotel-k { margin: 0 0 10px; font-size: 13px; font-weight: 500; letter-spacing: .14em; text-transform: uppercase; color: #9a7424; }
+.hotel-k:empty { display: none; }

@@ -73,3 +73,18 @@
 /* Logos marked mono in config (one flat colour, e.g. Puma, Chloé): solid black in light mode, solid white in dark mode */
 .bstrip-item.is-mono .bstrip-card img { filter: brightness(0); }
 :root[data-mode="dark"] .bstrip-item.is-mono .bstrip-card img { filter: brightness(0) invert(1); }
+
+/* Spotlight on the centre logo, softened: a gentler brand-blue halo behind it, a lighter floor glow under it, and thin blue hairlines above and below that fade out at the sides */
+.bstrip { isolation: isolate; }
+.bstrip::before {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    radial-gradient(24% 10% at 50% 86%, color-mix(in srgb, var(--highlight) 40%, transparent), transparent 70%),
+    radial-gradient(38% 66% at 50% 50%, color-mix(in srgb, var(--highlight) 26%, transparent), transparent 72%);
+}
+.bstrip::after {
+  content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none;
+  background:
+    linear-gradient(90deg, transparent 10%, color-mix(in srgb, var(--highlight) 80%, transparent) 50%, transparent 90%) top / 100% 1px no-repeat,
+    linear-gradient(90deg, transparent 10%, color-mix(in srgb, var(--highlight) 80%, transparent) 50%, transparent 90%) bottom / 100% 1px no-repeat;
+}

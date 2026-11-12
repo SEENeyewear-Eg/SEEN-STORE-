@@ -283,6 +283,7 @@
   function esc2(s) { return esc(s); }
   function sheetHtml(i, front, back) { return '<div class="sheet" data-i="' + i + '">' + front + back + '</div>'; }
   function buildBook() {
+    var sr = $('showroom'); if (!sr || getComputedStyle(sr).display === 'none') return;   // gallery hidden for now: build nothing, so its photos are never requested
     var Tt = T[L()], caps = Tt.caps || T.en.caps, mb = Tt.mb || T.en.mb;
     var backs = [mb[0], mb[1], mb[2], mb[3], Tt.q, Tt.pMag, mb[0], mb[1], mb[2]];
     var photos = ['s2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'];

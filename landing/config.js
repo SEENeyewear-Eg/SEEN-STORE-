@@ -41,11 +41,11 @@ window.SEEN_LANDING = {
   frames: [
     { src: 'img/frames/sun-1.webp', kind: 'sun', brand: 'Ray-Ban', model: 'RB3025', size: '58-14-135', mm: 141 },
     { src: 'img/frames/sun-2.webp', kind: 'sun', brand: 'Carrera', model: 'CARRERA 376/S', size: '50-21-145', mm: 143.5 },
-    { src: 'img/frames/sun-4.webp', kind: 'sun', brand: 'Ray-Ban', model: 'RB2216', size: '58-18-145', mm: 150 },
+    { src: 'img/frames/sun-4.webp', kind: 'sun', brand: 'Ray-Ban', model: 'RB2216', size: '58-18-145', mm: 144 },
     { src: 'img/frames/sun-3.webp', kind: 'sun', brand: 'Carrera', model: 'CA3083/S', size: '55-16-145', mm: 147 },
     { src: 'img/frames/sun-7.webp', kind: 'sun', brand: 'Ray-Ban', model: 'RB3016', size: '51-21-145', mm: 142 },
     { src: 'img/frames/sun-5.webp', kind: 'sun', brand: 'Carrera', model: 'CARRERA 362/S', size: '55-19-145', mm: 144.5 },
-    { src: 'img/frames/sun-6.webp', kind: 'sun', brand: 'Polaroid', model: 'PLD 2125/S', size: '66-18-125', mm: 153 }, // wrap frame: the 66 lens is measured along the curve, so the flat front is narrower (estimate)
+    { src: 'img/frames/sun-6.webp', kind: 'sun', brand: 'Polaroid', model: 'PLD 2125/S', size: '66-18-125', mm: 145 }, // wrap frame: the 66 lens is measured along the curve, so the flat front is narrower (estimate)
     { src: 'img/frames/opt-1.webp', kind: 'opt', brand: 'Carrera', model: 'CARRERA 352', size: '49-21-145', mm: 140 },
     { src: 'img/frames/opt-2.webp', kind: 'opt', brand: 'Polaroid', model: 'PLD D555', size: '52-18-145', mm: 134.5 },
     { src: 'img/frames/opt-3.webp', kind: 'opt', brand: 'Ray-Ban', model: 'RB5435', size: '54-19-145', mm: 147 },

@@ -984,3 +984,31 @@ html[lang="ar"] .of-u small { letter-spacing: 0; font-size: 12px; }
 @media (prefers-reduced-motion: reduce) { .hero h1 .wd.hook .ol-l { animation: none; opacity: 0; } .hero h1 .wd.hook .ol-gm, .hero h1 .wd.hook .ol-bm { animation: none; transform: none; } .hero h1 .wd.hook { animation: none; } }
 /* Online sits lower, a little further from the logo above it */
 .hero h1 .wd.hook { margin-top: .14em; }
+
+/* Mobile menu: under 820px the links open from a button (three lines) as a panel under the header */
+.hd-r { position: relative; }
+.hd-burger { display: none; }
+@media (max-width: 820px) {
+  .hd-burger { display: inline-grid; place-items: center; width: 44px; height: 44px; }
+  .hd-r nav { display: none; }
+  .hd-r nav.open { display: flex; position: absolute; top: calc(100% + 10px); inset-inline-end: 0; flex-direction: column; gap: 4px; min-width: 200px; padding: 14px 18px; margin: 0; background: var(--paper); border: 1px solid var(--line); border-radius: 18px; box-shadow: 0 18px 40px -18px rgba(11,11,11,.25); z-index: 60; }
+  .hd-r nav.open a { padding: 10px 4px; font-size: 16px; opacity: 1; }
+  .hd-r nav.open a::after { display: none; }
+}
+
+/* Mobile menu, styled: each link is a rounded row; hover and keyboard focus fill it grey with a small arrow, so the active choice is always clear */
+@media (max-width: 820px) {
+  .hd-r nav.open a { display: flex; align-items: center; justify-content: space-between; border-radius: 12px; padding: 12px 14px; color: var(--ink); transition: background-color .3s, color .3s; }
+  .hd-r nav.open a::before { content: "\2192"; font-size: 14px; opacity: 0; transform: translateX(-6px); transition: opacity .3s, transform .3s var(--ease); }
+  .hd-r nav.open a:hover, .hd-r nav.open a:focus-visible { background: var(--surface); outline: none; }
+  .hd-r nav.open a:hover::before, .hd-r nav.open a:focus-visible::before { opacity: 1; transform: none; }
+  .hd-burger { border-radius: 999px; border: 1px solid var(--line); background: var(--paper); }
+  .hd-burger:hover, .hd-burger[aria-expanded="true"] { background: var(--surface); border-color: var(--ink); }
+}
+
+/* Mobile menu, final: the links are pill buttons; on hover or keyboard focus they take a light brand-blue tint (no arrow) */
+@media (max-width: 820px) {
+  .hd-r nav.open a { justify-content: center; border: 1px solid var(--line); border-radius: 999px; padding: 12px 18px; text-align: center; }
+  .hd-r nav.open a::before { content: none; display: none; }
+  .hd-r nav.open a:hover, .hd-r nav.open a:focus-visible { background: rgba(90, 200, 250, .18); border-color: rgba(90, 200, 250, .55); color: var(--ink); }
+}

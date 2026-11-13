@@ -728,3 +728,11 @@
   bindBook(); fitInit(); rotator(); applyText(); onScroll();
   if (window.SeenBrandStrip && C.brands) SeenBrandStrip.mount($('brands'), C.brands, C.brandStrip);
 })();
+
+/* Mobile menu button: opens and closes the section links; closes after a link is chosen */
+(function () {
+  var b = document.getElementById('burger'), n = document.getElementById('hdNav');
+  if (!b || !n) return;
+  b.addEventListener('click', function () { var o = n.classList.toggle('open'); b.setAttribute('aria-expanded', o ? 'true' : 'false'); });
+  n.addEventListener('click', function (e) { if (e.target.closest && e.target.closest('a')) { n.classList.remove('open'); b.setAttribute('aria-expanded', 'false'); } });
+})();

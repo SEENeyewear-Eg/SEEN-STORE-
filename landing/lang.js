@@ -11,8 +11,8 @@ window.SEEN_LANGS = [
 window.SEEN_TEXT = {
   en: {
     navAbout: 'About', navServices: 'E-shop', navBranches: 'Branches', navFollow: 'Follow us', mode: 'Light / dark', langLabel: 'Language',
-    eyebrow: 'The SEEN e-shop · Launching soon',
-    h1: ['Our online', 'store is', '<em>coming soon.</em>'],
+    eyebrow: '<b class="ob">SEEN Online</b> · Launching soon',
+    h1: ['LOGO', 'Online', '<em>is Coming Soon.</em>'],
     lead: 'Authentic sunglasses, optical frames and contact lenses from 40+ international brands. Soon you can browse, try on and order online.',
     ctaVisit: 'Visit a branch', ctaWa: "Book now", ctaFollow: 'Follow us on social media', launch: 'Building the online store',
     kAbout: 'About <b class="seen-w">SEEN</b>',
@@ -56,7 +56,7 @@ window.SEEN_TEXT = {
 
   ar: {
     navAbout: 'عن SEEN', navServices: 'المتجر الإلكتروني', navBranches: 'الفروع', navFollow: 'تابعونا', mode: 'فاتح / داكن', langLabel: 'اللغة',
-    eyebrow: 'متجر SEEN الإلكتروني · قريباً',
+    eyebrow: 'متجر <b class="ob">SEEN Online</b> · قريباً',
     h1: ['متجرنا', 'الإلكتروني', '<em>قريباً جداً.</em>'],
     lead: 'نظارات شمسية وطبية وعدسات لاصقة أصلية من أكثر من 40 علامة عالمية. قريباً يمكنكم التصفح والتجربة والطلب عبر متجرنا الإلكتروني.',
     ctaVisit: 'زوروا أحد فروعنا', ctaWa: "احجز الآن", ctaFollow: 'تابعونا على منصات التواصل', launch: 'جارٍ إعداد المتجر الإلكتروني',

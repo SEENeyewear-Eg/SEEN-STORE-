@@ -26,15 +26,30 @@ export async function syncShoof(bindings) {
   }
   // Prices come from their own endpoint (current product prices). Pulled one call at a time: Shoof limits to 7 requests per 10 seconds.
   // If the prices endpoint is not available, the sync still saves products and stores (prices stay empty).
+  // Try the price routes one after another and record each answer, so we can see which one Shoof accepts.
+  const company = env('SHOOF_COMPANY_ID');
+  const variants = [
+    ['/masterdata/products/prices', company ? { company_id: company } : {}],
+    ['/masterdata/products/prices', {}],
+    ['/masterdata/prices', company ? { company_id: company } : {}],
+    ['/masterdata/product-prices', company ? { company_id: company } : {}],
+  ];
   let prices = [], pricesError = null;
-  try {
-    prices = await shoofAll('/masterdata/products/prices');
-  } catch (e) {
-    pricesError = e.message;
+  const priceAttempts = [];
+  for (const [path, params] of variants) {
+    try {
+      const rows = await shoofAll(path, params);
+      priceAttempts.push({ path, params: Object.keys(params), ok: true, rows: rows.length });
+      if (rows.length && !prices.length) prices = rows;
+      if (prices.length) break;
+    } catch (e) {
+      priceAttempts.push({ path, params: Object.keys(params), ok: false, error: e.message });
+      pricesError = e.message;
+    }
   }
   const snap = { at: new Date().toISOString(), products, stores, stock, prices };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));
-  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError, prices: prices.length, pricesError };
+  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError, prices: prices.length, pricesError, priceAttempts };
 }
 
 export async function onRequest({ request, env: bindings }) {

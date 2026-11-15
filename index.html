@@ -175,11 +175,11 @@ const ico=(n,x='')=>'<svg class="i" viewBox="0 0 24 24" '+x+'>'+IC[n]+'</svg>';
 const paint=r=>r.querySelectorAll('[data-i]').forEach(e=>{e.outerHTML=ico(e.dataset.i)});paint(document);
 const SH={wrap:'<path d="M10 28Q50 18 90 26L86 54Q60 70 24 56Z"/>',shield:'<path d="M10 22Q58 14 100 22V54Q56 72 14 50Z"/>',round:'<circle cx="48" cy="42" r="28"/>',way:'<path d="M14 20H84L80 52Q78 66 62 66H36Q22 66 20 52Z"/>',avi:'<path d="M14 22H86Q88 62 54 68Q18 70 14 22Z"/>',cat:'<path d="M12 24Q50 14 88 22L84 52Q80 66 56 66Q26 66 18 50Z"/>',club:'<path d="M12 22H88L84 40Q82 62 56 64Q28 64 18 44Z"/>',rect:'<rect x="14" y="24" width="72" height="40" rx="9"/>'};
 const gl=(s,f,l,w)=>'<svg viewBox="0 0 200 84" fill="none"><g fill="'+l+'" fill-opacity=".82" stroke="'+f+'" stroke-width="'+(w||4)+'" stroke-linejoin="round">'+SH[s]+'<g transform="translate(200 0) scale(-1 1)">'+SH[s]+'</g></g><path d="M86 34Q100 26 114 34M14 28L3 24M186 28L197 24" stroke="'+f+'" stroke-width="4" stroke-linecap="round"/></svg>';
-const P=[];
+const P=(function(){try{var x=new XMLHttpRequest();x.open('GET','/api/catalog',false);x.send();return x.status===200?JSON.parse(x.responseText):[]}catch(e){return []}})();
 const BR=[];const CAT=[];
 const SW=[['#2b2b2b','#4a4a4a'],['#6b4a2f','#5b3a22'],['#9aa0a6','#2f6fa8'],['#c9a45c','#37513d']],SS=['rect','way','avi','round','cat','club','wrap'];
 CAT.forEach(r=>{let h=0;for(const ch of r[2])h=(h*31+ch.charCodeAt(0))%997;P.push({id:0,b:BR[r[0]],n:r[2],c:'',s:SS[h%7],p:r[3],z:r[4],t:[r[1]?'Optical':'Sunglasses','In stock'],k:r[5].map((c,j)=>[SW[j%4][0],SW[j%4][1],c[0],'',c[1]])})});
-const IDS=[];P.forEach((p,i)=>p.id=IDS[i]);
+const IDS=[];
 // Brands taken off the site (hidden everywhere: home, shop, search)
 const HIDE=new Set(['CETIZEN','ROMA','ROSSINI','VEDETTE','VEGA','XPOLO']);for(let i=P.length-1;i>=0;i--)if(HIDE.has(P[i].b))P.splice(i,1);
 // 3D try-on model per product: exact matches first, otherwise the closest generic shape, tinted with the product's frame color
@@ -385,8 +385,8 @@ function pdp(i){pi=i;const p=P[i],k=p.k[st[i]],ph=bims(p,k).slice(0,4);if(ph.len
 $('pdp').addEventListener('click',e=>{const t=e.target.closest('[data-a]');if(!t)return;const a=t.dataset.a;
 if(a=='gv'){gv=+t.dataset.j;pdp(pi)}else if(a=='sw'){st[pi]=+t.dataset.j;pdp(pi)}else if(a=='w'){wish.has(pi)?wish.delete(pi):wish.add(pi);wishSave();pdp(pi);rb()}else if(a=='add'){addBag(pi)}else if(a=='try')tryOn(P[pi],st[pi]);
 else if(a=='acc'){const b=t.nextElementSibling;b.hidden=!b.hidden;t.lastElementChild.outerHTML=ico(b.hidden?'plus':'minus')}else if(a=='store')$('stores').hidden=!$('stores').hidden});
-const PSLUG={},PBRAND={},SEO_CAT_R={Sunglasses:'sunglasses',Optical:'optical'};P.forEach((p,i)=>PSLUG[SEO_SLUG[p.id]]=i);Object.keys(SEO_BRAND).forEach(b=>PBRAND[SEO_BRAND[b]]=b);
-const productPath=p=>'/product/'+SEO_SLUG[p.id];
+const PSLUG={},PBRAND={},SEO_CAT_R={Sunglasses:'sunglasses',Optical:'optical'};P.forEach((p,i)=>PSLUG[SEO_SLUG[p.id]||p.id]=i);Object.keys(SEO_BRAND).forEach(b=>PBRAND[SEO_BRAND[b]]=b);
+const productPath=p=>'/product/'+(SEO_SLUG[p.id]||p.id);
 function cartView(){const p=location.pathname.replace(/\/+$/,'');return p=='/cart'?'#cart':p=='/checkout'?'#checkout':location.hash}
 function go(u){if(u!==location.pathname+location.search+location.hash)history.pushState(null,'',u);route()}
 function rep(u){history.replaceState(null,'',u);route()}

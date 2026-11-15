@@ -18,6 +18,23 @@ const FIELDS = {
   qty: ['QTY', 'qty', 'ON_HAND', 'on_hand', 'QUANTITY', 'quantity'],
 };
 
+// Product list in the shape the storefront page uses (the same fields as the old static P list).
+const SW = [['#2b2b2b', '#4a4a4a'], ['#6b4a2f', '#5b3a22'], ['#9aa0a6', '#2f6fa8'], ['#c9a45c', '#37513d']];
+const SHAPES = ['rect', 'way', 'avi', 'round', 'cat', 'club', 'wrap'];
+export function appProducts(snap) {
+  const map = catalogFromSnapshot(snap);
+  let id = 1;
+  return [...map.values()].map(p => {
+    let h = 0;
+    for (const ch of p.n) h = (h * 31 + ch.charCodeAt(0)) % 997;
+    return {
+      id: id++, b: p.b, n: p.n, c: '', s: SHAPES[h % 7], p: p.p, z: p.z,
+      t: [p.t[0], p.k.some(k => k[4] === '' || k[4] > 0) ? 'In stock' : 'Out of stock'],
+      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4]]),
+    };
+  });
+}
+
 // Returns Map keyed by "brand|model" in the same shape the checkout uses: {b, n, p, z, t, k:[[hex,hex,code,lens,stock]]}.
 export function catalogFromSnapshot(snap) {
   const products = new Map();

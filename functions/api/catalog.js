@@ -22,6 +22,19 @@ export async function onRequestGet({ request, env: bindings }) {
     }
     return json(facets);
   }
+  // Brands as the stock (balance) list writes them: per type_name, each brand with its number of stock rows and total quantity.
+  // No prices. Used to build the store's brand list from the balance only.
+  if (new URL(request.url).searchParams.get('stockbrands') === '1') {
+    const out = {};
+    for (const s of snap && Array.isArray(snap.stock) ? snap.stock : []) {
+      const t = s.type_name || '(none)', b = String(s.brand || '(none)').trim();
+      const g = out[t] || (out[t] = {});
+      const e = g[b] || (g[b] = { rows: 0, qty: 0 });
+      e.rows++;
+      e.qty += Number(s.stock) || 0;
+    }
+    return json({ fields: snap && snap.stock && snap.stock[0] ? Object.keys(snap.stock[0]) : [], types: out });
+  }
   // Diagnostics (no prices, no secrets): what the snapshot holds and the first raw product's field names.
   if (new URL(request.url).searchParams.get('debug') === '1') {
     const first = snap && Array.isArray(snap.products) && snap.products[0];

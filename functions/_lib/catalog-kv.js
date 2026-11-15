@@ -97,8 +97,9 @@ export function catalogFromSnapshot(snap) {
   // Current price per product id, from the prices endpoint.
   const priceById = new Map();
   for (const pr of Array.isArray(snap.prices) ? snap.prices : []) {
-    const id = String(pick(pr, ['PRODUCT_ID', 'product_id', 'ITEM_ID', 'item_id', 'ID', 'id']));
-    const v = Number(pick(pr, ['PRICE', 'price', 'RETAIL_PRICE', 'retail_price', 'SELL_PRICE', 'sell_price'])) || 0;
+    const id = String(pick(pr, ['product_id', 'PRODUCT_ID', 'item_id', 'ITEM_ID', 'id', 'ID']));
+    // Shoof's price rows: store_price (per store) and company_price (company level). The store price wins when set.
+    const v = Number(pick(pr, ['store_price', 'company_price', 'PRICE', 'price', 'RETAIL_PRICE', 'retail_price'])) || 0;
     if (id && v) priceById.set(id, v);
   }
 

@@ -29,7 +29,8 @@ export async function shoofGet(path, params = {}) {
   const headers = { Authorization: await authHeader(), Accept: 'application/json' };
   if (env('SHOOF_APP_TOKEN')) headers['X-App-Authorization'] = env('SHOOF_APP_TOKEN');
   const r = await fetch(u, { headers });
-  if (!r.ok) throw new Error('Shoof ' + path + ' answered ' + r.status);
+  // Keep Shoof's own error text (first 200 chars) so a 403 says which service or user is missing.
+  if (!r.ok) throw new Error('Shoof ' + path + ' answered ' + r.status + ' ' + (await r.text().catch(() => '')).slice(0, 200));
   return r.json();
 }
 

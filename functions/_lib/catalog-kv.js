@@ -61,6 +61,14 @@ export function catalogFromSnapshot(snap) {
   const products = new Map();
   if (!snap || !Array.isArray(snap.products)) return products;
 
+  // Current price per product id, from the prices endpoint.
+  const priceById = new Map();
+  for (const pr of Array.isArray(snap.prices) ? snap.prices : []) {
+    const id = String(pick(pr, ['PRODUCT_ID', 'product_id', 'ITEM_ID', 'item_id', 'ID', 'id']));
+    const v = Number(pick(pr, ['PRICE', 'price', 'RETAIL_PRICE', 'retail_price', 'SELL_PRICE', 'sell_price'])) || 0;
+    if (id && v) priceById.set(id, v);
+  }
+
   // Stock per item and colour, summed over stores.
   const stock = new Map();
   for (const s of Array.isArray(snap.stock) ? snap.stock : []) {
@@ -76,9 +84,9 @@ export function catalogFromSnapshot(snap) {
     const colour = (attr(r, ['Main Color', 'MainColor', 'Color']) || nm.colour).trim();
     const key = b + '|' + n;
     // Price comes from the sales price. A product without a price is not sold, so it is left out.
-    const price = Number(attr(r, ['Price', 'Sales Price', 'Unit Price', 'Retail Price'])) || 0;
-    if (!price) continue;
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
+    const price = priceById.get(itemId) || Number(attr(r, ['Price', 'Sales Price', 'Unit Price', 'Retail Price'])) || 0;
+    if (!price) continue;
     const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
     if (!products.has(key)) {
       products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [] });

@@ -83,7 +83,8 @@ export function appProducts(snap) {
     for (const ch of p.n) h = (h * 31 + ch.charCodeAt(0)) % 997;
     return {
       id: id++, b: p.b, n: p.n, c: '', s: SHAPE_KEY(p.shape) || SHAPES[h % 7], p: p.p, z: p.z,
-      t: [p.t[0], p.k.some(k => k[4] === '' || k[4] > 0) ? 'In stock' : 'Out of stock'],
+      // Stock status only when the stock data really came from Shoof: unknown stock shows no status (not "In stock").
+      t: [p.t[0], p.k.every(k => k[4] === '') ? '' : (p.k.some(k => k[4] > 0) ? 'In stock' : 'Out of stock')],
       k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2])]),
     };
   });
@@ -103,6 +104,15 @@ export function catalogFromSnapshot(snap) {
     if (id && v) priceById.set(id, v);
   }
 
+  // Price per model (brand|model), taken from the price row's product name, so every colour of a model gets its price.
+  const priceByModel = new Map();
+  for (const pr of Array.isArray(snap.prices) ? snap.prices : []) {
+    const v = Number(pick(pr, ['store_price', 'company_price', 'PRICE', 'price', 'RETAIL_PRICE', 'retail_price'])) || 0;
+    const model = fromName(pr.product_name || pr.name).model;
+    const key = String(pr.brand || '').trim().toUpperCase() + '|' + model.toUpperCase();
+    if (v && model && !priceByModel.has(key)) priceByModel.set(key, v);
+  }
+
   // Stock per item and colour, summed over stores.
   const stock = new Map();
   for (const s of Array.isArray(snap.stock) ? snap.stock : []) {
@@ -119,7 +129,7 @@ export function catalogFromSnapshot(snap) {
     const key = b + '|' + n;
     // Price comes from the sales price. A product without a price is not sold, so it is left out.
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
-    const price = priceById.get(itemId) || priceAttr(r) || 0;
+    const price = priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
     const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
     if (!products.has(key)) {
       products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [], shape: attr(r, ['SHAPE']) });

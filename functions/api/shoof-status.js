@@ -36,9 +36,19 @@ export async function syncShoof(bindings) {
   ];
   let prices = [], pricesError = null;
   const priceAttempts = [];
+  const pause = ms => new Promise(r => setTimeout(r, ms));
   for (const [path, params] of variants) {
+    // Shoof allows 7 requests per 10 seconds per IP: wait before each price call, and retry once on 429.
+    await pause(2500);
     try {
-      const rows = await shoofAll(path, params);
+      let rows;
+      try {
+        rows = await shoofAll(path, params);
+      } catch (e) {
+        if (!String(e.message).includes('429')) throw e;
+        await pause(5000);
+        rows = await shoofAll(path, params);
+      }
       priceAttempts.push({ path, params: Object.keys(params), ok: true, rows: rows.length });
       if (rows.length && !prices.length) prices = rows;
       if (prices.length) break;

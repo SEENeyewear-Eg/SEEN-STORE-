@@ -11,7 +11,7 @@ export async function syncShoof(bindings) {
   if (!shoofReady()) return { ok: false, error: 'Shoof keys are not set yet' };
   if (!bindings.SHOOF) return { ok: false, error: 'KV binding SHOOF is not set' };
   const [products, stores] = await Promise.all([
-    shoofAll('/masterdata/products', { is_active: 'Y' }),
+    shoofAll('/masterdata/products'),
     shoofAll('/masterdata/stores'),
   ]);
   // Stock is optional for now: it needs company_id (SHOOF_COMPANY_ID). Products and stores are saved either way.

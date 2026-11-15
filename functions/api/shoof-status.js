@@ -24,7 +24,9 @@ export async function syncShoof(bindings) {
       stockError = e.message;
     }
   }
-  const snap = { at: new Date().toISOString(), products, stores, stock };
+  // Prices come from their own endpoint (current product prices). Pulled one call at a time: Shoof limits to 7 requests per 10 seconds.
+  const prices = await shoofAll('/masterdata/products/prices');
+  const snap = { at: new Date().toISOString(), products, stores, stock, prices };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));
   return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError };
 }

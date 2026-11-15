@@ -113,11 +113,16 @@ export function catalogFromSnapshot(snap) {
     if (v && model && !priceByModel.has(key)) priceByModel.set(key, v);
   }
 
-  // Stock per item and colour, summed over stores.
-  const stock = new Map();
+  // Shoof /inventory/stock rows are one per item and store: {item_id, store_id, stock, retail, ...}.
+  // They carry both the quantity and the retail price (the same data as the Company Stock screen).
+  // Stock is summed over all stores; the retail price is the highest one seen for the item.
+  const stock = new Map(), retailById = new Map();
   for (const s of Array.isArray(snap.stock) ? snap.stock : []) {
-    const key = String(pick(s, FIELDS.itemId)) + '|' + String(pick(s, FIELDS.colour));
-    stock.set(key, (stock.get(key) || 0) + (Number(pick(s, FIELDS.qty)) || 0));
+    const id = String(pick(s, ['item_id', 'ITEM_ID', 'product_id', 'id']));
+    if (!id) continue;
+    stock.set(id, (stock.get(id) || 0) + (Number(pick(s, ['stock', 'STOCK', 'qty', 'on_hand'])) || 0));
+    const rp = Number(pick(s, ['retail', 'RETAIL', 'retail_price'])) || 0;
+    if (rp > (retailById.get(id) || 0)) retailById.set(id, rp);
   }
 
   for (const r of snap.products) {
@@ -127,14 +132,16 @@ export function catalogFromSnapshot(snap) {
     if (!b || !n) continue;
     const colour = (attr(r, ['Main Color', 'MainColor', 'Color']) || nm.colour).trim();
     const key = b + '|' + n;
-    // Price comes from the sales price. A product without a price is not sold, so it is left out.
+    // The product id in masterdata is the item_id in the stock rows. Price: retail from stock first, then the prices endpoint.
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
-    const price = priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
-    const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
+    const price = retailById.get(itemId) || priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
+    const left = stock.has(itemId) ? stock.get(itemId) : '';
     if (!products.has(key)) {
       products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [], shape: attr(r, ['SHAPE']) });
     }
     const p = products.get(key);
+    // A model takes the first price found among its colours.
+    if (!p.p && price) p.p = price;
     if (colour && !p.k.some(k => k[2] === colour)) p.k.push(['', '', colour, '', left]);
   }
   return products;

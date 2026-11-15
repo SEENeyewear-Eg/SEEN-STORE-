@@ -15,11 +15,14 @@ export async function syncShoof(bindings) {
     shoofAll('/masterdata/stores'),
   ]);
   // Stock is optional for now: it needs company_id (SHOOF_COMPANY_ID). Products and stores are saved either way.
+  // Stock is off until SHOOF_COMPANY_ID is set: the stock API refuses calls without it.
   let stock = [], stockError = null;
-  try {
-    stock = await shoofAll('/inventory/stock', env('SHOOF_COMPANY_ID') ? { company_id: env('SHOOF_COMPANY_ID') } : {});
-  } catch (e) {
-    stockError = e.message;
+  if (env('SHOOF_COMPANY_ID')) {
+    try {
+      stock = await shoofAll('/inventory/stock', { company_id: env('SHOOF_COMPANY_ID') });
+    } catch (e) {
+      stockError = e.message;
+    }
   }
   const snap = { at: new Date().toISOString(), products, stores, stock };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));

@@ -2,6 +2,8 @@
 // The catalogue is read from index.html so prices are never taken from the browser, and Paymob
 // callbacks are verified with HMAC-SHA512 (Web Crypto, no Node modules needed).
 
+import { catalogFromSnapshot } from './catalog-kv.js';
+
 let ENV = {};
 export const setEnv = e => { ENV = e || {}; };
 export const env = k => String(ENV[k] ?? '').trim();
@@ -23,12 +25,24 @@ export function parseCatalog(raw) {
 }
 
 let CATALOG = null;
-// Reads index.html from the site's own assets (bound as ASSETS on Pages), cached per worker instance.
+// Source of truth: the Shoof snapshot in KV (binding SHOOF). If there is no snapshot yet, falls back to the
+// product list in index.html (empty after the test data was removed, so checkout rejects items until a sync runs).
 export async function catalog(request, bindings) {
   if (CATALOG) return CATALOG;
-  const url = new URL('/index.html', request.url);
-  const res = bindings && bindings.ASSETS ? await bindings.ASSETS.fetch(url) : await fetch(url);
-  CATALOG = parseCatalog(await res.text());
+  if (bindings && bindings.SHOOF) {
+    const snap = await bindings.SHOOF.get('catalog', 'json').catch(() => null);
+    if (snap) {
+      CATALOG = catalogFromSnapshot(snap);
+      return CATALOG;
+    }
+  }
+  try {
+    const url = new URL('/index.html', request.url);
+    const res = bindings && bindings.ASSETS ? await bindings.ASSETS.fetch(url) : await fetch(url);
+    CATALOG = parseCatalog(await res.text());
+  } catch (e) {
+    CATALOG = new Map();
+  }
   return CATALOG;
 }
 

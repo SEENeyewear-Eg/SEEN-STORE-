@@ -62,6 +62,17 @@ const baseColour = v => {
   return first ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : '';
 };
 
+// Product type from Shoof: type_name first (e.g. "Sunglasses", "Optical Frames", "Clear CL", "Service"),
+// then the name ending (…-SUN-ORG / …-OPT-ORG). Sun and optical frames map to the storefront's two shop types;
+// anything else keeps Shoof's own type name.
+const typeOf = r => {
+  const t = String(r.type_name || '').trim();
+  const u = t.toUpperCase(), nm = String(r.name || '').toUpperCase();
+  if (u.includes('SUN') || (!t && /-SUN(-|$)/.test(nm))) return 'Sunglasses';
+  if (u.includes('OPT') || u.includes('FRAME') || u.includes('EYEGLASS') || (!t && /-OPT(-|$)/.test(nm))) return 'Optical';
+  return t || 'Sunglasses';
+};
+
 // Shoof SHAPE values -> the shape keys the storefront filters use (rect, round, cat, avi, wrap, club, way).
 const SHAPE_KEY = v => {
   const s = String(v || '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -137,7 +148,7 @@ export function catalogFromSnapshot(snap) {
     const price = retailById.get(itemId) || priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
     const left = stock.has(itemId) ? stock.get(itemId) : '';
     if (!products.has(key)) {
-      products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [], shape: attr(r, ['SHAPE']) });
+      products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: [typeOf(r)], k: [], shape: attr(r, ['SHAPE']) });
     }
     const p = products.get(key);
     // A model takes the first price found among its colours.

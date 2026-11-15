@@ -56,6 +56,19 @@ const FIELDS = {
 // Product list in the shape the storefront page uses (the same fields as the old static P list).
 const SW = [['#2b2b2b', '#4a4a4a'], ['#6b4a2f', '#5b3a22'], ['#9aa0a6', '#2f6fa8'], ['#c9a45c', '#37513d']];
 const SHAPES = ['rect', 'way', 'avi', 'round', 'cat', 'club', 'wrap'];
+// Shoof SHAPE values -> the shape keys the storefront filters use (rect, round, cat, avi, wrap, club, way).
+const SHAPE_KEY = v => {
+  const s = String(v || '').toUpperCase().replace(/\s+/g, ' ').trim();
+  if (s.includes('CAT')) return 'cat';
+  if (s.includes('ROUND') || s.includes('OVAL') || s.includes('PANTHO')) return 'round';
+  if (s.includes('NAVIGATOR') || s.includes('AVIATOR')) return 'avi';
+  if (s.includes('WRAP')) return 'wrap';
+  if (s.includes('CLUB')) return 'club';
+  if (s.includes('GEOMETRIC')) return 'way';
+  if (s.includes('RECTANG') || s.includes('SQUARE')) return 'rect';
+  return 'rect';
+};
+
 export function appProducts(snap) {
   const map = catalogFromSnapshot(snap);
   let id = 1;
@@ -63,7 +76,7 @@ export function appProducts(snap) {
     let h = 0;
     for (const ch of p.n) h = (h * 31 + ch.charCodeAt(0)) % 997;
     return {
-      id: id++, b: p.b, n: p.n, c: '', s: SHAPES[h % 7], p: p.p, z: p.z,
+      id: id++, b: p.b, n: p.n, c: '', s: SHAPE_KEY(p.shape) || SHAPES[h % 7], p: p.p, z: p.z,
       t: [p.t[0], p.k.some(k => k[4] === '' || k[4] > 0) ? 'In stock' : 'Out of stock'],
       k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4]]),
     };
@@ -102,7 +115,7 @@ export function catalogFromSnapshot(snap) {
     const price = priceById.get(itemId) || priceAttr(r) || 0;
     const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
     if (!products.has(key)) {
-      products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [] });
+      products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [], shape: attr(r, ['SHAPE']) });
     }
     const p = products.get(key);
     if (colour && !p.k.some(k => k[2] === colour)) p.k.push(['', '', colour, '', left]);

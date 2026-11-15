@@ -86,7 +86,6 @@ export function catalogFromSnapshot(snap) {
     // Price comes from the sales price. A product without a price is not sold, so it is left out.
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
     const price = priceById.get(itemId) || Number(attr(r, ['Price', 'Sales Price', 'Unit Price', 'Retail Price'])) || 0;
-    if (!price) continue;
     const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
     if (!products.has(key)) {
       products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [] });

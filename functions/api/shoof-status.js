@@ -25,10 +25,16 @@ export async function syncShoof(bindings) {
     }
   }
   // Prices come from their own endpoint (current product prices). Pulled one call at a time: Shoof limits to 7 requests per 10 seconds.
-  const prices = await shoofAll('/masterdata/products/prices');
+  // If the prices endpoint is not available, the sync still saves products and stores (prices stay empty).
+  let prices = [], pricesError = null;
+  try {
+    prices = await shoofAll('/masterdata/products/prices');
+  } catch (e) {
+    pricesError = e.message;
+  }
   const snap = { at: new Date().toISOString(), products, stores, stock, prices };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));
-  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError };
+  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError, prices: prices.length, pricesError };
 }
 
 export async function onRequest({ request, env: bindings }) {

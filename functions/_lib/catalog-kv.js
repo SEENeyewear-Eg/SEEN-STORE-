@@ -20,6 +20,18 @@ const attr = (row, names) => {
   return '';
 };
 
+// Any attribute whose name or canon contains "price" and holds a number (e.g. "Price", "Sales Price", "PRICE").
+const priceAttr = row => {
+  const list = Array.isArray(row.attributes) ? row.attributes : [];
+  for (const e of list) {
+    if (!e) continue;
+    const label = norm(e.att_canon) + ' ' + norm(e.att_name) + ' ' + norm(e.att_name_en);
+    const v = Number(String(e.att_val ?? '').replace(/,/g, ''));
+    if (label.includes('price') && v > 0) return v;
+  }
+  return 0;
+};
+
 // Splits a Shoof name like "S6637-C1-55-16-139-SUN-ORG" into model, colour code and size.
 const fromName = name => {
   const parts = String(name || '').split('-');
@@ -87,7 +99,7 @@ export function catalogFromSnapshot(snap) {
     const key = b + '|' + n;
     // Price comes from the sales price. A product without a price is not sold, so it is left out.
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
-    const price = priceById.get(itemId) || Number(attr(r, ['Price', 'Sales Price', 'Unit Price', 'Retail Price'])) || 0;
+    const price = priceById.get(itemId) || priceAttr(r) || 0;
     const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
     if (!products.has(key)) {
       products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [] });

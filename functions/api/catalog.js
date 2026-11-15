@@ -11,6 +11,9 @@ export async function onRequestGet({ request, env: bindings }) {
   if (new URL(request.url).searchParams.get('facets') === '1') {
     const facets = {};
     for (const p of snap && Array.isArray(snap.products) ? snap.products : []) {
+      // Product type (type_name) counted too, to check how products split into sunglasses, optical and others.
+      const ty = facets.TYPE_NAME || (facets.TYPE_NAME = {});
+      ty[p.type_name || '(none)'] = (ty[p.type_name || '(none)'] || 0) + 1;
       for (const a of Array.isArray(p.attributes) ? p.attributes : []) {
         if (!a || !a.att_canon || a.att_val == null || a.att_val === '') continue;
         const f = facets[a.att_canon] || (facets[a.att_canon] = {});

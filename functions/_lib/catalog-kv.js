@@ -145,7 +145,9 @@ export function catalogFromSnapshot(snap) {
     const key = b + '|' + n;
     // The product id in masterdata is the item_id in the stock rows. Price: retail from stock first, then the prices endpoint.
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
-    const price = retailById.get(itemId) || priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
+    const raw = retailById.get(itemId) || priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
+    // Prices are rounded up to a whole pound (22,355.4 -> 22,356). The site and checkout both use this rounded price.
+    const price = raw ? Math.ceil(raw - 1e-9) : 0;
     const left = stock.has(itemId) ? stock.get(itemId) : '';
     if (!products.has(key)) {
       products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: [typeOf(r)], k: [], shape: attr(r, ['SHAPE']) });

@@ -10,14 +10,20 @@ const fields = rows => (rows && rows[0] ? Object.keys(rows[0]) : []);
 export async function syncShoof(bindings) {
   if (!shoofReady()) return { ok: false, error: 'Shoof keys are not set yet' };
   if (!bindings.SHOOF) return { ok: false, error: 'KV binding SHOOF is not set' };
-  const [products, stores, stock] = await Promise.all([
+  const [products, stores] = await Promise.all([
     shoofAll('/masterdata/products', { is_active: 'Y' }),
     shoofAll('/masterdata/stores'),
-    shoofAll('/inventory/stock')
   ]);
+  // Stock is optional for now: it needs company_id (SHOOF_COMPANY_ID). Products and stores are saved either way.
+  let stock = [], stockError = null;
+  try {
+    stock = await shoofAll('/inventory/stock', env('SHOOF_COMPANY_ID') ? { company_id: env('SHOOF_COMPANY_ID') } : {});
+  } catch (e) {
+    stockError = e.message;
+  }
   const snap = { at: new Date().toISOString(), products, stores, stock };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));
-  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length };
+  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError };
 }
 
 export async function onRequest({ request, env: bindings }) {

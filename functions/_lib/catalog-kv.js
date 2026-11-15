@@ -6,6 +6,27 @@ const pick = (row, names) => {
   return '';
 };
 
+// Shoof keeps brand, size, colour and price inside row.attributes (keys seen in the Shoof grid: Brand, Size_C, Main Color…).
+// Keys are matched without case, so "Brand" / "BRAND" / "brand" all work.
+const attr = (row, names) => {
+  const a = row.attributes && typeof row.attributes === 'object' ? row.attributes : {};
+  const keys = Object.keys(a);
+  for (const want of names) {
+    const k = keys.find(x => x.toLowerCase().replace(/[\s_-]/g, '') === want.toLowerCase().replace(/[\s_-]/g, ''));
+    if (k && a[k] != null && a[k] !== '') return String(a[k]);
+  }
+  return '';
+};
+
+// Splits a Shoof name like "S6637-C1-55-16-139-SUN-ORG" into model, colour code and size.
+const fromName = name => {
+  const parts = String(name || '').split('-');
+  const model = parts[0] || '';
+  const colour = parts[1] || '';
+  const size = parts.length >= 5 ? parts.slice(2, 5).join('-') : '';
+  return { model, colour, size };
+};
+
 const FIELDS = {
   brand: ['BRAND', 'brand', 'brand_name', 'BRAND_NAME'],
   model: ['MODEL', 'model', 'model_code', 'MODEL_CODE'],
@@ -48,16 +69,19 @@ export function catalogFromSnapshot(snap) {
   }
 
   for (const r of snap.products) {
-    const b = String(pick(r, FIELDS.brand)).trim();
-    const n = String(pick(r, FIELDS.model)).trim();
+    const nm = fromName(r.name);
+    const b = attr(r, ['Brand']).trim();
+    const n = (attr(r, ['Model']) || nm.model).trim();
     if (!b || !n) continue;
-    const colour = String(pick(r, FIELDS.colour)).trim();
+    const colour = (attr(r, ['Main Color', 'MainColor', 'Color']) || nm.colour).trim();
     const key = b + '|' + n;
-    const price = Number(pick(r, FIELDS.price)) || 0;
-    const itemId = String(pick(r, FIELDS.itemId));
+    // Price comes from the sales price. A product without a price is not sold, so it is left out.
+    const price = Number(attr(r, ['Price', 'Sales Price', 'Unit Price', 'Retail Price'])) || 0;
+    if (!price) continue;
+    const itemId = String(r.id ?? pick(r, FIELDS.itemId));
     const left = stock.has(itemId + '|' + colour) ? stock.get(itemId + '|' + colour) : '';
     if (!products.has(key)) {
-      products.set(key, { b, n, p: price, z: String(pick(r, FIELDS.size)), t: ['Sunglasses'], k: [] });
+      products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: ['Sunglasses'], k: [] });
     }
     const p = products.get(key);
     if (colour && !p.k.some(k => k[2] === colour)) p.k.push(['', '', colour, '', left]);

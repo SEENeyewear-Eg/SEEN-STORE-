@@ -56,6 +56,12 @@ const FIELDS = {
 // Product list in the shape the storefront page uses (the same fields as the old static P list).
 const SW = [['#2b2b2b', '#4a4a4a'], ['#6b4a2f', '#5b3a22'], ['#9aa0a6', '#2f6fa8'], ['#c9a45c', '#37513d']];
 const SHAPES = ['rect', 'way', 'avi', 'round', 'cat', 'club', 'wrap'];
+// Base colour name from a Shoof MAIN COLOR, e.g. "MATTE BLACK - RED MIRROR" -> "Black", "HAVANA-HAVANA-TRANSPARENT" -> "Havana".
+const baseColour = v => {
+  const first = String(v || '').split(/\s-\s|-/)[0].replace(/\b(MATTE|SATIN|SHINY|TRANSPARENT|CLEAR)\b/gi, ' ').trim().split(/\s+/)[0] || '';
+  return first ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : '';
+};
+
 // Shoof SHAPE values -> the shape keys the storefront filters use (rect, round, cat, avi, wrap, club, way).
 const SHAPE_KEY = v => {
   const s = String(v || '').toUpperCase().replace(/\s+/g, ' ').trim();
@@ -78,7 +84,7 @@ export function appProducts(snap) {
     return {
       id: id++, b: p.b, n: p.n, c: '', s: SHAPE_KEY(p.shape) || SHAPES[h % 7], p: p.p, z: p.z,
       t: [p.t[0], p.k.some(k => k[4] === '' || k[4] > 0) ? 'In stock' : 'Out of stock'],
-      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4]]),
+      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2])]),
     };
   });
 }

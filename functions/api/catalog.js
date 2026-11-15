@@ -16,6 +16,7 @@ export async function onRequestGet({ request, env: bindings }) {
       mappedProducts: list.length,
       firstProductKeys: first ? Object.keys(first) : null,
       firstAttributeKeys: first && first.attributes ? Object.keys(first.attributes) : null,
+      attributeSample: first && first.attributes ? Object.values(first.attributes).slice(0, 2) : null,
     });
   }
   return new Response(JSON.stringify(list), {

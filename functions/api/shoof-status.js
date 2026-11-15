@@ -10,16 +10,17 @@ const fields = rows => (rows && rows[0] ? Object.keys(rows[0]) : []);
 export async function syncShoof(bindings) {
   if (!shoofReady()) return { ok: false, error: 'Shoof keys are not set yet' };
   if (!bindings.SHOOF) return { ok: false, error: 'KV binding SHOOF is not set' };
-  const [products, stores] = await Promise.all([
-    shoofAll('/masterdata/products'),
-    shoofAll('/masterdata/stores'),
-  ]);
+  // Without a date, Shoof returns only products created in the last month. created_from far back = the whole catalogue.
+  // One call at a time (not in parallel) to stay under Shoof's 7 requests per 10 seconds.
+  const products = await shoofAll('/masterdata/products', { created_from: '2000-01-01' });
+  const stores = await shoofAll('/masterdata/stores');
   // Stock is optional for now: it needs company_id (SHOOF_COMPANY_ID). Products and stores are saved either way.
   // Stock is off until SHOOF_COMPANY_ID is set: the stock API refuses calls without it.
   let stock = [], stockError = null;
   if (env('SHOOF_COMPANY_ID')) {
     try {
-      stock = await shoofAll('/inventory/stock', { company_id: env('SHOOF_COMPANY_ID') });
+      // modified_from far back switches off Shoof's default date window, so every stock row comes back.
+      stock = await shoofAll('/inventory/stock', { company_id: env('SHOOF_COMPANY_ID'), modified_from: '2000-01-01' });
     } catch (e) {
       stockError = e.message;
     }
@@ -28,11 +29,9 @@ export async function syncShoof(bindings) {
   // If the prices endpoint is not available, the sync still saves products and stores (prices stay empty).
   // Try the price routes one after another and record each answer, so we can see which one Shoof accepts.
   const company = env('SHOOF_COMPANY_ID');
+  // Only the documented route (the guessed ones all answered 404). It answers 404 until Shoof publishes it.
   const variants = [
-    ['/masterdata/products/prices', company ? { company_id: company } : {}],
     ['/masterdata/products/prices', {}],
-    ['/masterdata/prices', company ? { company_id: company } : {}],
-    ['/masterdata/product-prices', company ? { company_id: company } : {}],
   ];
   let prices = [], pricesError = null;
   const priceAttempts = [];

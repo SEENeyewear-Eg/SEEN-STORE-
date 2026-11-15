@@ -33,15 +33,28 @@ export async function shoofGet(path, params = {}) {
   return r.json();
 }
 
-// ORDS collections answer {items, hasMore, limit, offset}; follow the pages up to `max` rows.
+// Shoof lists answer {count, limit, offset, items} (no hasMore), so keep paging while a page comes back full.
+// Shoof allows 7 requests per 10 seconds per IP: wait 1.6 s between pages and retry once after a 429.
+const pause = ms => new Promise(r => setTimeout(r, ms));
 export async function shoofAll(path, params = {}, max = 20000) {
   const rows = [];
+  const limit = 500;
   let offset = 0;
   for (;;) {
-    const d = await shoofGet(path, { ...params, limit: 500, offset });
+    let d;
+    try {
+      d = await shoofGet(path, { ...params, limit, offset });
+    } catch (e) {
+      if (!String(e.message).includes('429')) throw e;
+      await pause(11000);
+      d = await shoofGet(path, { ...params, limit, offset });
+    }
     const items = Array.isArray(d.items) ? d.items : Array.isArray(d) ? d : [];
     rows.push(...items);
-    if (!d.hasMore || !items.length || rows.length >= max) return rows;
+    // "count" may be the page size rather than the total, so a full page is the signal that more rows exist.
+    const more = d.hasMore === true || items.length >= limit;
+    if (!more || !items.length || rows.length >= max) return rows;
     offset += items.length;
+    await pause(1600);
   }
 }

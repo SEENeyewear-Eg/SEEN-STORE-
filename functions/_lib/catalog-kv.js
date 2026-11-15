@@ -8,12 +8,14 @@ const pick = (row, names) => {
 
 // Shoof keeps brand, size, colour and price inside row.attributes (keys seen in the Shoof grid: Brand, Size_C, Main Color…).
 // Keys are matched without case, so "Brand" / "BRAND" / "brand" all work.
+// Shoof attributes are a list of { att_val, att_name, att_name_en, att_canon } (att_canon is e.g. BRAND, COLOR).
+const norm = s => String(s || '').toLowerCase().replace(/[\s_-]/g, '');
 const attr = (row, names) => {
-  const a = row.attributes && typeof row.attributes === 'object' ? row.attributes : {};
-  const keys = Object.keys(a);
+  const list = Array.isArray(row.attributes) ? row.attributes : [];
   for (const want of names) {
-    const k = keys.find(x => x.toLowerCase().replace(/[\s_-]/g, '') === want.toLowerCase().replace(/[\s_-]/g, ''));
-    if (k && a[k] != null && a[k] !== '') return String(a[k]);
+    const w = norm(want);
+    const hit = list.find(e => e && (norm(e.att_canon) === w || norm(e.att_name) === w || norm(e.att_name_en) === w));
+    if (hit && hit.att_val != null && hit.att_val !== '') return String(hit.att_val);
   }
   return '';
 };

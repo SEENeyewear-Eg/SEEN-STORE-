@@ -3,6 +3,7 @@
 import { setEnv, env, jsonEnv, json, catalog, priceOrder } from '../_lib/store.js';
 import { shoofReady } from '../_lib/shoof.js';
 import { liveStock } from '../_lib/live-stock.js';
+import { ordersReady, saveOrder } from '../_lib/orders.js';
 
 const PAYMOB = 'https://accept.paymob.com';
 const BRANCHES = ['City Center Mall — Hurghada', 'El Gouna — Sheraton Miramar', 'El Kawthar — Hurghada'];
@@ -34,7 +35,7 @@ export async function onRequestPost({ request, env: bindings }) {
   if (o.errors.length) return json({ error: o.errors[0] }, 400);
 
   const methods = jsonEnv('PAYMOB_INTEGRATIONS', {})[body.pay];
-  if (!env('PAYMOB_SECRET_KEY') || !env('PAYMOB_PUBLIC_KEY') || !methods || !methods.length)
+  if (!env('PAYMOB_SECRET_KEY') || !env('PAYMOB_PUBLIC_KEY') || !methods || !methods.length || !ordersReady(bindings))
     return json({ error: 'Online payment is not connected yet. Please try again later.' }, 503);
 
   const site = (env('SITE_URL') || new URL(request.url).origin).replace(/\/$/, '');
@@ -65,5 +66,18 @@ export async function onRequestPost({ request, env: bindings }) {
     console.error('Paymob intention failed', r.status, JSON.stringify(d).slice(0, 500));
     return json({ error: 'Could not start the payment. Please try again.' }, 502);
   }
+  // Keep the order in the site before the shopper goes to pay. The Paymob callback finds it by its number and marks it paid.
+  // The Shoof item ids go with each line, so the sales team can make the invoice in Shoof for exactly that item.
+  await saveOrder(bindings, {
+    no, status: 'pending', created: new Date().toISOString(),
+    customer: { name, phone, email },
+    delivery: body.delivery === 'home' ? 'home' : 'pickup',
+    branch: body.delivery === 'home' ? '' : (BRANCHES[+body.branch] || BRANCHES[0]),
+    address: body.delivery === 'home' ? { gov: String(body.gov), city: String(body.city).slice(0, 60), addr: String(body.addr).slice(0, 200) } : null,
+    lang: String(body.lang || 'en').slice(0, 5),
+    pay: body.pay, promo: o.discount ? String(body.promo).toUpperCase() : '',
+    items: o.items.map(i => ({ brand: i.b, model: i.n, colour: i.col, qty: i.q, price: i.p, shoofIds: i.ids || [] })),
+    sub: o.sub, discount: o.discount, fee: o.fee, total: o.total, paymobIntention: d.id || '',
+  });
   return json({ order: no, total: o.total, url: PAYMOB + '/unifiedcheckout/?publicKey=' + encodeURIComponent(env('PAYMOB_PUBLIC_KEY')) + '&clientSecret=' + encodeURIComponent(d.client_secret) });
 }

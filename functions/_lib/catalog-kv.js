@@ -67,10 +67,20 @@ const baseColour = v => {
 // SUN-ORG or OPT-ORG (the original lists), e.g. "AM0445S-001-51-SUN-ORG". Everything else (other sunglasses/optical
 // items, lenses, cases, services…) is dropped at sync, so it is never stored, served or linked to the site.
 // To show another type later, allow it here and run the sync again.
+// Brands hidden from the whole site (no official logo, not international brands), decided 2026-11-16.
+// Their items are dropped like copies: never stored at sync, never served, never sold.
+const HIDDEN_BRANDS = new Set(['CETIZEN', 'ROSSINI', 'VEGA', 'XPOLO', 'ROMA', 'VEDETTE', 'RETRO', 'TANGO']);
+const rowBrand = row => {
+  if (row && row.brand) return String(row.brand);
+  const list = row && Array.isArray(row.attributes) ? row.attributes : [];
+  const hit = list.find(e => e && String(e.att_canon || e.att_name || '').toUpperCase() === 'BRAND');
+  return hit ? String(hit.att_val || '') : '';
+};
 export function isAllowedItem(row) {
   const name = String((row && (row.name || row.product_name)) || '').toUpperCase().trim();
   const type = String((row && row.type_name) || '').toUpperCase().trim();
   if (type && type !== 'SUNGLASSES' && type !== 'OPTICAL FRAMES') return false;
+  if (HIDDEN_BRANDS.has(rowBrand(row).toUpperCase().trim())) return false;
   return /-(SUN|OPT)-ORG$/.test(name);
 }
 // The list ending is never shown to customers: removes "-SUN-ORG" / "-OPT-ORG" (and a bare "SUN-ORG") from any code.

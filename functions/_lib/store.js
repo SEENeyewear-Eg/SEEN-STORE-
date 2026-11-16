@@ -55,7 +55,10 @@ export function priceOrder(body, cat) {
     const q = Math.max(1, Math.min(10, parseInt(x.q, 10) || 1));
     if (!p || !k) { errors.push('Item not found: ' + x.b + ' ' + x.n + ' ' + x.col); return null; }
     if (!p.p) { errors.push('Price not available for ' + p.n + ' yet'); return null; }
-    if (k[4] && q > k[4]) errors.push('Only ' + k[4] + ' left of ' + p.n + ' ' + k[2]);
+    // Stock from Shoof: no stock row ('') or 0 = not available; n = at most n.
+    const left = Number(k[4]) || 0;
+    if (left <= 0) errors.push(p.n + ' ' + k[2] + ' is out of stock');
+    else if (q > left) errors.push('Only ' + left + ' left of ' + p.n + ' ' + k[2]);
     return { b: p.b, n: p.n, col: k[2], q, p: p.p, rx: p.t && p.t[0] === 'Optical' };
   }).filter(Boolean);
   if (!items.length) errors.push('Your bag is empty');

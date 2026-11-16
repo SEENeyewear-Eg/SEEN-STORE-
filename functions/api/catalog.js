@@ -1,11 +1,19 @@
 // GET /api/catalog — the product list for the storefront, built from the Shoof snapshot in KV (binding SHOOF).
 // Returns [] when there is no snapshot yet, so the page simply shows no products until a sync runs.
 import { setEnv, json } from '../_lib/store.js';
-import { appProducts } from '../_lib/catalog-kv.js';
+import { appProducts, isAllowedItem } from '../_lib/catalog-kv.js';
 
 export async function onRequestGet({ request, env: bindings }) {
   setEnv(bindings);
-  const snap = bindings.SHOOF ? await bindings.SHOOF.get('catalog', 'json').catch(() => null) : null;
+  const raw = bindings.SHOOF ? await bindings.SHOOF.get('catalog', 'json').catch(() => null) : null;
+  // Copies (sunglasses/optical not ending SUN-ORG / OPT-ORG) are removed here too, so no endpoint ever shows them,
+  // even from a snapshot saved before the sync started dropping them.
+  const snap = raw && {
+    ...raw,
+    products: (raw.products || []).filter(isAllowedItem),
+    stock: (raw.stock || []).filter(isAllowedItem),
+    prices: (raw.prices || []).filter(isAllowedItem),
+  };
   const list = snap ? appProducts(snap) : [];
   // Filter values taken from the real Shoof data: every distinct value of each attribute, with how many products have it.
   if (new URL(request.url).searchParams.get('facets') === '1') {
@@ -25,8 +33,7 @@ export async function onRequestGet({ request, env: bindings }) {
   // Brands as the stock (balance) list writes them: per type_name, each brand with its number of stock rows and total quantity.
   // No prices. Used to build the store's brand list from the balance only.
   if (new URL(request.url).searchParams.get('stockbrands') === '1') {
-    // Also grouped by the list the item belongs to, read from the end of its name: "...-SUN-ORG" = sunglasses original,
-    // "...-OPT-ORG" = optical original (copies end differently). bySuffix shows every ending found, so the real list names can be checked.
+    // Also grouped by the end of the item name (SUN-ORG, OPT-ORG, or other types' endings). Copies are already removed above.
     const out = {}, bySuffix = {};
     for (const s of snap && Array.isArray(snap.stock) ? snap.stock : []) {
       const t = s.type_name || '(none)', b = String(s.brand || '(none)').trim();

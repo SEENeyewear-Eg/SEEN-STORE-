@@ -33,11 +33,12 @@ const priceAttr = row => {
 };
 
 // Splits a Shoof name like "S6637-C1-55-16-139-SUN-ORG" into model, colour code and size.
+// The list ending (-SUN-ORG / -OPT-ORG) is cut first, so it never becomes part of the size or colour.
 const fromName = name => {
-  const parts = String(name || '').split('-');
+  const parts = String(name || '').replace(/-(SUN|OPT)-ORG$/i, '').split('-');
   const model = parts[0] || '';
   const colour = parts[1] || '';
-  const size = parts.length >= 5 ? parts.slice(2, 5).join('-') : '';
+  const size = parts.length >= 3 ? parts.slice(2, 5).join('-') : '';
   return { model, colour, size };
 };
 
@@ -61,6 +62,19 @@ const baseColour = v => {
   const first = String(v || '').split(/\s-\s|-/)[0].replace(/\b(MATTE|SATIN|SHINY|TRANSPARENT|CLEAR)\b/gi, ' ').trim().split(/\s+/)[0] || '';
   return first ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : '';
 };
+
+// What the store takes from Shoof, for now: only Sunglasses and Optical Frames items whose name ends with
+// SUN-ORG or OPT-ORG (the original lists), e.g. "AM0445S-001-51-SUN-ORG". Everything else (other sunglasses/optical
+// items, lenses, cases, services…) is dropped at sync, so it is never stored, served or linked to the site.
+// To show another type later, allow it here and run the sync again.
+export function isAllowedItem(row) {
+  const name = String((row && (row.name || row.product_name)) || '').toUpperCase().trim();
+  const type = String((row && row.type_name) || '').toUpperCase().trim();
+  if (type && type !== 'SUNGLASSES' && type !== 'OPTICAL FRAMES') return false;
+  return /-(SUN|OPT)-ORG$/.test(name);
+}
+// The list ending is never shown to customers: removes "-SUN-ORG" / "-OPT-ORG" (and a bare "SUN-ORG") from any code.
+const noList = s => String(s || '').replace(/-?\b(SUN|OPT)-ORG\b/gi, '').replace(/-+$/, '').trim();
 
 // Product type from Shoof: type_name first (e.g. "Sunglasses", "Optical Frames", "Clear CL", "Service"),
 // then the name ending (…-SUN-ORG / …-OPT-ORG). Sun and optical frames map to the storefront's two shop types;
@@ -94,8 +108,8 @@ export function appProducts(snap) {
     for (const ch of p.n) h = (h * 31 + ch.charCodeAt(0)) % 997;
     return {
       id: id++, b: p.b, n: p.n, c: '', s: SHAPE_KEY(p.shape) || SHAPES[h % 7], p: p.p, z: p.z,
-      // Stock status only when the stock data really came from Shoof: unknown stock shows no status (not "In stock").
-      t: [p.t[0], p.k.every(k => k[4] === '') ? '' : (p.k.some(k => k[4] > 0) ? 'In stock' : 'Out of stock')],
+      // In stock only when Shoof reports a quantity above 0; no stock row in Shoof counts as out of stock.
+      t: [p.t[0], p.k.some(k => k[4] > 0) ? 'In stock' : 'Out of stock'],
       k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2])]),
     };
   });
@@ -129,6 +143,7 @@ export function catalogFromSnapshot(snap) {
   // Stock is summed over all stores; the retail price is the highest one seen for the item.
   const stock = new Map(), retailById = new Map();
   for (const s of Array.isArray(snap.stock) ? snap.stock : []) {
+    if (!isAllowedItem(s)) continue; // copies never count, even from an older snapshot
     const id = String(pick(s, ['item_id', 'ITEM_ID', 'product_id', 'id']));
     if (!id) continue;
     stock.set(id, (stock.get(id) || 0) + (Number(pick(s, ['stock', 'STOCK', 'qty', 'on_hand'])) || 0));
@@ -137,20 +152,27 @@ export function catalogFromSnapshot(snap) {
   }
 
   for (const r of snap.products) {
+    if (!isAllowedItem(r)) continue; // copies are never shown
     const nm = fromName(r.name);
-    const b = attr(r, ['Brand']).trim();
-    const n = (attr(r, ['Model']) || nm.model).trim();
-    if (!b || !n) continue;
-    const colour = (attr(r, ['Main Color', 'MainColor', 'Color']) || nm.colour).trim();
+    const sb = attr(r, ['Brand']).trim();
+    const n = noList(attr(r, ['Model']) || nm.model);
+    if (!sb || !n) continue;
+    // Brand as Shoof writes it. Copies are already dropped, so Sunglasses/Optical brands are the originals' brands.
+    const ty = typeOf(r);
+    const b = sb;
+    const colour = noList(attr(r, ['Main Color', 'MainColor', 'Color']) || nm.colour);
     const key = b + '|' + n;
     // The product id in masterdata is the item_id in the stock rows. Price: retail from stock first, then the prices endpoint.
     const itemId = String(r.id ?? pick(r, FIELDS.itemId));
-    const raw = retailById.get(itemId) || priceById.get(itemId) || priceByModel.get(b.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
+    // One source for what the site sells: Shoof's stock list. A product with no stock row in Shoof is not shown.
+    // The products list only adds details (brand, model, colour, size, shape) to the items that are in stock rows.
+    if (!stock.has(itemId)) continue;
+    const raw = retailById.get(itemId) || priceById.get(itemId) || priceByModel.get(sb.toUpperCase() + '|' + n.toUpperCase()) || priceAttr(r) || 0;
     // Prices are rounded up to a whole pound (22,355.4 -> 22,356). The site and checkout both use this rounded price.
     const price = raw ? Math.ceil(raw - 1e-9) : 0;
     const left = stock.has(itemId) ? stock.get(itemId) : '';
     if (!products.has(key)) {
-      products.set(key, { b, n, p: price, z: attr(r, ['Size_C', 'Size']) || nm.size, t: [typeOf(r)], k: [], shape: attr(r, ['SHAPE']) });
+      products.set(key, { b, n, p: price, z: noList(attr(r, ['Size_C', 'Size']) || nm.size), t: [ty], k: [], shape: attr(r, ['SHAPE']) });
     }
     const p = products.get(key);
     // A model takes the first price found among its colours.

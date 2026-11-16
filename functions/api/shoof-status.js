@@ -3,6 +3,7 @@
 // Ported from netlify/functions/shoof-status.mjs. The snapshot lives in KV (binding SHOOF, key "catalog").
 import { setEnv, env, json } from '../_lib/store.js';
 import { shoofReady, shoofAll } from '../_lib/shoof.js';
+import { isAllowedItem } from '../_lib/catalog-kv.js';
 
 const fields = rows => (rows && rows[0] ? Object.keys(rows[0]) : []);
 
@@ -24,6 +25,13 @@ export async function syncShoof(bindings) {
     } catch (e) {
       stockError = e.message;
     }
+  }
+  // The stock list decides what the site sells, so a failed stock pull must not empty the shop:
+  // keep the stock rows from the last good sync and say so in the answer.
+  let stockKept = false;
+  if (stockError || !stock.length) {
+    const prev = await bindings.SHOOF.get('catalog', 'json').catch(() => null);
+    if (prev && Array.isArray(prev.stock) && prev.stock.length) { stock = prev.stock; stockKept = true; }
   }
   // Prices come from their own endpoint (current product prices). Pulled one call at a time: Shoof limits to 7 requests per 10 seconds.
   // If the prices endpoint is not available, the sync still saves products and stores (prices stay empty).
@@ -56,9 +64,13 @@ export async function syncShoof(bindings) {
       pricesError = e.message;
     }
   }
-  const snap = { at: new Date().toISOString(), products, stores, stock, prices };
+  // Copies are removed before anything is saved: only originals (…-SUN-ORG / …-OPT-ORG) and other types are kept.
+  // The answer gives counts only, never names of removed items.
+  const keptProducts = products.filter(isAllowedItem), keptStock = stock.filter(isAllowedItem), keptPrices = prices.filter(isAllowedItem);
+  const removed = { products: products.length - keptProducts.length, stock: stock.length - keptStock.length };
+  const snap = { at: new Date().toISOString(), products: keptProducts, stores, stock: keptStock, prices: keptPrices };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));
-  return { ok: true, at: snap.at, products: products.length, stores: stores.length, stock: stock.length, stockError, prices: prices.length, pricesError, priceAttempts };
+  return { ok: true, at: snap.at, products: keptProducts.length, stores: stores.length, stock: keptStock.length, copiesRemoved: removed, stockError, stockKept, prices: keptPrices.length, pricesError, priceAttempts };
 }
 
 export async function onRequest({ request, env: bindings }) {

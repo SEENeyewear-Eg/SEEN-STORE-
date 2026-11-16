@@ -33,44 +33,14 @@ export async function syncShoof(bindings) {
     const prev = await bindings.SHOOF.get('catalog', 'json').catch(() => null);
     if (prev && Array.isArray(prev.stock) && prev.stock.length) { stock = prev.stock; stockKept = true; }
   }
-  // Prices come from their own endpoint (current product prices). Pulled one call at a time: Shoof limits to 7 requests per 10 seconds.
-  // If the prices endpoint is not available, the sync still saves products and stores (prices stay empty).
-  // Try the price routes one after another and record each answer, so we can see which one Shoof accepts.
-  const company = env('SHOOF_COMPANY_ID');
-  // Only the documented route (the guessed ones all answered 404). It answers 404 until Shoof publishes it.
-  const variants = [
-    ['/masterdata/products/prices', {}],
-  ];
-  let prices = [], pricesError = null;
-  const priceAttempts = [];
-  const pause = ms => new Promise(r => setTimeout(r, ms));
-  for (const [path, params] of variants) {
-    // Shoof allows 7 requests per 10 seconds per IP: wait before each price call, and retry once on 429.
-    await pause(2500);
-    try {
-      let rows;
-      try {
-        rows = await shoofAll(path, params);
-      } catch (e) {
-        if (!String(e.message).includes('429')) throw e;
-        await pause(5000);
-        rows = await shoofAll(path, params);
-      }
-      priceAttempts.push({ path, params: Object.keys(params), ok: true, rows: rows.length });
-      if (rows.length && !prices.length) prices = rows;
-      if (prices.length) break;
-    } catch (e) {
-      priceAttempts.push({ path, params: Object.keys(params), ok: false, error: e.message });
-      pricesError = e.message;
-    }
-  }
+  // Prices come with the stock rows (field `retail`), so there is no separate prices call.
   // Copies are removed before anything is saved: only originals (…-SUN-ORG / …-OPT-ORG) and other types are kept.
   // The answer gives counts only, never names of removed items.
-  const keptProducts = products.filter(isAllowedItem), keptStock = stock.filter(isAllowedItem), keptPrices = prices.filter(isAllowedItem);
+  const keptProducts = products.filter(isAllowedItem), keptStock = stock.filter(isAllowedItem);
   const removed = { products: products.length - keptProducts.length, stock: stock.length - keptStock.length };
-  const snap = { at: new Date().toISOString(), products: keptProducts, stores, stock: keptStock, prices: keptPrices };
+  const snap = { at: new Date().toISOString(), products: keptProducts, stores, stock: keptStock };
   await bindings.SHOOF.put('catalog', JSON.stringify(snap));
-  return { ok: true, at: snap.at, products: keptProducts.length, stores: stores.length, stock: keptStock.length, copiesRemoved: removed, stockError, stockKept, prices: keptPrices.length, pricesError, priceAttempts };
+  return { ok: true, at: snap.at, products: keptProducts.length, stores: stores.length, stock: keptStock.length, copiesRemoved: removed, stockError, stockKept };
 }
 
 export async function onRequest({ request, env: bindings }) {

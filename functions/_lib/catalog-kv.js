@@ -1,3 +1,4 @@
+import { brandActivities, BRANDS_WITH_SITE_DATA } from './brand-activities.js';
 // Builds the catalogue from the Shoof snapshot saved in KV (binding SHOOF, key "catalog").
 // Shoof field names are not confirmed yet, so each field tries a list of likely names.
 // Once a real sync is seen (GET /api/shoof-status shows the names), trim these lists to the real ones.
@@ -58,9 +59,13 @@ const FIELDS = {
 const SW = [['#2b2b2b', '#4a4a4a'], ['#6b4a2f', '#5b3a22'], ['#9aa0a6', '#2f6fa8'], ['#c9a45c', '#37513d']];
 const SHAPES = ['rect', 'way', 'avi', 'round', 'cat', 'club', 'wrap'];
 // Base colour name from a Shoof MAIN COLOR, e.g. "MATTE BLACK - RED MIRROR" -> "Black", "HAVANA-HAVANA-TRANSPARENT" -> "Havana".
+// Frame colour for the shop filter: the first colour word of Shoof's Main Color (e.g. "HAVANA*BROWN" -> "HAVANA"),
+// without finish words (MATTE, SHINY…). Colour codes with no name (e.g. "001") give no colour. Two misspellings are fixed.
+const FINISH = /\b(MATTE|MATT|SEMIMATTE|SEMI|SATIN|SHINY|GLOSSY|DARK|LIGHT|TRANSPARENT|CLEAR|BRUSHED|POLISHED|GRADIENT|PHOTO|OFF|BABY|TOP|STRIPED|OILY)\b/g;
 const baseColour = v => {
-  const first = String(v || '').split(/\s-\s|-/)[0].replace(/\b(MATTE|SATIN|SHINY|TRANSPARENT|CLEAR)\b/gi, ' ').trim().split(/\s+/)[0] || '';
-  return first ? first.charAt(0).toUpperCase() + first.slice(1).toLowerCase() : '';
+  const w = String(v || '').toUpperCase().split(/\*|-|\//)[0].replace(FINISH, ' ').trim().split(/\s+/)[0] || '';
+  if (!w || /\d/.test(w)) return '';
+  return ({ BIEGE: 'BEIGE', BURGANDY: 'BURGUNDY' })[w] || w;
 };
 
 // What the store takes from Shoof, for now: only Sunglasses and Optical Frames items whose name ends with
@@ -110,6 +115,20 @@ const SHAPE_KEY = v => {
   return 'rect';
 };
 
+// Shoof attributes shown on the product page (Brand, Model and colour already appear elsewhere; SKU and UPC are internal).
+const SHOWN = new Set(['MODEL NAME', 'GENDER', 'MATERIAL', 'SHAPE']); // Size_C already has its own row
+
+// Filter values from Shoof's Gender, Material and Shape, with the different spellings of the same value joined.
+// Groups use Shoof's own main wording (e.g. "RECTANGULAR / SQUARED"). Unknown values are kept as written.
+const up = v => String(v || '').trim().toUpperCase().replace(/\s+/g, ' ');
+const GENDER = v => { const g = up(v); if (!g) return ''; if (/^(MAN|MALE|MEN)$/.test(g)) return 'MAN'; if (/^(WOMAN|WOMEN|FEMALE|WOAMN)$/.test(g)) return 'WOMAN';
+  if (g.startsWith('UNISEX')) return 'UNISEX'; if (/^(KID|KIDS|CHILD|CHILDREN)$/.test(g)) return 'KID'; return g; };
+const MATERIAL = v => { const m = up(v); if (!m) return ''; if (m.includes('ACETATE')) return 'ACETATE'; if (m.includes('TITANIUM')) return 'TITANIUM';
+  if (m.includes('POLYAMIDE')) return 'POLYAMIDE'; if (m.includes('METAL')) return 'METAL'; if (m.includes('INJ')) return 'INJECTED'; return m; };
+const SHAPE = v => { const s = up(v); if (!s) return ''; if (s.includes('GEOMETRIC')) return 'GEOMETRICAL/DIRECTIONAL';
+  if (/RECTANG|SQUARE/.test(s)) return 'RECTANGULAR / SQUARED'; if (/ROUND|OVAL|PANTHOS|PHANTOS/.test(s)) return 'ROUND/OVAL/PANTHOS';
+  if (/PILOT|NAVIGATOR/.test(s)) return 'PILOT/NAVIGATOR'; return s; };
+
 export function appProducts(snap) {
   const map = catalogFromSnapshot(snap);
   let id = 1;
@@ -120,6 +139,15 @@ export function appProducts(snap) {
       id: id++, b: p.b, n: p.n, c: '', s: SHAPE_KEY(p.shape) || SHAPES[h % 7], p: p.p, z: p.z,
       // In stock only when Shoof reports a quantity above 0; no stock row in Shoof counts as out of stock.
       t: [p.t[0], p.k.some(k => k[4] > 0) ? 'In stock' : 'Out of stock'],
+      // d: [[Shoof attribute name, value], …] shown as-is on the product page.
+      d: p.info || [],
+      // f: [gender, material, shape] grouped for the shop filters ('' when Shoof has no value).
+      f: [GENDER(p.raw?.gender), MATERIAL(p.raw?.material), SHAPE(p.shape),
+        // Activities from Shoof's Activity attribute (one or more, split on , / ; |), upper case like Shoof.
+        // Order: Shoof's Activity field, then the brand's own website (matched by model code); [4] = 1 when the brand has site data.
+        (() => { const own = [...new Set(String(p.raw?.activity || '').split(/[,/;|]/).map(up).filter(Boolean))];
+          return own.length ? own : brandActivities(p.b, p.n); })(),
+        BRANDS_WITH_SITE_DATA.has(String(p.b).toUpperCase()) ? 1 : 0],
       // k[6]: the colour's Shoof item ids (comma-separated), used by the product page's live stock check.
       k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2]), (k[5] || []).join(',')]),
     };
@@ -166,7 +194,9 @@ export function catalogFromSnapshot(snap) {
     if (!isAllowedItem(r)) continue; // copies are never shown
     const nm = fromName(r.name);
     const sb = attr(r, ['Brand']).trim();
-    const n = noList(attr(r, ['Model']) || nm.model);
+    // Some brands' Model field also carries the colour and size (e.g. "PU0485O-007-57", "MJ0758S-002-54"):
+    // they are cut off so every colour of a model is one product page (page per model, decided 2026-11-16).
+    const n = noList(attr(r, ['Model']) || nm.model).replace(/-[0-9A-Z]{2,5}-\d{2}$/, '');
     if (!sb || !n) continue;
     // Brand as Shoof writes it. Copies are already dropped, so Sunglasses/Optical brands are the originals' brands.
     const ty = typeOf(r);
@@ -183,9 +213,21 @@ export function catalogFromSnapshot(snap) {
     const price = raw ? Math.ceil(raw - 1e-9) : 0;
     const left = stock.has(itemId) ? stock.get(itemId) : '';
     if (!products.has(key)) {
-      products.set(key, { b, n, p: price, z: noList(attr(r, ['Size_C', 'Size']) || nm.size), t: [ty], k: [], shape: attr(r, ['SHAPE']) });
+      products.set(key, { b, n, p: price, z: noList(attr(r, ['Size_C', 'Size']) || nm.size), t: [ty], k: [], shape: attr(r, ['SHAPE']),
+        // Product details for the product page, named and written exactly as in Shoof (att_name and att_val, Shoof's order).
+        info: (Array.isArray(r.attributes) ? r.attributes : [])
+          .filter(e => e && SHOWN.has(String(e.att_canon || '').toUpperCase()) && e.att_val != null && e.att_val !== '')
+          .map(e => [String(e.att_name || e.att_canon), String(e.att_val)]),
+        raw: { gender: attr(r, ['Gender']), material: attr(r, ['Material']), activity: attr(r, ['Activity', 'Activities']) } });
     }
     const p = products.get(key);
+    if (!p.shape) p.shape = attr(r, ['SHAPE']);
+    if (!p.info.length) p.info = (Array.isArray(r.attributes) ? r.attributes : [])
+      .filter(e => e && SHOWN.has(String(e.att_canon || '').toUpperCase()) && e.att_val != null && e.att_val !== '')
+      .map(e => [String(e.att_name || e.att_canon), String(e.att_val)]);
+    if (!p.raw.gender) p.raw.gender = attr(r, ['Gender']);
+    if (!p.raw.material) p.raw.material = attr(r, ['Material']);
+    if (!p.raw.activity) p.raw.activity = attr(r, ['Activity', 'Activities']);
     // A model takes the first price found among its colours.
     if (!p.p && price) p.p = price;
     // k[5] keeps the Shoof item ids behind each colour, so the site can ask Shoof for that colour's stock live.

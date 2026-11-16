@@ -1,6 +1,8 @@
 // POST /api/checkout — validates the order against the catalogue, creates a Paymob intention
 // and returns the Unified Checkout URL the shopper is sent to. (Cloudflare Pages Function; ported from netlify/functions/checkout.mjs.)
 import { setEnv, env, jsonEnv, json, catalog, priceOrder } from '../_lib/store.js';
+import { shoofReady } from '../_lib/shoof.js';
+import { liveStock } from '../_lib/live-stock.js';
 
 const PAYMOB = 'https://accept.paymob.com';
 const BRANCHES = ['City Center Mall — Hurghada', 'El Gouna — Sheraton Miramar', 'El Kawthar — Hurghada'];
@@ -16,7 +18,19 @@ export async function onRequestPost({ request, env: bindings }) {
   if (body.delivery === 'home' && !(body.gov && String(body.city || '').trim() && String(body.addr || '').trim()))
     return json({ error: 'Please complete your delivery address' }, 400);
 
-  const o = priceOrder(body, await catalog(request, bindings));
+  // Stock is asked from Shoof at this moment for the ordered colours, so an item sold in a branch a minute ago can't be ordered.
+  const cat = await catalog(request, bindings);
+  const ids = [];
+  for (const x of Array.isArray(body.items) ? body.items.slice(0, 20) : []) {
+    const p = cat.get(String(x.b) + '|' + String(x.n)), k = p && p.k.find(c => c[2] === String(x.col));
+    if (k && Array.isArray(k[5])) ids.push(...k[5]);
+  }
+  let live = null;
+  if (ids.length && shoofReady()) {
+    try { live = await liveStock(ids, { fresh: true }); }
+    catch (e) { return json({ error: 'Could not check stock right now. Please try again in a moment.' }, 503); }
+  }
+  const o = priceOrder(body, cat, live);
   if (o.errors.length) return json({ error: o.errors[0] }, 400);
 
   const methods = jsonEnv('PAYMOB_INTEGRATIONS', {})[body.pay];

@@ -120,7 +120,8 @@ export function appProducts(snap) {
       id: id++, b: p.b, n: p.n, c: '', s: SHAPE_KEY(p.shape) || SHAPES[h % 7], p: p.p, z: p.z,
       // In stock only when Shoof reports a quantity above 0; no stock row in Shoof counts as out of stock.
       t: [p.t[0], p.k.some(k => k[4] > 0) ? 'In stock' : 'Out of stock'],
-      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2])]),
+      // k[6]: the colour's Shoof item ids (comma-separated), used by the product page's live stock check.
+      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2]), (k[5] || []).join(',')]),
     };
   });
 }
@@ -187,7 +188,11 @@ export function catalogFromSnapshot(snap) {
     const p = products.get(key);
     // A model takes the first price found among its colours.
     if (!p.p && price) p.p = price;
-    if (colour && !p.k.some(k => k[2] === colour)) p.k.push(['', '', colour, '', left]);
+    // k[5] keeps the Shoof item ids behind each colour, so the site can ask Shoof for that colour's stock live.
+    // The same colour in more than one item (e.g. two sizes) adds up its stock.
+    const same = colour && p.k.find(k => k[2] === colour);
+    if (same) { same[4] = (Number(same[4]) || 0) + (Number(left) || 0); same[5].push(itemId); }
+    else if (colour) p.k.push(['', '', colour, '', left, [itemId]]);
   }
   return products;
 }

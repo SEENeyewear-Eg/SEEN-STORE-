@@ -47,7 +47,8 @@ export async function catalog(request, bindings) {
 }
 
 // Recomputes the order from the catalogue: unit prices, stock, promo codes and delivery rules.
-export function priceOrder(body, cat) {
+// live: optional Map item id -> quantity asked from Shoof just now; when given it replaces the synced stock.
+export function priceOrder(body, cat, live) {
   const errors = [];
   const items = (Array.isArray(body.items) ? body.items : []).slice(0, 20).map(x => {
     const p = cat.get(String(x.b) + '|' + String(x.n));
@@ -56,7 +57,8 @@ export function priceOrder(body, cat) {
     if (!p || !k) { errors.push('Item not found: ' + x.b + ' ' + x.n + ' ' + x.col); return null; }
     if (!p.p) { errors.push('Price not available for ' + p.n + ' yet'); return null; }
     // Stock from Shoof: no stock row ('') or 0 = not available; n = at most n.
-    const left = Number(k[4]) || 0;
+    const ids = Array.isArray(k[5]) ? k[5].map(String) : [];
+    const left = live && ids.length ? ids.reduce((a, id) => a + (live.get(id) || 0), 0) : Number(k[4]) || 0;
     if (left <= 0) errors.push(p.n + ' ' + k[2] + ' is out of stock');
     else if (q > left) errors.push('Only ' + left + ' left of ' + p.n + ' ' + k[2]);
     return { b: p.b, n: p.n, col: k[2], q, p: p.p, rx: p.t && p.t[0] === 'Optical' };

@@ -46,6 +46,22 @@ export async function catalog(request, bindings) {
   return CATALOG;
 }
 
+// Delivery fees. Every governorate is offered; Hurghada and the Red Sea are free (user, 16 Nov 2026).
+// Cloudflare settings: DELIVERY_FEES = JSON {governorate: fee} for governorates with their own fee,
+// DELIVERY_FEE = the fee for every other governorate. Both can change without a push.
+export function deliveryFees() {
+  const fees = {};
+  for (const [g, v] of Object.entries(jsonEnv('DELIVERY_FEES', {}))) if (Number(v) >= 0) fees[g] = Number(v);
+  fees.Hurghada = 0;
+  fees['Red Sea'] = 0;
+  const d = env('DELIVERY_FEE');
+  return { fees, def: d !== '' && Number(d) >= 0 ? Number(d) : null };
+}
+export function feeFor(gov) {
+  const { fees, def } = deliveryFees();
+  return gov in fees ? fees[gov] : def;
+}
+
 // Recomputes the order from the catalogue: unit prices, stock, promo codes and delivery rules.
 // live: optional Map item id -> quantity asked from Shoof just now; when given it replaces the synced stock.
 export function priceOrder(body, cat, live) {
@@ -61,7 +77,7 @@ export function priceOrder(body, cat, live) {
     const left = live && ids.length ? ids.reduce((a, id) => a + (live.get(id) || 0), 0) : Number(k[4]) || 0;
     if (left <= 0) errors.push(p.n + ' ' + k[2] + ' is out of stock');
     else if (q > left) errors.push('Only ' + left + ' left of ' + p.n + ' ' + k[2]);
-    return { b: p.b, n: p.n, col: k[2], q, p: p.p, rx: p.t && p.t[0] === 'Optical' };
+    return { b: p.b, n: p.n, col: k[2], q, p: p.p, rx: p.t && p.t[0] === 'Optical', ids };
   }).filter(Boolean);
   if (!items.length) errors.push('Your bag is empty');
   const home = body.delivery === 'home';
@@ -69,7 +85,9 @@ export function priceOrder(body, cat, live) {
   const sub = items.reduce((a, i) => a + i.p * i.q, 0);
   const rate = jsonEnv('PROMO_CODES', {})[String(body.promo || '').trim().toUpperCase()] || 0;
   const discount = Math.round(sub * rate);
-  const fee = home ? (parseInt(env('DELIVERY_FEE'), 10) || 0) : 0;
+  const gfee = home ? feeFor(String(body.gov)) : 0;
+  if (home && gfee == null) errors.push('The delivery fee for ' + body.gov + ' is not set yet. Please choose pick-up.');
+  const fee = gfee || 0;
   return { errors, items, sub, discount, fee, total: sub - discount + fee };
 }
 

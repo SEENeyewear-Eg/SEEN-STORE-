@@ -6,7 +6,7 @@ import { liveStock } from '../_lib/live-stock.js';
 
 export async function onRequestGet({ request, env: bindings }) {
   setEnv(bindings);
-  const asked = (new URL(request.url).searchParams.get('ids') || '').split(',').filter(x => /^\d+$/.test(x)).slice(0, 50);
+  const asked = (new URL(request.url).searchParams.get('ids') || '').split(',').filter(x => /^\d+$/.test(x)).slice(0, 100);
   if (!asked.length) return json({ error: 'ids required' }, 400);
   if (!shoofReady()) return json({ error: 'Shoof not connected' }, 503);
   // Only items the store actually sells, so the endpoint can't be used to read the rest of Shoof.

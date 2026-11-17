@@ -775,7 +775,7 @@ const ARX=[[/^([\d,]+) EGP$/,'$1 ج.م'],[/^(\d+) styles$/,'$1 موديل'],[/^1
 // Languages: English is the text written in the page. Arabic is built in (AR, ARX); German, Russian, Polish, Czech, Italian and French
 // load from /lang/<code>.json ({d: {English text: translation}, x: [[pattern, replacement], …]}) the first time they are chosen.
 // Only languages with a translation are listed. The six European ones go in once their files exist in /lang/.
-const LANGS=[['en','English','EN'],['ar','العربية','ع']];
+const LANGS=[['en','English','EN'],['ar','العربية','ع'],['de','Deutsch','DE'],['es','Español','ES'],['it','Italiano','IT'],['fr','Français','FR'],['ru','Русский','RU']];
 const DICTS={ar:{d:AR,x:ARX}};let LANG='en',DC=null;
 const tr=s=>{if(!DC)return s;const t=s.trim();if(!t)return s;let v=DC.d[t];if(v==null)for(const[r,x]of DC.x)if(r.test(t)){v=t.replace(r,x);break}return v==null?s:s.replace(t,v)};
 const TA=['placeholder','aria-label','title'];

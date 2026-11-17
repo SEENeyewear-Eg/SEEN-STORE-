@@ -172,7 +172,7 @@ body>article,body>main,body>.wrap{padding-top:130px!important}body.light-page #h
 .bf-note{margin:26px 0 0;font-size:14px;line-height:1.6;color:#666}
 .bf-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
 .bf-btn{display:inline-block;padding:14px 26px;border-radius:999px;border:1px solid #5AC8FA;background:#F6F8F9;color:#0b0b0b;text-decoration:none;font-size:15px}
-.bf-btn.dark{background:#2F3136;border-color:#2F3136;color:#fff}
+.bf-btn.dark{background:#F6F8F9;border-color:#5AC8FA;color:#0b0b0b}
 .bf-btn:hover{opacity:.85}
 .bf-wrap{perspective:900px}
 .bf-h{display:inline-block;transform-origin:50% 50%;animation:bfSpin 8s infinite,bfColor 8s infinite}
@@ -282,7 +282,7 @@ html[lang="ar"] .of-u small { letter-spacing: 0; font-size: 12px; }
   var T = { en: {
     offerNote: 'Sunglasses and optical frames. Prescription lenses excluded.',
     offerKick: 'Limited offer', offerA: 'Buy one', offerB: 'get the second pair', offerFree: 'FREE',
-    offerUntil: 'Until 20 November', offerUnits: ['days', 'hrs', 'min', 'sec'], ctaWa: 'Book now'
+    offerUntil: 'Until 20 November', offerUnits: ['days', 'hrs', 'min', 'sec'], ctaWa: 'Shop Now'
   } };
   function t(k) { return T.en[k]; }
   function $(id) { return document.getElementById(id); }
@@ -301,7 +301,7 @@ html[lang="ar"] .of-u small { letter-spacing: 0; font-size: 12px; }
       '<span class="of-side"><span class="of-cd">' + [0, 1, 2, 3].map(function (i) {
         return '<span class="of-u"><b data-u="' + i + '"><span>00</span></b><small>' + esc(u[i]) + '</small></span>';
       }).join('') + '</span><span class="of-until">' + esc(t('offerUntil')) + '</span>' +
-      '<a class="of-cta" href="https://wa.me/201112299665"><span>' + esc(t('ctaWa')) + '</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></span>';
+      '<a class="of-cta" href="/shop"><span>' + esc(t('ctaWa')) + '</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></span>';
     offerTick(true);
   }
   function offerTick(first) {

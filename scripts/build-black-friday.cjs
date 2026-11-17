@@ -5,7 +5,7 @@ const T = process.env.TEMP;
 const root = path.join(__dirname, '..');
 const css = fs.readFileSync(path.join(T, 'offer.css'), 'utf8');
 let render = fs.readFileSync(path.join(T, 'render.js'), 'utf8');
-render = render.split("'#booking'").join("'https://wa.me/201112299665'").split('"#booking"').join('"https://wa.me/201112299665"');
+render = render.split("'#booking'").join("'/shop'").split('"#booking"').join('"/shop"');
 const tilt = fs.readFileSync(path.join(T, 'tilt.js'), 'utf8');
 
 const head = `<!doctype html>
@@ -25,7 +25,7 @@ const head = `<!doctype html>
 .bf-note{margin:26px 0 0;font-size:14px;line-height:1.6;color:#666}
 .bf-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
 .bf-btn{display:inline-block;padding:14px 26px;border-radius:999px;border:1px solid #5AC8FA;background:#F6F8F9;color:#0b0b0b;text-decoration:none;font-size:15px}
-.bf-btn.dark{background:#2F3136;border-color:#2F3136;color:#fff}
+.bf-btn.dark{background:#F6F8F9;border-color:#5AC8FA;color:#0b0b0b}
 .bf-btn:hover{opacity:.85}
 .bf-wrap{perspective:900px}
 .bf-h{display:inline-block;transform-origin:50% 50%;animation:bfSpin 8s infinite,bfColor 8s infinite}
@@ -73,7 +73,7 @@ const body = `</style>
   var T = { en: {
     offerNote: 'Sunglasses and optical frames. Prescription lenses excluded.',
     offerKick: 'Limited offer', offerA: 'Buy one', offerB: 'get the second pair', offerFree: 'FREE',
-    offerUntil: 'Until 20 November', offerUnits: ['days', 'hrs', 'min', 'sec'], ctaWa: 'Book now'
+    offerUntil: 'Until 20 November', offerUnits: ['days', 'hrs', 'min', 'sec'], ctaWa: 'Shop Now'
   } };
   function t(k) { return T.en[k]; }
   function $(id) { return document.getElementById(id); }

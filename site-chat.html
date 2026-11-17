@@ -95,8 +95,7 @@
   fab.addEventListener('click', function () { box.classList.contains('on') ? close() : open(); });
   document.getElementById('scX').addEventListener('click', close);
   var dx = document.getElementById('scDx');
-  dx.addEventListener('click', function (e) { e.stopPropagation(); close(); fab.classList.add('hid'); try { sessionStorage.setItem('scHide', '1'); } catch (err) {} });
-  try { if (sessionStorage.getItem('scHide') === '1') fab.classList.add('hid'); } catch (err) {}
+  dx.addEventListener('click', function (e) { e.stopPropagation(); close(); fab.classList.add('hid'); });
   form.addEventListener('submit', function (e) {
     e.preventDefault();
     var t = input.value.trim(); if (!t) return;

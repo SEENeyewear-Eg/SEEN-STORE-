@@ -4,3 +4,6 @@ node_modules/
 # Private notes that must not reach the public repo
 CLAUDE.local.md
 docs/
+
+# Local copy of the Cloudflare catalog API, used only by the local preview server
+.local-api/

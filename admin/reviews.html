@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex,nofollow">
+<title>Reviews admin | SEEN</title>
+<style>
+body{margin:0;font-family:system-ui,sans-serif;color:#111;background:#f6f8f9}
+main{max-width:720px;margin:0 auto;padding:28px 16px 60px}
+h1{font-size:22px;font-weight:500;margin:0 0 16px}
+section{background:#fff;border-radius:14px;padding:18px;margin:0 0 18px;box-shadow:0 1px 3px rgba(0,0,0,.06)}
+h2{font-size:16px;font-weight:500;margin:0 0 12px}
+input{padding:10px;border:1px solid #d6dde2;border-radius:8px;font:inherit;width:100%;box-sizing:border-box;margin:4px 0 10px}
+button{padding:9px 14px;border-radius:999px;border:0;background:#111;color:#fff;font:inherit;cursor:pointer;margin-right:6px}
+button.ok{background:#5AC8FA;color:#0b0b0b}
+.rv{border-top:1px solid #eef1f3;padding:12px 0}
+.rv small{color:#666}
+#url{word-break:break-all;font-size:14px;background:#f6f8f9;padding:10px;border-radius:8px;margin-top:8px}
+.bad{color:#b42318}
+</style>
+</head>
+<body>
+<main>
+  <h1>Reviews</h1>
+  <section>
+    <h2>Admin token</h2>
+    <input id="tok" type="password" autocomplete="off" placeholder="Paste the admin token">
+    <button id="load" type="button">Load pending reviews</button>
+    <div id="err" class="bad"></div>
+  </section>
+  <section>
+    <h2>Create a review link for a customer</h2>
+    <label>Order number<input id="lo"></label>
+    <label>Product (Brand|Model, exactly as on the product page)<input id="lp" placeholder="e.g. RAY-BAN|RB3025"></label>
+    <button id="mk" type="button">Create link</button>
+    <div id="url"></div>
+  </section>
+  <section>
+    <h2>Pending reviews</h2>
+    <div id="list"><small>Load the list with the admin token.</small></div>
+  </section>
+</main>
+<script>
+(()=>{const $=id=>document.getElementById(id);const H=()=>({'content-type':'application/json','x-admin-token':$('tok').value.trim()});
+async function load(){$('err').textContent='';const r=await fetch('/api/reviews?admin=1',{headers:{'x-admin-token':$('tok').value.trim()}});
+if(!r.ok){$('err').textContent='Not allowed. Check the token.';return}
+const j=await r.json();$('list').innerHTML=j.pending.length?'':'<small>No pending reviews.</small>';
+j.pending.forEach(v=>{const d=document.createElement('div');d.className='rv';d.innerHTML='<b></b> · <span></span> · <small></small><p style="margin:6px 0"></p><button class="ok" data-a="1">Approve</button><button data-a="0">Reject</button>';
+d.querySelector('b').textContent=decodeURIComponent(v.p).replace('|',' ');d.querySelector('span').textContent=v.rating+'★ '+(v.name||'');d.querySelector('small').textContent=v.date;d.querySelector('p').textContent=v.text||'(no text)';
+d.querySelectorAll('button').forEach(b=>b.onclick=async()=>{const x=await fetch('/api/reviews',{method:'POST',headers:H(),body:JSON.stringify({action:'decide',id:v.id,approve:b.dataset.a==='1'})});if(x.ok)d.remove();else $('err').textContent='Could not save.'});
+$('list').appendChild(d)})}
+$('load').onclick=load;
+$('mk').onclick=async()=>{$('url').textContent='';const r=await fetch('/api/reviews',{method:'POST',headers:H(),body:JSON.stringify({action:'link',o:$('lo').value.trim(),p:$('lp').value.trim()})});const j=await r.json().catch(()=>({}));$('url').textContent=j.url?location.origin+j.url:(j.error||'Could not create the link.')};
+})();
+</script>
+</body>
+</html>

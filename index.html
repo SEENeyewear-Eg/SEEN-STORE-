@@ -50,6 +50,7 @@ nav{display:flex;gap:2px}nav button,nav a{padding:0 18px;height:46px;display:fle
 .hero.hl{color:#0b0b0b}
 .hero.hl .hbg::after{background:linear-gradient(160deg,#ffffff 0%,#f0faff 40%,#cdeefc 75%,#e6f6fd 100%);background-size:180% 180%;opacity:.9;animation:hbgWave 16s ease-in-out infinite}
 .hero:not(.hl) .hwm{display:none}
+[dir=rtl] .hero .hwm{left:33%}
 .hero .cta,.hero .ctl .ib{background:rgba(10,25,35,.38);color:#fff;border:1px solid rgba(255,255,255,.2);backdrop-filter:blur(10px);-webkit-backdrop-filter:blur(10px);transition:background .35s,border-color .35s,color .35s}
 .hero .ctl .ib{width:46px;height:46px;border-radius:50%;display:grid;place-items:center}
 .hero.hl .cta,.hero.hl .ctl .ib{background:rgba(255,255,255,.55);color:#0b0b0b;border-color:rgba(11,11,11,.14)}
@@ -430,7 +431,17 @@ let pi=0,gv=0;const VW=['','scale(.82)','rotateY(-38deg)','scale(2.3) translateX
 const rwH=(l,v)=>v?'<div class="rw"><span>'+l+'</span><b>'+esc(v)+'</b></div>':'';
 // Product description written from Shoof's own data (type, Gender, MODEL NAME, Shape, Material, Size_C), in the page language.
 function descTxt(p){const d=Array.isArray(p.d)?p.d:[],v=l=>{const x=d.find(y=>String(y[0]).toUpperCase()==l);return x?String(x[1]).trim():''},g=gen(p)[0]||'',opt=p.t[0]=='Optical',nm=v('MODEL NAME'),sh=v('SHAPE'),mt=v('MATERIAL'),T=x=>tr(x);
-const ge={MAN:'for men',WOMAN:'for women',UNISEX:'for men and women',KID:'for kids'}[g];return p.b+' '+p.n+(nm?' “'+nm+'”':'')+': '+T(opt?'optical frame':'sunglasses')+(ge?' '+T(ge):'')+'.'+(sh?' '+T('Shape')+': '+sh+'.':'')+(mt?' '+T('Material')+': '+mt+'.':'')+(p.z?' '+T('Size')+': '+p.z+'.':'')+' '+T('Authentic, sold and serviced by SEEN Eyewear with the official brand warranty.')}
+const cap=s=>String(s).toLowerCase().replace(/\b\w/g,x=>x.toUpperCase()),brand=cap(p.b).replace('Ray Ban','Ray-Ban'),ge={MAN:'for men',WOMAN:'for women',UNISEX:'for men and women',KID:'for kids'}[g]||'';
+if(LANG==='ar'){const gar={MAN:'للرجال',WOMAN:'للستات',UNISEX:'للرجال والستات',KID:'للأطفال'}[g]||'';
+let s=(opt?'إطار نظارة طبية':'نظارة شمسية')+(gar?' '+gar:'')+': '+brand+' '+(nm?cap(nm):p.n)+'.';
+if(sh) s+=' الشكل: '+sh.toLowerCase().replace(/\s*\/\s*/g,', ')+'.';
+if(mt) s+=' الخامة: '+mt.toLowerCase()+'.';
+if(p.z) s+=' المقاس: '+p.z+' (عرض العدسة، والجسر، والدراع).';
+return s+' أصلية، وبتتباع وبتتصلّح من SEEN Eyewear، مع الضمان الرسمي للبراند.'}
+let s='The '+brand+' '+(nm?cap(nm):p.n)+' is '+(opt?'an optical frame':'a pair of sunglasses')+(ge?' '+ge:'')+'.';
+if(sh) s+=' It has a '+sh.toLowerCase().replace(/\s*\/\s*/g,', ')+' shape'+(mt?' and is made of '+mt.toLowerCase()+'.':'.');else if(mt) s+=' It is made of '+mt.toLowerCase()+'.';
+if(p.z) s+=' '+T('Size')+': '+p.z+' (lens width, bridge, temple).';
+return s+' '+T('Authentic, sold and serviced by SEEN Eyewear with the official brand warranty.')}
 function AC(p,k){const d=Array.isArray(p.d)?p.d:[],opt=p.t[0]=='Optical';return [
 ['Additional information',d.map(x=>rwH(esc(x[0]),x[1])).join('')||'<p>Authentic '+esc(p.b)+' eyewear.</p>'],
 ['Warranty','<p>Official brand warranty, usually one year from the purchase date.</p><p>'+(opt?'Prescription glasses can’t be exchanged.':'Sunglasses can be exchanged within 14 days if unused and in their original condition.')+'</p><p>Contact lenses can’t be exchanged.</p><p><a href="#" data-pol>Read our policies</a></p>'],

@@ -9,10 +9,10 @@ const read = f => fs.readFileSync(path.join(root, f), 'utf8');
 
 const index = read('index.html');
 
-// 1. Shared styles: the first <style> block of index.html.
-const styleMatch = index.match(/<style>([\s\S]*?)<\/style>/);
-if (!styleMatch) throw new Error('style block not found in index.html');
-const SHELL_CSS = styleMatch[1];
+// 1. Shared styles: every <style> block of index.html, in order.
+const styleBlocks = [...index.matchAll(/<style>([\s\S]*?)<\/style>/g)];
+if (!styleBlocks.length) throw new Error('style blocks not found in index.html');
+const SHELL_CSS = styleBlocks.map(m => m[1]).join('\n');
 
 // 2. Icons: the IC map from index.html (one line starting with "IC={").
 const icStart = index.indexOf('IC={');
@@ -43,6 +43,11 @@ const shellTag = '<style data-shell>' + SHELL_CSS + PAGE_TOP + '</style>';
   const firstStyle = s.indexOf('<style');
   if (firstStyle < 0) s = s.replace('</head>', () => shellTag + '\n</head>');
   else s = s.slice(0, firstStyle) + shellTag + '\n' + s.slice(firstStyle);
+  // The page's own styles must not restyle the shared header or footer (for example a page-level "header{...}" rule).
+  // Repeated, so that rules next to each other are all removed.
+  for (let k = 0; k < 5; k++) {
+    s = s.replace(/<style>([\s\S]*?)<\/style>/g, (m, css) => '<style>' + css.replace(/(^|\})(\s*)(header|footer)\b[^{]*\{[^}]*\}/g, (x, a) => a) + '</style>');
+  }
   // Header right after <body>, footer and the nav script right before </body>.
   s = s.replace(/<body([^>]*)>/, (m, attrs) => '<body class="light-page"' + attrs + '>\n' + HEADER + '\n');
   const navTag = '<script src="/site-nav.js" defer></script>';

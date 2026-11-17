@@ -36,7 +36,7 @@ for (const f of PAGES) {
   s = s.replace(/<header[\s\S]*?<\/header>/g, '').replace(/<footer[\s\S]*?<\/footer>/g, '');
   // Shared styles go first in the head; the page's own styles follow them.
   // Pages start below the fixed header.
-const PAGE_TOP = 'body>article,body>main,body>.wrap{padding-top:130px!important}' + 'body.light-page #hd:not(.solid){color:#2F3136}' + 'body.light-page #hd:not(.solid) .pill{background:rgba(255,255,255,.6);border-color:rgba(47,49,54,.18)}' + 'body.light-page #hd:not(.solid) .ib:hover{opacity:.6}' + 'body.light-page #hd:not(.solid) nav button,body.light-page #hd:not(.solid) nav a,body.light-page #hd:not(.solid) .ib{color:#2F3136}' + 'body.light-page #hd:not(.solid) nav button:hover,body.light-page #hd:not(.solid) nav a:hover{background:#2F3136;color:#fff}';
+const PAGE_TOP = 'body>article,body>main,body>.wrap{padding-top:130px!important}' + 'body.light-page #hd:not(.solid){color:#2F3136;--ew-now:#2F3136}' + 'body.light-page #hd:not(.solid) .pill{background:rgba(255,255,255,.6);border-color:rgba(47,49,54,.18)}' + 'body.light-page #hd:not(.solid) .ib:hover{opacity:.6}' + 'body.light-page #hd:not(.solid) nav button,body.light-page #hd:not(.solid) nav a,body.light-page #hd:not(.solid) .ib{color:#2F3136}' + 'body.light-page #hd:not(.solid) nav button:hover,body.light-page #hd:not(.solid) nav a:hover{background:#2F3136;color:#fff}';
 const shellTag = '<style data-shell>' + SHELL_CSS + PAGE_TOP + '</style>';
   s = s.replace(/<style data-shell>[\s\S]*?<\/style>/, '');
   // Shell styles go before the page's own styles, so the page's styles win on its own content.

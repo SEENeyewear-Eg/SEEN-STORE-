@@ -5,15 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1">
 <meta name="description" content="Limited offer at SEEN: buy one pair of sunglasses or optical frames and get the second pair free, until 20 November 2026.">
 <title>Black Friday offer | SEEN Eyewear</title>
-
-
-
-
-
-
-
-
-
 <style data-shell>
 :root{color-scheme:light;--ink:#0b0b0b;--gray:#606060;--line:#E2E9ED;--sky:#5AC8FA;--card:#f2f2f2}
 *{box-sizing:border-box}html,body{margin:0}
@@ -172,128 +163,175 @@ html[lang="ar"] .fx{display:none}
 .wa-fab{position:fixed;right:18px;bottom:18px;z-index:60;width:56px;height:56px;border-radius:50%;background:#25D366;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}
 body>article,body>main,body>.wrap{padding-top:130px!important}body.light-page #hd:not(.solid){color:#2F3136;--ew-now:#2F3136}body.light-page #hd:not(.solid) .pill{background:rgba(255,255,255,.6);border-color:rgba(47,49,54,.18)}body.light-page #hd:not(.solid) .ib:hover{opacity:.6}body.light-page #hd:not(.solid) nav button,body.light-page #hd:not(.solid) nav a,body.light-page #hd:not(.solid) .ib{color:#2F3136}body.light-page #hd:not(.solid) nav button:hover,body.light-page #hd:not(.solid) nav a:hover{background:#2F3136;color:#fff}</style>
 <style>
-.bf-wrap{max-width:980px;margin:0 auto;padding:0 20px 88px;text-align:center}
+:root{--ease:cubic-bezier(.2,.7,.2,1);--highlight:#5AC8FA;--ink:#0b0b0b;--muted:#606060;--surface:#f2f2f2;--paper:#fff;--line:#e3e5e7}
+.bf-wrap{max-width:1180px;margin:0 auto;padding:0 16px 88px;text-align:center}
 .bf-k{letter-spacing:.22em;text-transform:uppercase;font-size:12px;color:#6b7278;margin:0}
 .bf-h{font-weight:300;font-size:clamp(38px,5.6vw,64px);line-height:1.1;margin:14px 0 16px;letter-spacing:-.01em}
 .bf-lead{max-width:600px;margin:0 auto;font-size:17px;line-height:1.7;color:#3a3f44}
-.bf-card{margin:44px auto 0;max-width:760px;background:#F6F8F9;border:1px solid #5AC8FA;border-radius:24px;padding:40px 32px}
-.bf-pair{display:flex;align-items:center;justify-content:center;gap:8px;flex-wrap:wrap;font-size:clamp(22px,3vw,30px);font-weight:300;color:#111}
-.bf-free{font-weight:500;color:#2F3136}
-.bf-until{margin:20px 0 0;font-size:15px;color:#555;letter-spacing:.04em}
-.bf-count{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;max-width:520px;margin:26px auto 0}
-.bf-count div{border:1px solid #d6dde2;border-radius:14px;padding:14px 6px;background:#fff}
-.bf-count b{display:block;font-size:28px;font-weight:400;color:#111}
-.bf-count span{font-size:11px;letter-spacing:.14em;text-transform:uppercase;color:#6b7278}
+.bf-wrap .offer{margin:44px auto 0;text-align:start}
 .bf-note{margin:26px 0 0;font-size:14px;line-height:1.6;color:#666}
 .bf-btns{display:flex;gap:12px;justify-content:center;flex-wrap:wrap;margin-top:28px}
 .bf-btn{display:inline-block;padding:14px 26px;border-radius:999px;border:1px solid #5AC8FA;background:#F6F8F9;color:#0b0b0b;text-decoration:none;font-size:15px}
 .bf-btn.dark{background:#2F3136;border-color:#2F3136;color:#fff}
 .bf-btn:hover{opacity:.85}
-.bf-ended{display:none;margin-top:22px;font-size:16px;color:#333}
-.bf-card{animation:bfIn .9s cubic-bezier(.2,.7,.2,1) both}
-.bf-tiles{display:grid;grid-template-columns:1fr 1fr;gap:14px;max-width:560px;margin:0 auto}
-.bf-tile{background:#fff;border:1px solid #d6dde2;border-radius:18px;padding:22px 14px;display:flex;flex-direction:column;align-items:center;gap:6px;font-size:18px;color:#111;animation:bfIn .9s cubic-bezier(.2,.7,.2,1) both}
-.bf-tile:nth-child(2){animation-delay:.15s}
-.bf-tile-free{border-color:#5AC8FA;animation:bfIn .9s cubic-bezier(.2,.7,.2,1) .15s both,bfGlow 4s ease-in-out 1.2s infinite}
-.bf-n{font-size:40px;font-weight:300;line-height:1;color:#2F3136}
-.bf-free{font-size:22px;font-weight:500;letter-spacing:.14em;color:#2F3136}
-.bf-count b{transition:opacity .25s}
-@keyframes bfIn{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
-@keyframes bfGlow{0%,100%{box-shadow:0 0 0 0 rgba(90,200,250,0)}50%{box-shadow:0 0 0 6px rgba(90,200,250,.16)}}
-@media (prefers-reduced-motion:reduce){.bf-card,.bf-tile,.bf-tile-free{animation:none!important}}
-@media (max-width:620px){.bf-count{grid-template-columns:repeat(2,1fr)}.bf-card{padding:30px 20px}}
+.bf-wrap{perspective:900px}
+.bf-h{display:inline-block;transform-origin:50% 50%;animation:bfSpin 8s infinite,bfColor 8s infinite}
+@keyframes bfSpin{
+  0%{transform:rotateY(0deg) scale(1);animation-timing-function:ease-in-out}
+  30%{transform:rotateY(360deg) scale(1)}
+  34%{transform:rotateY(360deg) scale(1.16)}
+  38%{transform:rotateY(360deg) scale(.9)}
+  42%{transform:rotateY(360deg) scale(1)}
+  100%{transform:rotateY(360deg) scale(1)}
+}
+@keyframes bfColor{
+  0%,30%{color:#2F3136;text-shadow:none}
+  36%{color:#5AC8FA;text-shadow:0 0 18px rgba(90,200,250,.6)}
+  44%{color:#2F3136;text-shadow:none}
+  52%{color:#E8B04B;text-shadow:0 0 18px rgba(232,176,75,.6)}
+  60%{color:#5AC8FA;text-shadow:0 0 18px rgba(90,200,250,.6)}
+  68%,100%{color:#2F3136;text-shadow:none}
+}
+@media (prefers-reduced-motion: reduce){.bf-h{animation:none}}
+.offer { position: relative; z-index: 2; width: min(1180px, calc(100% - 32px)); margin: 6px auto 0; padding: 22px 30px; border-radius: 28px; overflow: hidden; isolation: isolate; color: #0b0b0b;
+  display: grid; grid-template-columns: auto minmax(0, 1fr) auto; align-items: center; gap: 30px;
+  background: linear-gradient(115deg, #5AC8FA 0%, #a6e3ff 50%, #5AC8FA 100%); background-size: 220% 100%;
+  transform: perspective(1100px) rotateX(var(--rx, 0deg)) rotateY(var(--ry, 0deg)); transition: transform .5s var(--ease);
+  animation: ofBg 9s ease-in-out infinite alternate, ofIn .9s var(--ease) both; box-shadow: 0 26px 60px -32px rgba(90,200,250,.95); }
+.offer[hidden] { display: none; }
+.offer::before { content: ""; position: absolute; z-index: -1; width: 380px; height: 380px; border-radius: 50%; border: 1.5px dashed rgba(255,255,255,.6); inset-inline-end: -130px; top: -150px; animation: spin 40s linear infinite; }
+.offer::after { content: ""; position: absolute; inset: 0; z-index: -1; pointer-events: none; background: radial-gradient(260px circle at var(--gx, 50%) 50%, rgba(255,255,255,.55), transparent 65%); }
+.of-art { position: relative; width: 156px; height: 104px; flex: none; }
+.of-g { position: absolute; width: 108px; }
+.of-g svg { width: 100%; display: block; overflow: visible; }
+.of-g1 { inset-inline-start: 0; top: 4px; color: #0b0b0b; animation: ofFloat 4s ease-in-out infinite; }
+.of-g2 { inset-inline-end: 0; bottom: 2px; color: #fff; animation: ofPop .8s var(--ease) .5s both, ofFloat 4s ease-in-out 1s infinite reverse; }
+.of-plus { position: absolute; left: 50%; top: 50%; translate: -50% -50%; width: 30px; height: 30px; border-radius: 50%; background: #0b0b0b; color: #fff; display: grid; place-items: center; font-size: 20px; line-height: 1; animation: ofPulse 1.8s ease-in-out infinite; }
+.of-s { position: absolute; width: 13px; height: 13px; background: #fff; clip-path: polygon(50% 0, 62% 38%, 100% 50%, 62% 62%, 50% 100%, 38% 62%, 0 50%, 38% 38%); animation: ofTw 1.6s ease-in-out infinite; }
+.of-s1 { inset-inline-end: 6px; top: 8px; } .of-s2 { inset-inline-start: 14px; bottom: 6px; width: 9px; height: 9px; animation-delay: .7s; }
+.of-txt { display: grid; gap: 6px; min-width: 0; }
+.of-kick { justify-self: start; display: inline-flex; align-items: center; gap: 8px; padding: 5px 12px; border-radius: 999px; background: rgba(255,255,255,.88); font-size: 12px; letter-spacing: .14em; text-transform: uppercase; font-weight: 500; }
+html[lang="ar"] .of-kick { letter-spacing: 0; font-size: 13px; }
+.of-kick i { width: 8px; height: 8px; border-radius: 50%; background: #0b0b0b; animation: ofBlink 1.2s ease-in-out infinite; }
+.of-h { display: block; font-size: clamp(24px, 3.1vw, 40px); line-height: 1.14; font-weight: 300; }
+.of-l { display: block; overflow: hidden; padding: .1em 0; }
+.of-l > span { display: inline-block; animation: ofUp .9s var(--ease) .15s both; }
+.of-l2 { font-weight: 500; } .of-l2 > span { animation-delay: .3s; }
+.of-free { display: inline-block; font-style: normal; margin-inline-start: .15em; padding: .02em .38em; border-radius: .32em; background: #0b0b0b; color: #fff; rotate: -3deg; animation: ofWob 2.6s ease-in-out 1.4s infinite; }
+.of-note { font-size: 13px; color: rgba(11,11,11,.72); }
+.of-side { display: grid; gap: 10px; justify-items: center; }
+.of-cd { display: flex; gap: 8px; }
+.of-u { min-width: 60px; padding: 9px 6px 7px; border-radius: 14px; background: rgba(255,255,255,.93); text-align: center; display: grid; gap: 3px; }
+.of-u b { display: block; overflow: hidden; font-size: 26px; font-weight: 500; line-height: 1; font-variant-numeric: tabular-nums; }
+.of-u b span { display: block; }
+.of-u b.tick span { animation: ofTick .45s var(--ease); }
+.of-u small { font-size: 11px; letter-spacing: .08em; text-transform: uppercase; color: rgba(11,11,11,.6); }
+html[lang="ar"] .of-u small { letter-spacing: 0; font-size: 12px; }
+.of-until { font-size: 12px; }
+.of-cta { display: inline-flex; align-items: center; gap: 8px; padding: 11px 24px; border-radius: 999px; background: #0b0b0b; color: #fff; text-decoration: none; font-size: 15px; font-weight: 400; transition: gap .3s var(--ease), scale .3s var(--ease); }
+.of-cta:hover { gap: 14px; scale: 1.04; }
+[dir="rtl"] .of-cta svg { transform: scaleX(-1); }
+@keyframes ofIn { from { opacity: 0; transform: translateY(-16px) scale(.98); } }
+@keyframes ofBg { to { background-position: 100% 0; } }
+@keyframes ofFloat { 0%, 100% { translate: 0 0; } 50% { translate: 0 -7px; } }
+@keyframes ofPop { from { opacity: 0; scale: .4; } 70% { scale: 1.12; } to { opacity: 1; scale: 1; } }
+@keyframes ofPulse { 0%, 100% { box-shadow: 0 0 0 0 rgba(11,11,11,.35); } 50% { box-shadow: 0 0 0 10px rgba(11,11,11,0); } }
+@keyframes ofTw { 0%, 100% { scale: .4; opacity: .3; } 50% { scale: 1; opacity: 1; } }
+@keyframes ofBlink { 50% { opacity: .25; } }
+@keyframes ofUp { from { transform: translateY(110%); } }
+@keyframes ofWob { 0%, 100% { rotate: -3deg; scale: 1; } 12% { rotate: 3deg; scale: 1.08; } 24% { rotate: -5deg; } 36% { rotate: -3deg; scale: 1; } }
+@keyframes ofTick { from { transform: translateY(-70%); opacity: 0; } }
+@media (max-width: 900px) {
+  .offer { grid-template-columns: auto minmax(0, 1fr); gap: 14px 16px; padding: 16px; border-radius: 22px; margin-top: 6px; }
+  .of-art { width: 104px; height: 72px; } .of-g { width: 72px; } .of-plus { width: 22px; height: 22px; font-size: 15px; }
+  .of-side { grid-column: 1 / -1; grid-template-columns: 1fr; }
+  .of-cd { width: 100%; } .of-u { flex: 1; min-width: 0; }
+  .of-cta { width: 100%; justify-content: center; }
+}
+@media (max-width: 420px) { .of-art { width: 84px; height: 60px; } .of-g { width: 58px; } .of-h { font-size: 22px; } }
+@media (prefers-reduced-motion: reduce) { .offer, .offer * , .offer *::before, .offer *::after { animation: none !important; } }
+
 </style>
 </head>
-<body class="light-page" class="light-page" class="light-page" class="light-page" class="light-page" class="light-page" class="light-page" class="light-page" class="light-page" class="light-page">
+<body class="light-page">
 <header id="hd"><div class="bar" id="bar"><span class="on">Free pick-up from our 3 branches</span><span>100% authentic · 40+ international brands</span><span>Try any frame on with your camera</span><span data-end="2026-11-20T23:59:59+02:00">Black Friday · Buy one pair, get the second FREE · until 20 November</span></div><script>(function(){document.querySelectorAll('#bar span[data-end]').forEach(function(s){if(Date.now()>new Date(s.dataset.end).getTime())s.remove()})})();</script>
 <div class="row"><div class="pill"><button class="ib mb" id="mbt" aria-label="Menu"><svg class="i" viewBox="0 0 24 24"><path d="M4 7h16M4 12h16M4 17h16"/></svg></button><nav id="nav"><a href="/">Home</a><button data-m="sun" aria-expanded="false">Sunglasses</button><button data-m="opt" aria-expanded="false">Optical</button><button data-m="brd" aria-expanded="false">Brands</button><button data-m="svc" aria-expanded="false">Services</button><button data-m="loc" aria-expanded="false">Locations</button><a href="/blog/index.html">Blog</a><button data-m="off" aria-expanded="false" class="bf">Offers<sup>%</sup></button></nav></div>
 <a href="/" aria-label="SEEN home"><svg class="logo" viewBox="102.5 92.15 515 134.6" aria-hidden="true"><path fill="currentColor" d="M134.4,164.23c-13.63,0-23.35-3.4-27.9-6.59l2.21-3.15c4.07,2.85,12.95,5.89,25.69,5.89,15.41,0,26.18-5.64,26.18-13.71,0-3.85-1.92-9.45-18.56-13.61l-11.4-2.85c-14.82-3.76-23.4-7.76-23.4-17.04s10.92-15.02,28.49-15.02c9.46,0,18.6,1.45,26.43,4.19l-1.27,3.63c-7.43-2.6-16.13-3.97-25.16-3.97-14.97,0-24.64,4.38-24.64,11.17,0,6.06,5.17,9.41,20.49,13.3l11.39,2.85c9.22,2.31,21.48,6.61,21.48,17.34s-12.35,17.56-30.03,17.56Z"/><path fill="currentColor" d="M260.06,164.23h-51.59c-1.06,0-1.93-.86-1.93-1.93v-63.53h53.52v3.85h-49.67v26.95h41.2v3.85h-41.2v26.95h49.67v3.85Z"/><path fill="currentColor" d="M305.88,102.63v26.95h43.51v3.85h-43.51v26.95h51.21v3.85h-53.13c-1.06,0-1.93-.86-1.93-1.93v-63.53h55.06v3.85h-51.21Z"/><path fill="currentColor" d="M462.58,164.23c-.5,0-.99-.19-1.35-.56l-59.09-58.36v56.99h-3.85v-61.6c0-.78.47-1.48,1.18-1.78.72-.3,1.54-.14,2.09.41l59.09,58.36v-56.99h3.85v61.6c0,.78-.47,1.48-1.18,1.78-.24.1-.49.15-.74.15Z"/><g class="ck"><path fill="#5AC8FA" d="M518.02,156.15c-.06,0-.12,0-.18,0-1.03-.05-1.99-.51-2.68-1.27l-13.86-15.4c-1.42-1.58-1.29-4.01.29-5.44,1.58-1.42,4.01-1.29,5.44.29l11.25,12.5,37.18-34.32c1.56-1.44,4-1.34,5.44.22,1.44,1.56,1.35,4-.22,5.44l-40.04,36.96c-.71.66-1.65,1.02-2.61,1.02Z"/><path fill="#5AC8FA" d="M568.84,156.15c-.99,0-1.97-.38-2.72-1.13l-15.4-15.4c-1.5-1.5-1.5-3.94,0-5.44,1.5-1.5,3.94-1.5,5.44,0l12.81,12.81,38.09-34.5c1.58-1.43,4.01-1.31,5.44.27,1.43,1.58,1.31,4.01-.27,5.44l-40.81,36.96c-.74.67-1.66,1-2.58,1Z"/></g><defs><linearGradient id="ewgH" gradientUnits="userSpaceOnUse" x1="147.06" y1="0" x2="572.94" y2="0"><stop offset="0" style="stop-color:var(--ew-now,#2F3136)"/><stop offset="1" style="stop-color:var(--ew-now,#2F3136)"/></linearGradient></defs><g class="ew" fill="url(#ewgH)"><path transform="translate(-118.4 -9.81)" d="M265.47,230.56v-30.52h17.04v1.78h-15.12v12.54h14.2v1.78h-14.2v12.64h15.46v1.78h-17.39Z"/><path transform="translate(-78.25 -9.81)" d="M298.61,230.56v-13.81l-11.51-16.71h2.27l6.94,10.08c.57.85,1.13,1.68,1.66,2.51.53.83,1.07,1.7,1.6,2.63.53-.94,1.07-1.83,1.6-2.65.53-.83,1.09-1.66,1.66-2.49l6.9-10.08h2.27l-11.47,16.71v13.81h-1.93Z"/><path transform="translate(-39.11 -9.81)" d="M317.28,230.56v-30.52h17.04v1.78h-15.12v12.54h14.2v1.78h-14.2v12.64h15.46v1.78h-17.39Z"/><path transform="translate(0.82 -9.81)" d="M347.67,230.56l-8.54-30.52h1.99l6,21.77c.33,1.17.64,2.35.93,3.52.29,1.17.58,2.37.85,3.58.27-1.22.56-2.41.85-3.58.29-1.17.6-2.35.91-3.52l5.88-21.77h2.44l5.86,21.77c.31,1.16.62,2.33.91,3.5s.58,2.36.85,3.56c.27-1.2.56-2.39.86-3.56.3-1.17.61-2.34.92-3.5l6-21.77h1.99l-8.54,30.52h-2.46l-5.86-21.53c-.3-1.12-.6-2.27-.9-3.44-.3-1.17-.59-2.41-.86-3.71-.27,1.26-.56,2.47-.85,3.64-.29,1.17-.6,2.34-.91,3.51l-5.84,21.53h-2.48Z"/><path transform="translate(39.74 -9.81)" d="M381.87,230.56v-30.52h17.04v1.78h-15.12v12.54h14.2v1.78h-14.2v12.64h15.46v1.78h-17.39Z"/><path transform="translate(79.89 -9.81)" d="M403.5,230.56l11.31-30.52h2.36l11.37,30.52h-2.03l-3.56-9.61h-13.87l-3.52,9.61h-2.05ZM409.71,219.19h12.58l-3.85-10.43c-.37-1.01-.75-2.1-1.16-3.27-.4-1.17-.84-2.46-1.3-3.88-.46,1.43-.9,2.74-1.3,3.91-.4,1.17-.79,2.25-1.16,3.24l-3.81,10.43Z"/><path transform="translate(118.4 -9.81)" d="M434.44,230.56v-30.52h9.46c1.93,0,3.58.38,4.97,1.14,1.39.76,2.45,1.81,3.2,3.15.74,1.34,1.12,2.9,1.12,4.66,0,2.06-.51,3.82-1.53,5.28-1.02,1.46-2.44,2.49-4.27,3.07l7.15,13.21h-2.21l-6.9-12.8c-.49.05-1,.08-1.52.08h-7.54v12.72h-1.93ZM436.36,216.05h7.48c2.32,0,4.14-.64,5.45-1.93s1.97-3,1.97-5.14-.66-3.9-1.97-5.21c-1.31-1.32-3.13-1.98-5.47-1.98h-7.46v14.26Z"/></g></svg></a>
 <div class="pill r"><div style="position:relative"><button class="ib" id="blg" aria-label="Language" data-nt style="font-size:15px;font-weight:500">EN</button><div class="pop" id="lgp" data-nt style="width:170px"></div></div><div style="position:relative"><button class="ib" id="bcur" aria-label="Currency" data-nt style="font-size:14px;font-weight:500">EGP</button><div class="pop" id="cpop" data-nt style="width:230px"></div></div><button class="ib" id="bt" aria-label="Dark mode" hidden><svg class="i" viewBox="0 0 24 24"><path d="M19.5 14.6A7.8 7.8 0 0 1 9.4 4.5a7.8 7.8 0 1 0 10.1 10.1z"/></svg></button><button class="ib" id="bs" aria-label="Search"><svg class="i" viewBox="0 0 24 24"><circle cx="11" cy="11" r="6.5"/><path d="M16 16l4.5 4.5"/></svg></button><button class="ib" id="bfv" aria-label="Favourites" style="position:relative"><svg class="i" viewBox="0 0 24 24"><path d="M12 20s-7.5-4.6-7.5-10A4.3 4.3 0 0112 7.6 4.3 4.3 0 0119.5 10c0 5.4-7.5 10-7.5 10z"/></svg><span id="wcb"></span></button><div style="position:relative"><button class="ib" id="ba" aria-label="Account"><svg class="i" viewBox="0 0 24 24"><circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3.2"/><path d="M6.5 18.2c1.4-2.2 3.2-3.2 5.5-3.2s4.1 1 5.5 3.2"/></svg></button><div class="pop" id="pop"><a href="#">Sign in</a><a href="#">Create account</a><a href="#">My points</a><a href="#">Wishlist (<span id="wc">0</span>)</a></div></div><button class="ib" id="bb" aria-label="Bag"><svg class="i" viewBox="0 0 24 24"><path d="M6 8h12l1 12H5z"/><path d="M9 8V6.5a3 3 0 016 0V8"/></svg><span class="cnt" id="cc">0</span></button></div></div>
 <div class="mega" id="mega"></div></header>
 
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 <main class="bf-wrap">
   <p class="bf-k">Limited offer</p>
   <h1 class="bf-h">Black Friday at SEEN</h1>
   <p class="bf-lead">Two pairs, one calm decision. Choose your favourite sunglasses or optical frames and let the second pair be on us.</p>
 
-  <div class="bf-card" id="bfCard">
-    <div class="bf-tiles"><div class="bf-tile"><span class="bf-n">1</span><span>Buy one pair</span></div><div class="bf-tile bf-tile-free"><span class="bf-n">2</span><span class="bf-free">FREE</span><span>the second pair</span></div></div>
-    <p class="bf-until">Until 20 November 2026</p>
-    <div class="bf-count" id="bfCount" aria-live="off">
-      <div><b id="bfD">0</b><span>days</span></div>
-      <div><b id="bfH">00</b><span>hrs</span></div>
-      <div><b id="bfM">00</b><span>min</span></div>
-      <div><b id="bfS">00</b><span>sec</span></div>
-    </div>
-    <p class="bf-ended" id="bfEnded">This offer has ended. Thank you for visiting SEEN.</p>
-  </div>
+  <div class="offer" id="offer"></div>
 
   <p class="bf-note">Sunglasses and optical frames. Prescription lenses are excluded.</p>
 
   <div class="bf-btns">
     <a class="bf-btn dark" href="/shop/sunglasses">Shop sunglasses</a>
     <a class="bf-btn" href="/shop/optical">Shop optical frames</a>
-    <a class="bf-btn" href="https://wa.me/201112299665" target="_blank" rel="noopener">Ask us on WhatsApp</a>
   </div>
 </main>
 <script>
 (function(){
-  var end = new Date('2026-11-20T23:59:59+02:00').getTime();
-  var pad = function (n) { return n < 10 ? '0' + n : '' + n; };
-  function tick() {
-    var left = end - Date.now();
-    if (left <= 0) {
-      document.getElementById('bfCount').hidden = true;
-      document.getElementById('bfEnded').style.display = 'block';
-      clearInterval(timer);
-      return;
-    }
-    var s = Math.floor(left / 1000);
-    document.getElementById('bfD').textContent = Math.floor(s / 86400);
-    document.getElementById('bfH').textContent = pad(Math.floor(s % 86400 / 3600));
-    document.getElementById('bfM').textContent = pad(Math.floor(s % 3600 / 60));
-    document.getElementById('bfS').textContent = pad(s % 60);
+  var C = { offer: { end: '2026-11-20' } };
+  var fine = window.matchMedia('(pointer: fine)').matches;
+  var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  var T = { en: {
+    offerNote: 'Sunglasses and optical frames. Prescription lenses excluded.',
+    offerKick: 'Limited offer', offerA: 'Buy one', offerB: 'get the second pair', offerFree: 'FREE',
+    offerUntil: 'Until 20 November', offerUnits: ['days', 'hrs', 'min', 'sec'], ctaWa: 'Book now'
+  } };
+  function t(k) { return T.en[k]; }
+  function $(id) { return document.getElementById(id); }
+  function esc(s) { return String(s == null ? '' : s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function offerRender() {
+    var el = $('offer'); if (!el) return;
+    var note = t('offerNote') || '';
+    var u = t('offerUnits') || T.en.offerUnits;
+    var G = '<svg viewBox="0 0 120 48" fill="none" stroke="currentColor" stroke-width="4" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><rect x="6" y="10" width="44" height="30" rx="13" fill="rgba(255,255,255,.35)"/><rect x="70" y="10" width="44" height="30" rx="13" fill="rgba(255,255,255,.35)"/><path d="M50 22q10-8 20 0M6 20L1 15M114 20l5-5"/></svg>';
+    el.innerHTML =
+      '<span class="of-art" aria-hidden="true"><span class="of-g of-g1">' + G + '</span><span class="of-g of-g2">' + G + '</span><span class="of-plus">+</span><span class="of-s of-s1"></span><span class="of-s of-s2"></span></span>' +
+      '<span class="of-txt"><span class="of-kick"><i></i>' + esc(t('offerKick')) + '</span>' +
+      '<span class="of-h" role="heading" aria-level="2"><span class="of-l"><span>' + esc(t('offerA')) + '</span></span>' +
+      '<span class="of-l of-l2"><span>' + esc(t('offerB')) + ' <em class="of-free">' + esc(t('offerFree')) + '</em></span></span></span>' +
+      (note ? '<span class="of-note">' + esc(note) + '</span>' : '') + '</span>' +
+      '<span class="of-side"><span class="of-cd">' + [0, 1, 2, 3].map(function (i) {
+        return '<span class="of-u"><b data-u="' + i + '"><span>00</span></b><small>' + esc(u[i]) + '</small></span>';
+      }).join('') + '</span><span class="of-until">' + esc(t('offerUntil')) + '</span>' +
+      '<a class="of-cta" href="https://wa.me/201112299665"><span>' + esc(t('ctaWa')) + '</span><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M5 12h14M13 6l6 6-6 6"/></svg></a></span>';
+    offerTick(true);
   }
-  var timer = setInterval(tick, 1000);
-  tick();
+  function offerTick(first) {
+    var el = $('offer'); if (!el || !C.offer || !C.offer.end) return;
+    var ms = new Date(C.offer.end + 'T23:59:59') - new Date();
+    if (ms <= 0) { el.hidden = true; return; }
+    var s = Math.floor(ms / 1000), v = [Math.floor(s / 86400), Math.floor(s % 86400 / 3600), Math.floor(s % 3600 / 60), s % 60];
+    el.querySelectorAll('[data-u]').forEach(function (bx, i) {
+      var n = (v[i] < 10 ? '0' : '') + v[i], sp = bx.firstChild;
+      if (sp.textContent === n) return;
+      sp.textContent = n;
+      if (!first && !reduce) { bx.classList.remove('tick'); void bx.offsetWidth; bx.classList.add('tick'); }
+    });
+  }
+  setInterval(function () { offerTick(false); }, 1000);
+
+
+  offerRender();
+    (function offerMotion() {
+    var el = $('offer'); if (!el || !fine || reduce) return;
+    el.addEventListener('pointermove', function (e) {
+      var r = el.getBoundingClientRect(), x = (e.clientX - r.left) / r.width - .5, y = (e.clientY - r.top) / r.height - .5;
+      el.style.setProperty('--rx', (-y * 6).toFixed(2) + 'deg'); el.style.setProperty('--ry', (x * 8).toFixed(2) + 'deg');
+      el.style.setProperty('--gx', ((x + .5) * 100).toFixed(1) + '%');
+    });
+    el.addEventListener('pointerleave', function () { el.style.setProperty('--rx', '0deg'); el.style.setProperty('--ry', '0deg'); });
+  })();
+
 })();
 </script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
-
-<script src="/site-nav.js" defer></script>
 <footer class="ftr"><div class="ftr-g"><div><h3>About SEEN</h3><ul><li><a href="https://wa.me/201112299665" target="_blank" rel="noopener">Customer service on WhatsApp</a></li><li><a href="/about/index.html">About SEEN</a></li><li><a href="#" data-pol>Read our policies</a></li></ul></div><div><h3>Shop</h3><ul><li><a href="/shop/sunglasses">Sunglasses</a></li><li><a href="/shop/optical">Optical frames</a></li><li><a href="/shop">Brands</a></li><li><a href="#sale">Sale</a></li></ul></div><div><h3>Services</h3><ul><li><a href="#" data-hbk>Hotel pick-up booking</a></li><li><a href="https://wa.me/201112299665" target="_blank" rel="noopener">Eye examination</a></li><li><a href="/seen-tryon-3d.html">Try on frames</a></li><li><a href="https://wa.me/201112299665" target="_blank" rel="noopener">Frame consultation</a></li><li><a href="/frames/index.html">Find your face shape</a></li><li><a href="#lenses">Lens colour preview</a></li><li><a href="/3d.html" target="_blank" rel="noopener">Interactive 3D</a></li></ul></div><div><h3>Our branches</h3><ul><li><a href="https://maps.app.goo.gl/qELR42bu6Amims959" target="_blank" rel="noopener">City Center Mall, Hurghada</a></li><li><a href="https://maps.app.goo.gl/hTF2RTVjtiixjvKc7" target="_blank" rel="noopener">El Kawthar, Hurghada</a></li><li><a href="https://wa.me/201112299665" target="_blank" rel="noopener">Sheraton Miramar, El Gouna</a></li></ul></div><div><h3>Policies</h3><ul><li><a href="#" data-pol>Warranty</a></li><li><a href="#" data-pol>Exchange</a></li><li><a href="#" data-pol>Refunds</a></li><li><a href="#" data-pol>Payment</a></li><li><a href="#" data-pol>Delivery and pick-up</a></li></ul></div><div><h3>Follow us</h3><ul><li><a href="https://www.instagram.com/seeneyewear.eg/" target="_blank" rel="noopener">Instagram</a></li><li><a href="https://www.facebook.com/seeneyewear.eg" target="_blank" rel="noopener">Facebook</a></li><li><a href="https://www.tiktok.com/@seeneyewear.eg" target="_blank" rel="noopener">TikTok</a></li><li><a href="https://maps.app.goo.gl/qELR42bu6Amims959" target="_blank" rel="noopener">Google reviews</a></li></ul></div></div><div class="ftr-b"><span>© 2026 SEEN Eyewear · Hurghada, Egypt</span><span>Prices include VAT · 100% authentic</span></div></footer>
 <script src="/site-nav.js" defer></script>
 </body>

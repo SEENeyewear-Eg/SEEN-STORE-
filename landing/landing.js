@@ -296,114 +296,6 @@
     document.querySelectorAll('.kicker, .sec .wrap h2, .band h2, #about p.big, #aboutFeat h3').forEach(function (el) { split(el, { n: 0 }); });
   }
 
-  /* ---------- Showroom flip-book ---------- */
-  var bk = { i: 0, n: 0, drag: null };
-  function esc2(s) { return esc(s); }
-  function sheetHtml(i, front, back) { return '<div class="sheet" data-i="' + i + '">' + front + back + '</div>'; }
-  function buildBook() {
-    var sr = $('showroom'); if (!sr || getComputedStyle(sr).display === 'none') return;   // gallery hidden for now: build nothing, so its photos are never requested
-    var Tt = T[L()], caps = Tt.caps || T.en.caps, mb = Tt.mb || T.en.mb;
-    var backs = [mb[0], mb[1], mb[2], mb[3], Tt.q, Tt.pMag, mb[0], mb[1], mb[2]];
-    var photos = ['s2', 's3', 's4', 's5', 's6', 's7', 's8', 's9', 's10'];
-    var h2 = sheetHtml(0,
-      '<figure class="face front"><img src="img/showroom/s1.jpg" alt="" decoding="async"><div class="cov-t"><span class="kk">' + esc2(Tt.kMag) + '</span><h3>' + esc2(Tt.hMag) + '</h3></div><span class="vcap">' + esc2(caps[0]) + '</span><span class="fo">01</span></figure>',
-      '<div class="face back bpage"><span class="side">' + esc2(Tt.kMag) + '</span><div class="lines"><span style="--d:0s">' + esc2(Tt.pMag) + '</span></div><blockquote class="qb">' + esc2(Tt.q) + '</blockquote><span class="fo">02</span></div>');
-    photos.forEach(function (p, k) {
-      var no = String(k + 3).padStart(2, '0');
-      h2 += sheetHtml(k + 1,
-        '<figure class="face front"><img src="img/showroom/' + p + '.jpg" alt="" loading="lazy" decoding="async"><span class="vcap">' + esc2(caps[k + 1]) + '</span><span class="fo">' + no + '</span></figure>',
-        '<div class="face back bpage"><span class="side">' + esc2(caps[k + 1]) + '</span><div class="lines"><span>' + esc2(backs[k]) + '</span></div><span class="fo">' + no + '</span></div>');
-    });
-    h2 += sheetHtml(10,
-      '<figure class="face front cov end"><div class="cov-t"><span class="kk">SEEN EYEWEAR</span><h3>' + esc2(Tt.bkEnd || Tt.foot) + '</h3></div></figure>',
-      '<div class="face back bpage"></div>');
-    var book = $('book'); book.innerHTML = h2;
-    bk.n = book.querySelectorAll('.sheet').length;
-    if (bk.i > bk.n) bk.i = bk.n;
-    $('bkPrev').setAttribute('aria-label', Tt.bkPrev || 'Previous page');
-    $('bkNext').setAttribute('aria-label', Tt.bkNext || 'Next page');
-    applyState(bk.i, true);
-  }
-  function applyState(i, instant) {
-    bk.i = Math.max(0, Math.min(bk.n, i));
-    var sheets = $('book').querySelectorAll('.sheet');
-    sheets.forEach(function (s, k) {
-      if (instant) s.style.transition = 'none';
-      s.classList.toggle('flipped', k < bk.i);
-      s.style.zIndex = k < bk.i ? (k + 1) : (bk.n - k);
-      if (instant) { void s.offsetWidth; s.style.transition = ''; }
-    });
-    $('bkCount').textContent = (bk.i) + ' / ' + bk.n;
-    $('bkPrev').disabled = bk.i === 0; $('bkNext').disabled = bk.i >= bk.n;
-    /* Phones: pages sit side by side in a swipe row; bring the current page into view */
-    if (isMobileBook() && !bk.syncing && sheets[bk.i]) {
-      var bkEl = $('book'); bkEl.scrollTo({ left: sheets[bk.i].offsetLeft - bkEl.offsetLeft, behavior: instant || reduce ? 'auto' : 'smooth' }); // sideways only, never moves the page
-    }
-  }
-  function turn(d) { applyState(bk.i + d); }
-  function isMobileBook() { return window.matchMedia('(max-width: 719px)').matches; }
-  function sheetAt(k) { return $('book').querySelectorAll('.sheet')[k]; }
-  function bindBook() {
-    var book = $('book');
-    $('bkPrev').addEventListener('click', function () { turn(-1); });
-    $('bkNext').addEventListener('click', function () { turn(1); });
-    book.addEventListener('keydown', function (e) {
-      if (e.key === 'ArrowRight') { e.preventDefault(); turn(1); }
-      else if (e.key === 'ArrowLeft') { e.preventDefault(); turn(-1); }
-    });
-    /* Phones: when the reader swipes the page row, update the counter to the page now in the middle */
-    var st = 0;
-    book.addEventListener('scroll', function () {
-      if (!isMobileBook()) return;
-      clearTimeout(st);
-      st = setTimeout(function () {
-        var sheets = book.querySelectorAll('.sheet'), c = book.getBoundingClientRect().left + book.clientWidth / 2, best = 0, bd = 1e9;
-        sheets.forEach(function (s, k) { var r = s.getBoundingClientRect(), d = Math.abs(r.left + r.width / 2 - c); if (d < bd) { bd = d; best = k; } });
-        if (best === bk.i) return;
-        bk.i = best; bk.syncing = true;
-        $('bkCount').textContent = bk.i + ' / ' + bk.n;
-        $('bkPrev').disabled = bk.i === 0; $('bkNext').disabled = bk.i >= bk.n;
-        bk.syncing = false;
-      }, 120);
-    });
-    book.addEventListener('pointerdown', function (e) {
-      if (e.button || isMobileBook()) return;
-      bk.drag = { x0: e.clientX, y0: e.clientY, moved: 0, id: e.pointerId, s: null, dir: 0 };
-      if (window.getSelection) window.getSelection().removeAllRanges();
-    });
-    book.addEventListener('pointermove', function (e) {
-      var d = bk.drag; if (!d || d.id !== e.pointerId) return;
-      var dx = e.clientX - d.x0, dy = e.clientY - d.y0;
-      if (!d.s) {
-        if (Math.abs(dx) < 8 || Math.abs(dx) < Math.abs(dy)) return;
-        d.dir = dx < 0 ? 1 : -1;
-        var k = d.dir > 0 ? bk.i : bk.i - 1;
-        if (k < 0 || k >= bk.n) { d.dir = 0; return; }
-        d.s = sheetAt(k); d.k = k; book.setPointerCapture(e.pointerId);
-        d.s.style.transition = 'none'; d.s.style.zIndex = 900; book.style.cursor = 'grabbing';
-      }
-      d.moved = Math.max(d.moved, Math.abs(dx));
-      var W = book.clientWidth / 2, p = Math.max(0, Math.min(1, Math.abs(dx) / W));
-      d.p = p;
-      d.s.style.transform = 'rotateY(' + (d.dir > 0 ? -180 * p : -180 + 180 * p) + 'deg)';
-    });
-    function end(e) {
-      var d = bk.drag; if (!d || d.id !== e.pointerId) return; bk.drag = null; book.style.cursor = '';
-      if (!d.s) {
-        if (d.moved < 6) {
-          var r = book.getBoundingClientRect(), f = (e.clientX - r.left) / r.width;
-          if (f > 0.78) turn(1); else if (f < 0.22) turn(-1);
-        }
-        return;
-      }
-      var commit = d.p > 0.3, next = bk.i + (commit ? d.dir : 0);
-      d.s.style.transition = ''; d.s.style.transform = '';
-      applyState(next);
-    }
-    book.addEventListener('pointerup', end);
-    book.addEventListener('pointercancel', end);
-  }
-
   /* Offer banner: two frames (1 + 1), headline, live countdown to the end date, button to the booking form */
   function offerRender() {
     var el = $('offer'); if (!el) return;
@@ -478,7 +370,6 @@
         '<span class="lc">' + esc(x.short) + '</span><span class="ln2">' + esc(x.name) + '</span></button>';
     }).join('');
     hero(); services(); branches(); social(); stars(); aboutFeat(); wordify(); observe();
-    buildBook();
   }
 
   /* ---------- Language / mode ---------- */
@@ -725,7 +616,7 @@
 
   /* ---------- Start ---------- */
   $('yr').textContent = new Date().getFullYear();
-  bindBook(); fitInit(); rotator(); applyText(); onScroll();
+  fitInit(); rotator(); applyText(); onScroll();
   if (window.SeenBrandStrip && C.brands) SeenBrandStrip.mount($('brands'), C.brands, C.brandStrip);
 })();
 

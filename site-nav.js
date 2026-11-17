@@ -1,6 +1,8 @@
 // Header behaviour for the separate pages (frames, blog, about, 3D). The home page has its own full version.
 // Menus here use fixed lists, so they do not need the product catalogue.
 (function () {
+  // Pages on a white background: the header text and logo turn dark grey (#2F3136).
+  document.body.classList.add('light-page');
   var hd = document.getElementById('hd'), mega = document.getElementById('mega');
   if (!hd || !mega) return;
   var nb = [].slice.call(document.querySelectorAll('#nav button'));

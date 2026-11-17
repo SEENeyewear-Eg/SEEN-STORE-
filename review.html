@@ -1,0 +1,58 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Review your frame | SEEN Eyewear</title>
+<style>
+:root{--ink:#111;--muted:#666;--line:#d9dee2;--blue:#5AC8FA}
+body{margin:0;font-family:Jost,system-ui,sans-serif;color:var(--ink);background:#fff;line-height:1.5}
+main{max-width:520px;margin:0 auto;padding:56px 16px 72px}
+h1{font-weight:400;font-size:28px;margin:0 0 6px}
+.p{color:var(--muted);margin:0 0 28px}
+.stars{display:flex;gap:6px;margin:6px 0 22px}
+.stars button{background:none;border:0;font-size:34px;color:#cfd6db;cursor:pointer;padding:0 2px}
+.stars button.on{color:var(--blue)}
+label{display:block;font-size:14px;margin:0 0 16px;color:var(--muted)}
+input,textarea{display:block;width:100%;margin-top:6px;padding:12px;border:1px solid var(--line);border-radius:10px;font:inherit;color:var(--ink);box-sizing:border-box}
+button.go{width:100%;padding:14px;border-radius:999px;border:0;background:var(--blue);color:#0b0b0b;font:inherit;font-size:16px;cursor:pointer}
+button.go:disabled{opacity:.6}
+#msg{margin-top:16px;font-size:15px;min-height:1.4em}
+.bad{color:#b42318}.good{color:#067647}
+</style>
+</head>
+<body>
+<main>
+  <h1>How do you like your frame?</h1>
+  <p class="p" id="pname">Your review helps other customers choose.</p>
+  <form id="f" novalidate>
+    <div class="stars" id="stars" role="radiogroup" aria-label="Rating">
+      <button type="button" data-r="1" aria-label="1 star">★</button><button type="button" data-r="2" aria-label="2 stars">★</button><button type="button" data-r="3" aria-label="3 stars">★</button><button type="button" data-r="4" aria-label="4 stars">★</button><button type="button" data-r="5" aria-label="5 stars">★</button>
+    </div>
+    <label>Your name (optional)<input id="nm" maxlength="40" autocomplete="given-name"></label>
+    <label>Your review (optional)<textarea id="tx" rows="4" maxlength="500"></textarea></label>
+    <button class="go" id="go" type="submit">Send review</button>
+    <div id="msg" role="status"></div>
+  </form>
+</main>
+<script>
+(()=>{const q=new URLSearchParams(location.search),o=q.get('o')||'',p=q.get('p')||'',t=q.get('t')||'';
+const parts=p.split('|');if(parts.length===2)document.getElementById('pname').textContent=parts[0]+' '+parts[1];
+let rating=0;const btns=[...document.querySelectorAll('#stars button')];
+const paint=()=>btns.forEach(b=>b.classList.toggle('on',+b.dataset.r<=rating));
+btns.forEach(b=>b.addEventListener('click',()=>{rating=+b.dataset.r;paint()}));
+const msg=document.getElementById('msg'),go=document.getElementById('go');
+document.getElementById('f').addEventListener('submit',async e=>{e.preventDefault();msg.className='';
+if(!o||!p||!t){msg.className='bad';msg.textContent='This link is not valid. Please ask the store for a new one.';return}
+if(!rating){msg.className='bad';msg.textContent='Please choose a rating.';return}
+go.disabled=true;msg.textContent='Sending…';
+try{const r=await fetch('/api/reviews',{method:'POST',headers:{'content-type':'application/json'},body:JSON.stringify({action:'submit',o,p,t,rating,name:document.getElementById('nm').value,text:document.getElementById('tx').value})});
+const j=await r.json().catch(()=>({}));
+if(r.ok&&j.ok){msg.className='good';msg.textContent=j.message;document.getElementById('f').reset();rating=0;paint();go.hidden=true}
+else{msg.className='bad';msg.textContent=j.error||'Could not send. Please try again.';go.disabled=false}}
+catch(err){msg.className='bad';msg.textContent='Could not send. Check your connection and try again.';go.disabled=false}});
+})();
+</script>
+</body>
+</html>

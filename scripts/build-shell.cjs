@@ -30,7 +30,7 @@ const FOOTER = footerMatch[0];
 // The chat button is only on the home page and the shop/product pages (inside index.html), not on the separate pages.
 const CHAT = '';
 
-const PAGES = ['frames/index.html', 'blog/index.html', 'about/index.html', '3d.html', 'visit/index.html', 'black-friday/index.html'];
+const PAGES = ['frames/index.html', 'blog/index.html', 'about/index.html', '3d.html', 'visit/index.html', 'black-friday/index.html', 'feedback/index.html'];
 
 for (const f of PAGES) {
   let s = read(f);

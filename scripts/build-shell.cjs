@@ -27,6 +27,8 @@ const footerMatch = index.match(/<footer class="ftr">[\s\S]*?<\/footer>/);
 if (!headerMatch || !footerMatch) throw new Error('header or footer not found');
 const HEADER = headerMatch[0].replace(/<i data-i="([a-z]+)"><\/i>/g, (_, n) => icon(n));
 const FOOTER = footerMatch[0];
+// The chat button is only on the home page and the shop/product pages (inside index.html), not on the separate pages.
+const CHAT = '';
 
 const PAGES = ['frames/index.html', 'blog/index.html', 'about/index.html', '3d.html', 'visit/index.html', 'black-friday/index.html'];
 
@@ -34,6 +36,10 @@ for (const f of PAGES) {
   let s = read(f);
   // Remove any header or footer the page had before.
   s = s.replace(/<header[\s\S]*?<\/header>/g, '').replace(/<footer[\s\S]*?<\/footer>/g, '');
+  // Remove earlier copies of the nav script (otherwise each build adds another one and the menus open and close at once).
+  s = s.replace(/<script src="\/site-nav.js" defer><\/script>\n?/g, '');
+  // Remove an earlier copy of the chat widget from the page.
+  s = s.replace(/<style data-sc>[\s\S]*?<\/script>\n?/g, '');
   // Shared styles go first in the head; the page's own styles follow them.
   // Pages start below the fixed header.
 const PAGE_TOP = 'body>article,body>main,body>.wrap{padding-top:130px!important}' + 'body.light-page #hd:not(.solid){color:#2F3136;--ew-now:#2F3136}' + 'body.light-page #hd:not(.solid) .pill{background:rgba(255,255,255,.6);border-color:rgba(47,49,54,.18)}' + 'body.light-page #hd:not(.solid) .ib:hover{opacity:.6}' + 'body.light-page #hd:not(.solid) nav button,body.light-page #hd:not(.solid) nav a,body.light-page #hd:not(.solid) .ib{color:#2F3136}' + 'body.light-page #hd:not(.solid) nav button:hover,body.light-page #hd:not(.solid) nav a:hover{background:#2F3136;color:#fff}';
@@ -51,7 +57,7 @@ const shellTag = '<style data-shell>' + SHELL_CSS + PAGE_TOP + '</style>';
   // Header right after <body>, footer and the nav script right before </body>.
   s = s.replace(/<body([^>]*)>/, (m, attrs) => '<body class="light-page"' + attrs + '>\n' + HEADER + '\n');
   const navTag = '<script src="/site-nav.js" defer></script>';
-  s = s.replace('</body>', () => FOOTER + '\n' + navTag + '\n</body>');
+  s = s.replace('</body>', () => FOOTER + '\n' + CHAT + '\n' + navTag + '\n</body>');
   fs.writeFileSync(path.join(root, f), s, 'utf8');
   console.log('built', f);
 }

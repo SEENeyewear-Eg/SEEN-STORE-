@@ -1,0 +1,107 @@
+<style data-sc>
+.sc-fab{position:fixed;right:18px;bottom:86px;z-index:60;width:56px;height:56px;padding:0;border-radius:50%;border:0;background:#2F3136;color:#fff;cursor:pointer;display:flex;align-items:center;justify-content:center;box-shadow:0 6px 18px rgba(0,0,0,.25)}.sc-fab.hid{display:none}.sc-dx{position:absolute;top:-4px;right:-4px;width:20px;height:20px;border-radius:50%;background:#fff;color:#2F3136;border:1px solid #d6dde2;font-size:14px;line-height:18px;text-align:center;cursor:pointer;font-weight:500}
+.sc-fab svg{width:20px;height:20px;fill:none;stroke:#5AC8FA;stroke-width:1.8;stroke-linecap:round;stroke-linejoin:round}
+.sc-box{position:fixed;right:18px;bottom:146px;z-index:70;width:340px;max-width:calc(100vw - 36px);height:480px;max-height:calc(100vh - 110px);display:none;flex-direction:column;background:#EEF2F4;border-radius:18px;overflow:hidden;box-shadow:0 18px 40px rgba(0,0,0,.25);font-family:Jost,system-ui,sans-serif}
+.sc-box.on{display:flex}
+.sc-box:hover{box-shadow:0 0 0 2px #5AC8FA,0 18px 40px rgba(0,0,0,.25)}
+.sc-head{background:#2F3136;color:#fff;padding:14px 16px;display:flex;align-items:center;gap:12px}
+.sc-av{width:38px;height:38px;border-radius:50%;background:#F6F8F9;display:flex;align-items:center;justify-content:center;flex:none}.sc-av svg{width:22px;height:22px;fill:none;stroke:#5AC8FA;stroke-width:2.4;stroke-linecap:round;stroke-linejoin:round}
+.sc-name{font-size:15px;font-weight:500}
+.sc-st{font-size:12px;opacity:.8}
+.sc-x{margin-inline-start:auto;background:none;border:0;color:#fff;font-size:22px;cursor:pointer;line-height:1}
+.sc-msgs{flex:1;overflow:auto;padding:14px 12px;display:flex;flex-direction:column;gap:8px}
+.sc-b{max-width:82%;padding:9px 12px;border-radius:14px;font-size:14px;line-height:1.5;color:#111;background:#fff;align-self:flex-start;box-shadow:0 1px 1px rgba(0,0,0,.08)}
+.sc-b.me{background:#DDF4FF;align-self:flex-end}
+.sc-b a{color:#111;text-decoration:underline}
+.sc-btn{display:inline-block;margin-top:8px;padding:8px 14px;border-radius:999px;background:#F6F8F9;border:1px solid #5AC8FA;color:#0b0b0b;text-decoration:none;font-size:13px}
+.sc-chips{display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;background:#EEF2F4}
+.sc-chip{border:1px solid #d6dde2;background:#fff;border-radius:999px;padding:7px 12px;font-size:13px;cursor:pointer;color:#111}
+.sc-chip:hover{border-color:#5AC8FA}
+.sc-in{display:flex;gap:8px;padding:10px;background:#fff;border-top:1px solid #e3e5e7}
+.sc-in input{flex:1;border:1px solid #d6dde2;border-radius:999px;padding:10px 14px;font:inherit;font-size:14px;color:#111;background:#fff}
+.sc-in input:hover,.sc-in input:focus{border-color:#5AC8FA;box-shadow:0 0 0 2px rgba(90,200,250,.35);outline:none}
+.sc-chips-in{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 6px}.sc-chips-in .sc-chip{max-width:100%;white-space:normal;text-align:start}#scChips{max-height:112px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;flex:none}.sc-send{width:42px;height:42px;border-radius:50%;border:0;background:#5AC8FA;color:#0b0b0b;cursor:pointer;display:flex;align-items:center;justify-content:center}
+.sc-send svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+</style>
+<button class="sc-fab" id="scFab" aria-label="SEEN Online Chat" style="position:fixed" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1zM20 13h-3v6h2a1 1 0 0 0 1-1z"/><path d="M17 19a5 5 0 0 1-5 2"/></svg><span class="sc-dx" id="scDx" role="button" aria-label="Hide chat" title="Hide chat">×</span></button>
+<div class="sc-box" id="scBox" role="dialog" aria-label="SEEN chat">
+  <div class="sc-head"><div class="sc-av"><svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 13l4 4 6-7"/><path d="M11 13l4 4 7-8"/></svg></div><div><div class="sc-name" id="scName">SEEN Online Chat</div><div class="sc-st" id="scStatus">Usually replies within the day</div></div><button class="sc-x" id="scX" aria-label="Close">×</button></div>
+  <div class="sc-msgs" id="scMsgs" aria-live="polite"></div>
+  <div class="sc-chips" id="scChips"></div>
+  <form class="sc-in" id="scForm"><input id="scText" placeholder="Write your question" aria-label="Your question" maxlength="300"><button class="sc-send" type="submit" aria-label="Send"><svg viewBox="0 0 24 24"><path d="M5 12h14M13 6l6 6-6 6"/></svg></button></form>
+</div>
+<script>
+(function(){
+  var WA = 'https://wa.me/201112299665';
+  var box = document.getElementById('scBox'), fab = document.getElementById('scFab'), msgs = document.getElementById('scMsgs'), chips = document.getElementById('scChips'), form = document.getElementById('scForm'), input = document.getElementById('scText');
+  var lang = 'en';
+  try { lang = localStorage.seenLang === 'ar' ? 'ar' : 'en'; } catch (e) {}
+  var T = {
+    en: {
+      name: 'SEEN Online Chat', status: 'Usually replies within the day', ph: 'Write your question',
+      greet: 'Welcome to SEEN EYEWEAR <span style="color:#5AC8FA;font-weight:700">&#10003;&#10003;</span><br>Pick a topic, or write your question below.',
+      send: 'Send on WhatsApp', thanks: 'Thank you. We will answer you on WhatsApp.',
+      qa: {
+        branches: { q: 'Our branches', a: 'Our branches:<br>• City Center Mall, Hurghada<br>• El Kawthar, Hurghada<br>• Sheraton Miramar, El Gouna', l: 'Open Hurghada branches on Maps', h: 'https://maps.app.goo.gl/qELR42bu6Amims959' },
+        offers: { q: 'Offers', a: 'Black Friday: buy one pair, get the second FREE, until 20 November 2026. Sunglasses and optical frames. Prescription lenses excluded.', l: 'See the offer', h: '/black-friday/index.html' },
+        visit: { q: 'Book a visit', a: 'Tell us the branch and the time you prefer, and we will confirm on WhatsApp.', l: 'Book on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I would like to book a visit.') },
+        hotel: { q: 'Hotel pick-up', a: 'Free pick-up and return from any hotel in Hurghada. Book your pick-up and we will confirm on WhatsApp.', l: 'Book on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I would like to book a free hotel pick-up.') },
+        eye: { q: 'Eye examination', a: 'Our specialists check your eyes and prescription at our branches.', l: 'Book on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I would like to book an eye examination.') },
+        tryon: { q: 'Try on frames', a: 'Try any frame in person at our branches, or try frames on with your camera on our site.', l: 'Try on now', h: '/seen-tryon-3d.html' },
+        rx: { q: 'Prescription glasses', a: 'Bring your prescription to the branch and the lenses are fitted there. Prescription frames can also be ordered online.', l: 'Book on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I have a prescription and would like help.') },
+        warranty: { q: 'Warranty', a: 'Every frame carries the official brand warranty, usually one year from the purchase date. Keep your invoice.', l: 'Ask on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I have a question about the warranty.') },
+        exchange: { q: 'Exchange and refunds', a: 'Sunglasses can be exchanged within 14 days if unused, in original condition and packaging, with the invoice. Prescription glasses and contact lenses cannot be exchanged.', l: 'Ask on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I have a question about an exchange.') },
+        payment: { q: 'Payment', a: 'Pay online by card, bank installments, installment companies or mobile wallet. Cash on delivery is not available.', l: 'Ask on WhatsApp', h: WA + '?text=' + encodeURIComponent('Hello SEEN, I have a question about payment.') },
+        delivery: { q: 'Home delivery', a: 'Free delivery in Hurghada and the Red Sea. For other governorates, the fee is shown at checkout before you pay.', l: 'Order online', h: '/shop' },
+        contact: { q: 'Contact us', a: 'Chat with us on WhatsApp any time, and our team will reply.', l: 'Open WhatsApp', h: WA }
+      }
+    },
+    ar: {
+      name: 'SEEN شات أونلاين', status: 'بنرد عادةً خلال اليوم', ph: 'اكتب سؤالك',
+      greet: 'أهلاً بيك في SEEN EYEWEAR <span style="color:#5AC8FA;font-weight:700">&#10003;&#10003;</span><br>اختار موضوع، أو اكتب سؤالك تحت.',
+      send: 'ابعت على واتساب', thanks: 'شكراً. هنرد عليك على واتساب.',
+      qa: {
+        branches: { q: 'فروعنا', a: 'فروعنا:<br>• سيتي سنتر مول، الغردقة<br>• الكوثر، الغردقة<br>• شيراتون ميرامار، الجونة', l: 'افتح فروع الغردقة على الخريطة', h: 'https://maps.app.goo.gl/qELR42bu6Amims959' },
+        offers: { q: 'العروض', a: 'عرض Black Friday: اشترِ نضارة والتانية مجاناً، لحد 20 نوفمبر 2026. شمسيات ونظارات طبية. العدسات بروشتة مستثناة.', l: 'شوف العرض', h: '/black-friday/index.html' },
+        visit: { q: 'احجز زيارة', a: 'قولنا الفرع والوقت اللي يناسبك، وهنأكد على الواتساب.', l: 'احجز على الواتساب', h: WA + '?text=' + encodeURIComponent('مرحباً SEEN، عايز أحجز زيارة.') },
+        eye: { q: 'فحص النظر', a: 'فريقنا المتخصص بيفحص نظرك وبيقرأ الروشتة في فروعنا.', l: 'احجز على الواتساب', h: WA + '?text=' + encodeURIComponent('مرحباً SEEN، عايز أحجز فحص نظر.') },
+        tryon: { q: 'جرّب الفريم', a: 'تقدر تجرب أي فريم بنفسك في فروعنا، أو تجربه بالكاميرا على الموقع.', l: 'جرّب دلوقتي', h: '/seen-tryon-3d.html' },
+        rx: { q: 'نضارة بروشتة', a: 'جيب الروشتة للفرع والعدسات بتتركب هناك. ونضارات الروشتة ممكن تتطلب أونلاين كمان.', l: 'احجز على الواتساب', h: WA + '?text=' + encodeURIComponent('مرحباً SEEN، معايا روشتة وعايز مساعدة.') },
+        warranty: { q: 'الضمان', a: 'كل فريم عليه ضمان البراند الرسمي، عادةً سنة من تاريخ الشراء. احتفظ بالفاتورة.', l: 'اسأل على الواتساب', h: WA + '?text=' + encodeURIComponent('مرحباً SEEN، عندي سؤال عن الضمان.') },
+        exchange: { q: 'الاستبدال والاسترجاع', a: 'الشمسيات ممكن تتستبدل خلال 14 يوم لو مستخدمتهاش، وبحالتها الأصلية وبالعلبة والفاتورة. نضارات الروشتة والعدسات اللاصقة مابتتستبدلش.', l: 'اسأل على الواتساب', h: WA + '?text=' + encodeURIComponent('مرحباً SEEN، عندي سؤال عن الاستبدال.') },
+        payment: { q: 'الدفع', a: 'تدفع أونلاين بالكارت، أو تقسيط البنك، أو شركات التقسيط، أو المحفظة. الدفع عند الاستلام مش متاح.', l: 'اسأل على الواتساب', h: WA + '?text=' + encodeURIComponent('مرحباً SEEN، عندي سؤال عن الدفع.') },
+        delivery: { q: 'التوصيل للبيت', a: 'التوصيل مجاني في الغردقة والبحر الأحمر. للمحافظات التانية، المصاريف بتظهر قبل ما تدفع.', l: 'اطلب أونلاين', h: '/shop' },
+        contact: { q: 'تواصل معانا', a: 'تقدر تكلمنا على الواتساب في أي وقت، وفريقنا هيرد عليك.', l: 'افتح الواتساب', h: WA }
+      }
+    }
+  };
+  var L = T[lang];
+  document.getElementById('scName').textContent = L.name;
+  document.getElementById('scStatus').textContent = L.status;
+  input.placeholder = L.ph;
+  input.setAttribute('aria-label', L.ph);
+  if (lang === 'ar') { box.setAttribute('dir', 'rtl'); }
+  fab.setAttribute('aria-label', L.name);
+  var started = false;
+  function esc(s){ return String(s).replace(/[&<>"']/g, function (c) { return { '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]; }); }
+  function bubble(html, me){ var d = document.createElement('div'); d.className = 'sc-b' + (me ? ' me' : ''); d.innerHTML = html; msgs.appendChild(d); msgs.scrollTop = msgs.scrollHeight; }
+  function bot(html){ bubble(html, false); }
+  function me(text){ bubble(esc(text), true); }
+  function showChips(){ chips.innerHTML = ''; Object.keys(L.qa).forEach(function (k) { var b = document.createElement('button'); b.type = 'button'; b.className = 'sc-chip'; b.textContent = L.qa[k].q; b.onclick = function () { answer(k); }; chips.appendChild(b); }); }
+  function answer(k){ var x = L.qa[k]; me(x.q); bot(x.a + '<br><a class="sc-btn" href="' + x.h + '"' + (/^https?:/.test(x.h) ? ' target="_blank" rel="noopener"' : '') + '>' + esc(x.l) + '</a>'); }
+  function start(){ if (started) return; started = true; bot(L.greet); showChips(); }
+  function open(){ box.classList.add('on'); fab.setAttribute('aria-expanded', 'true'); start(); input.focus(); }
+  function close(){ box.classList.remove('on'); fab.setAttribute('aria-expanded', 'false'); }
+  fab.addEventListener('click', function () { box.classList.contains('on') ? close() : open(); });
+  document.getElementById('scX').addEventListener('click', close);
+  var dx = document.getElementById('scDx');
+  dx.addEventListener('click', function (e) { e.stopPropagation(); close(); fab.classList.add('hid'); try { sessionStorage.setItem('scHide', '1'); } catch (err) {} });
+  try { if (sessionStorage.getItem('scHide') === '1') fab.classList.add('hid'); } catch (err) {}
+  form.addEventListener('submit', function (e) {
+    e.preventDefault();
+    var t = input.value.trim(); if (!t) return;
+    me(t); input.value = '';
+    bot(L.thanks + '<br><a class="sc-btn" href="' + WA + '?text=' + encodeURIComponent(t) + '" target="_blank" rel="noopener">' + esc(L.send) + '</a>');
+  });
+})();
+</script>

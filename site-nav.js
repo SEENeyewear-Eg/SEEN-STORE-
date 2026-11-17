@@ -10,7 +10,7 @@
   var MENU = {
     svc: { h: 'Services', i: [['Hotel pick-up booking', '/#hotel'], ['Eye examination', 'https://wa.me/201112299665'], ['Try on frames', '/seen-tryon-3d.html'], ['Frame consultation', 'https://wa.me/201112299665'], ['Find your face shape', '/frames/index.html'], ['Lens colour preview', '/#lenses'], ['Interactive 3D', '/3d.html']] },
     loc: { h: 'Our branches', i: [['City Center Mall · Hurghada', 'https://maps.app.goo.gl/qELR42bu6Amims959'], ['El Kawthar · Hurghada', 'https://maps.app.goo.gl/hTF2RTVjtiixjvKc7'], ['Sheraton Miramar · El Gouna', 'https://wa.me/201112299665']] },
-    off: { h: 'Offers', i: [['Black Friday', '/#sale']] }
+    off: { h: 'Offers', i: [['Black Friday', '/black-friday/index.html']] }
   };
   function close() {
     mega.classList.remove('open');

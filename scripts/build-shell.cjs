@@ -28,7 +28,7 @@ if (!headerMatch || !footerMatch) throw new Error('header or footer not found');
 const HEADER = headerMatch[0].replace(/<i data-i="([a-z]+)"><\/i>/g, (_, n) => icon(n));
 const FOOTER = footerMatch[0];
 
-const PAGES = ['frames/index.html', 'blog/index.html', 'about/index.html', '3d.html', 'visit/index.html'];
+const PAGES = ['frames/index.html', 'blog/index.html', 'about/index.html', '3d.html', 'visit/index.html', 'black-friday/index.html'];
 
 for (const f of PAGES) {
   let s = read(f);

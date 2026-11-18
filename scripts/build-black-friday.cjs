@@ -5,7 +5,7 @@ const T = process.env.TEMP;
 const root = path.join(__dirname, '..');
 const css = fs.readFileSync(path.join(T, 'offer.css'), 'utf8');
 let render = fs.readFileSync(path.join(T, 'render.js'), 'utf8');
-render = render.split("'#booking'").join("'/shop'").split('"#booking"').join('"/shop"');
+render = render.split("'#booking'").join("'/?r=%2Fshop'").split('"#booking"').join('"/shop"');
 const tilt = fs.readFileSync(path.join(T, 'tilt.js'), 'utf8');
 
 const head = `<!doctype html>
@@ -61,8 +61,8 @@ const body = `</style>
   <p class="bf-note">Sunglasses and optical frames. Prescription lenses are excluded.</p>
 
   <div class="bf-btns">
-    <a class="bf-btn dark" href="/shop/sunglasses">Shop sunglasses</a>
-    <a class="bf-btn" href="/shop/optical">Shop optical frames</a>
+    <a class="bf-btn dark" href="/?r=%2Fshop%2Fsunglasses">Shop sunglasses</a>
+    <a class="bf-btn" href="/?r=%2Fshop%2Foptical">Shop optical frames</a>
   </div>
 </main>
 <script>

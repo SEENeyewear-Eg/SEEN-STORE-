@@ -22,6 +22,10 @@
 .sc-in input:hover,.sc-in input:focus{border-color:#5AC8FA;box-shadow:0 0 0 2px rgba(90,200,250,.35);outline:none}
 .sc-chips-in{display:flex;flex-wrap:wrap;gap:6px;padding:2px 0 6px}.sc-chips-in .sc-chip{max-width:100%;white-space:normal;text-align:start}#scChips{max-height:112px;overflow-y:auto;display:flex;flex-wrap:wrap;gap:6px;padding:8px 12px;flex:none}.sc-send{width:42px;height:42px;border-radius:50%;border:0;background:#5AC8FA;color:#0b0b0b;cursor:pointer;display:flex;align-items:center;justify-content:center}
 .sc-send svg{width:18px;height:18px;fill:none;stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+:focus-visible{outline:2px solid #5AC8FA!important;outline-offset:2px}
+.mega a:hover,.mega a:focus-visible,.ftr a:hover,.ftr a:focus-visible,.ftr-g a:hover,.ftr-g a:focus-visible,.ftr-b a:hover,.ftr-b a:focus-visible{color:#5AC8FA!important;background:transparent!important}
+.mega a:active,.ftr a:active,.ftr-g a:active,.ftr-b a:active,header a:active,#nav a:active{color:#5AC8FA!important}
+.pill .ib:hover,.pill .ib:active,.pill .ib:focus-visible{color:#5AC8FA!important;opacity:1!important}
 </style>
 <button class="sc-fab" id="scFab" aria-label="SEEN Online Chat" style="position:fixed" aria-expanded="false"><svg viewBox="0 0 24 24"><path d="M4 13v-1a8 8 0 0 1 16 0v1"/><path d="M4 13h3v6H5a1 1 0 0 1-1-1zM20 13h-3v6h2a1 1 0 0 0 1-1z"/><path d="M17 19a5 5 0 0 1-5 2"/></svg><span class="sc-dx" id="scDx" role="button" aria-label="Hide chat" title="Hide chat">×</span></button>
 <div class="sc-box" id="scBox" role="dialog" aria-label="SEEN chat">

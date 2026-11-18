@@ -129,6 +129,12 @@ const SHAPE = v => { const s = up(v); if (!s) return ''; if (s.includes('GEOMETR
   if (/RECTANG|SQUARE/.test(s)) return 'RECTANGULAR / SQUARED'; if (/ROUND|OVAL|PANTHOS|PHANTOS/.test(s)) return 'ROUND/OVAL/PANTHOS';
   if (/PILOT|NAVIGATOR/.test(s)) return 'PILOT/NAVIGATOR'; return s; };
 
+// Shoof's COLOR attribute (the colour code used in the photo names, e.g. 807 or 001).
+function colourCode(r) {
+  const e = (Array.isArray(r.attributes) ? r.attributes : []).find(x => x && String(x.att_canon || '').toUpperCase() === 'COLOR');
+  return e && e.att_val != null ? String(e.att_val).trim() : '';
+}
+
 export function appProducts(snap) {
   const map = catalogFromSnapshot(snap);
   let id = 1;
@@ -149,7 +155,7 @@ export function appProducts(snap) {
           return own.length ? own : brandActivities(p.b, p.n); })(),
         BRANDS_WITH_SITE_DATA.has(String(p.b).toUpperCase()) ? 1 : 0],
       // k[6]: the colour's Shoof item ids (comma-separated), used by the product page's live stock check.
-      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2]), (k[5] || []).join(',')]),
+      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2]), (k[5] || []).join(','), k[6] || '']),
     };
   });
 }
@@ -234,7 +240,7 @@ export function catalogFromSnapshot(snap) {
     // The same colour in more than one item (e.g. two sizes) adds up its stock.
     const same = colour && p.k.find(k => k[2] === colour);
     if (same) { same[4] = (Number(same[4]) || 0) + (Number(left) || 0); same[5].push(itemId); }
-    else if (colour) p.k.push(['', '', colour, '', left, [itemId]]);
+    else if (colour) p.k.push(['', '', colour, '', left, [itemId], colourCode(r)]);
   }
   return products;
 }

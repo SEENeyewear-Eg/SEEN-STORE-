@@ -15,7 +15,6 @@
     ] },
     opt: { cols: [
       [{ h: 'Shop by category', i: [['Men', '/shop/optical?a=MAN'], ['Women', '/shop/optical?a=WOMAN'], ['All optical frames', '/shop/optical']] }],
-      [{ h: 'Shop by type', i: [['Metal', '/shop/optical?m=METAL'], ['Acetate', '/shop/optical'], ['Clip on', '/shop/optical']] }],
       [{ h: 'Top brands', i: [['Ray-Ban', '/shop'], ['Vogue', '/shop'], ['Carrera', '/shop'], ['Polaroid', '/shop'], ['Society', '/shop']] }]
     ] },
     brd: { cols: [

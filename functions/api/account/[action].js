@@ -3,6 +3,7 @@
 // Ported from netlify/functions/account.mjs (Netlify Blobs -> KV, scrypt -> PBKDF2 because Workers have no scrypt).
 import { setEnv, env, json } from '../../_lib/store.js';
 import { kvStore } from '../../_lib/kv.js';
+import { ordersForPhone } from '../../_lib/orders.js';
 
 const DAY = 864e5, LOCK = 15 * 60e3, MAX_FAILS = 5, COOKIE = 'seen_s', ITER = 100000;
 const PHONE = /^01[0125]\d{8}$/, EMAIL = /^\S+@\S+\.\S+$/;
@@ -60,10 +61,11 @@ export async function onRequest({ request, env: bindings, params }) {
   if (!env('SESSION_SECRET') || !bindings.ACCOUNTS) return json({ error: 'Accounts are not connected yet. Please try again later.' }, 503);
   const action = params.action;
   const store = kvStore(bindings.ACCOUNTS);
+  const withOrders = async u => ({ ...pub(u), orders: await ordersForPhone(bindings, u.phone) });
 
   if (action === 'me') {
     const phone = await readSession(request), u = phone && await store.get(phone, { type: 'json' });
-    return u ? json(pub(u)) : json({ error: 'Not signed in' }, 401);
+    return u ? json(await withOrders(u)) : json({ error: 'Not signed in' }, 401);
   }
   if (action === 'logout') return withCookie({ ok: true }, COOKIE + '=; Path=/; HttpOnly; Secure; SameSite=Lax; Max-Age=0');
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
@@ -77,6 +79,16 @@ export async function onRequest({ request, env: bindings, params }) {
     await store.setJSON(me, u);
     return json(pub(u));
   }
+  if (action === 'changepw') {
+    const me = await readSession(request), u = me && await store.get(me, { type: 'json' });
+    if (!u) return json({ error: 'Not signed in' }, 401);
+    const oldPw = String(b.old || ''), newPw = String(b.new || '');
+    if (!eqStr(await hashPassword(oldPw, u.salt), u.hash)) return json({ error: 'The current password is wrong' }, 400);
+    if (newPw.length < 8) return json({ error: 'Use at least 8 characters for your new password' }, 400);
+    u.salt = randomHex(16); u.hash = await hashPassword(newPw, u.salt);
+    await store.setJSON(me, u);
+    return json({ ok: true });
+  }
   const phone = String(b.phone || '').replace(/\s/g, ''), pw = String(b.password || '');
   if (!PHONE.test(phone)) return json({ error: 'Enter an 11-digit mobile number starting with 010, 011, 012 or 015' }, 400);
 
@@ -89,7 +101,7 @@ export async function onRequest({ request, env: bindings, params }) {
     const salt = randomHex(16);
     const u = { name, phone, email, salt, hash: await hashPassword(pw, salt), points: 0, created: new Date().toISOString(), fails: 0, until: 0 };
     await store.setJSON(phone, u);
-    return withCookie(pub(u), await session(phone), 201);
+    return withCookie(await withOrders(u), await session(phone), 201);
   }
 
   if (action === 'login') {
@@ -101,7 +113,7 @@ export async function onRequest({ request, env: bindings, params }) {
       return json({ error: 'Wrong mobile number or password' }, 401);
     }
     if (u.fails || u.until) { u.fails = 0; u.until = 0; await store.setJSON(phone, u); }
-    return withCookie(pub(u), await session(phone));
+    return withCookie(await withOrders(u), await session(phone));
   }
   return json({ error: 'Not found' }, 404);
 }

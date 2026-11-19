@@ -19,3 +19,26 @@ export async function saveOrder(bindings, order) {
   await kv.put('order:' + order.no, JSON.stringify(order));
   return order;
 }
+
+// Orders are also listed under the customer's mobile number, so a signed-in customer sees them in My orders.
+export async function linkOrder(bindings, phone, no) {
+  const kv = ns(bindings);
+  if (!kv || !phone || !no) return;
+  const key = 'ordersby:' + phone;
+  const list = (await kv.get(key, 'json').catch(() => null)) || [];
+  if (!list.includes(no)) list.unshift(no);
+  await kv.put(key, JSON.stringify(list.slice(0, 200)));
+}
+
+export async function ordersForPhone(bindings, phone) {
+  const kv = ns(bindings);
+  if (!kv || !phone) return [];
+  const list = (await kv.get('ordersby:' + phone, 'json').catch(() => null)) || [];
+  const out = [];
+  for (const no of list.slice(0, 50)) {
+    const o = await getOrder(bindings, no);
+    if (o) out.push({ no: o.no, created: o.created, total: o.total, status: o.status || '', pay: o.pay || '',
+      items: (o.items || []).map(i => ({ brand: i.brand, model: i.model, colour: i.colour, qty: i.qty, price: i.price })) });
+  }
+  return out;
+}

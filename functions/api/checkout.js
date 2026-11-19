@@ -3,7 +3,7 @@
 import { setEnv, env, jsonEnv, json, catalog, priceOrder } from '../_lib/store.js';
 import { shoofReady } from '../_lib/shoof.js';
 import { liveStock } from '../_lib/live-stock.js';
-import { ordersReady, saveOrder } from '../_lib/orders.js';
+import { ordersReady, saveOrder, linkOrder } from '../_lib/orders.js';
 
 const PAYMOB = 'https://accept.paymob.com';
 const BRANCHES = ['City Center Mall — Hurghada', 'El Gouna — Sheraton Miramar', 'El Kawthar — Hurghada'];
@@ -57,6 +57,7 @@ export async function onRequestPost({ request, env: bindings }) {
   });
   if (cod) {
     await saveOrder(bindings, record({ status: 'cod', paymobIntention: '' }));
+    await linkOrder(bindings, phone, no);
     return json({ order: no, total: o.total, cod: true });
   }
   const [first, ...rest] = name.split(/\s+/);
@@ -88,5 +89,6 @@ export async function onRequestPost({ request, env: bindings }) {
   // Keep the order in the site before the shopper goes to pay. The Paymob callback finds it by its number and marks it paid.
   // Keep the order in the site before the shopper goes to pay. The Paymob callback finds it by its number and marks it paid.
   await saveOrder(bindings, record({ status: 'pending', paymobIntention: d.id || '' }));
+  await linkOrder(bindings, phone, no);
   return json({ order: no, total: o.total, url: PAYMOB + '/unifiedcheckout/?publicKey=' + encodeURIComponent(env('PAYMOB_PUBLIC_KEY')) + '&clientSecret=' + encodeURIComponent(d.client_secret) });
 }

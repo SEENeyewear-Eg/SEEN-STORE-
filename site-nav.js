@@ -107,6 +107,9 @@
     p.style.display = 'block';
   }
   if (mbt) mbt.addEventListener('click', openPanel);
+  // Swipe left closes the phone menu.
+  document.addEventListener('touchstart', function (e) { window.__nsx = e.touches[0].clientX; window.__nsy = e.touches[0].clientY; }, { passive: true });
+  document.addEventListener('touchend', function (e) { var p = document.getElementById('navPanel'); if (!p || p.style.display !== 'block') return; var t = e.changedTouches[0]; var dx = t.clientX - window.__nsx, dy = t.clientY - window.__nsy; if (dx < -60 && Math.abs(dy) < 80) p.style.display = 'none'; }, { passive: true });
   addEventListener('scroll', function () { hd.classList.toggle('solid', scrollY > 40); }, { passive: true });
   hd.classList.toggle('solid', scrollY > 40);
   // Footer links that open sheets on the home page go to the home page.
@@ -127,7 +130,7 @@
     '.bnav button.cur{color:#111}.bnav button.cur svg{stroke:#5AC8FA}' +
     '.bnav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}' +
     'body{padding-bottom:72px}}' +
-    '.dk .bnav{background:#151618;color:#fff;border-top-color:#2a2d31}.dk .bnav button.cur{color:#fff}' + '@media (max-width:900px){.bnav svg{width:26px!important;height:26px!important}.bnav button{font-size:11px!important;position:relative}.bnav button.cur::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:3px;background:#5AC8FA}}';
+    '.dk .bnav{background:#151618;color:#fff;border-top-color:#2a2d31}.dk .bnav button.cur{color:#fff}' + '@media (max-width:900px){.ftr{display:none!important}.bnav svg{width:28px!important;height:28px!important}.bnav button{font-size:11px!important;position:relative;min-width:0;overflow:hidden}.bnav button span{white-space:nowrap;overflow:hidden;text-overflow:ellipsis;max-width:100%}.bnav button.cur::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:3px;background:#5AC8FA}}';
   document.head.appendChild(st);
   var ITEMS = [
     ['home', 'Home', '/', '<path d="M4 11l8-7 8 7v9h-5v-6h-6v6H4z"/>'],
@@ -150,4 +153,8 @@
     if (b) location.href = b.getAttribute('data-go');
   });
   document.body.appendChild(nav);
+  // Keep the bar on the visible bottom edge when the phone's browser toolbar moves.
+  function fitBar() { var vv = window.visualViewport; if (!vv) return; var gap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop); nav.style.bottom = gap + 'px'; }
+  if (window.visualViewport) { visualViewport.addEventListener('resize', fitBar); visualViewport.addEventListener('scroll', fitBar); }
+  addEventListener('resize', fitBar); fitBar();
 })();

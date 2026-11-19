@@ -25,7 +25,7 @@ async function sign(value) {
 }
 
 const pub = u => ({ name: u.name, phone: u.phone, email: u.email || '', points: u.points || 0, birthday: u.birthday || '',
-  addresses: u.addresses || [], rx: u.rx || null, saved: u.saved || [], orders: u.orders || [] });
+  addresses: u.addresses || [], rx: u.rx || null, saved: u.saved || [], orders: u.orders || [], avatar: u.avatar || '' });
 const str = (v, n) => String(v ?? '').trim().slice(0, n);
 const eye = e => ({ sph: str(e?.sph, 6), cyl: str(e?.cyl, 6), axis: str(e?.axis, 4), add: str(e?.add, 6) });
 
@@ -37,6 +37,7 @@ function applyUpdate(u, b) {
   if (Array.isArray(b.addresses)) u.addresses = b.addresses.slice(0, 5).map(a => ({ label: str(a.label, 30), gov: str(a.gov, 40),
     city: str(a.city, 60), addr: str(a.addr, 200), phone: str(a.phone, 15), def: !!a.def }));
   if (b.rx && typeof b.rx === 'object') u.rx = { od: eye(b.rx.od), os: eye(b.rx.os), pd: str(b.rx.pd, 6), date: str(b.rx.date, 10), note: str(b.rx.note, 200) };
+  if ('avatar' in b) { const av = String(b.avatar || ''); if (!av) u.avatar = ''; else if (!/^data:image\/(jpeg|png);base64,/.test(av) || av.length > 200000) return 'Use a photo under 150 KB'; else u.avatar = av; }
   if (Array.isArray(b.saved)) u.saved = b.saved.slice(0, 200).map(x => str(x, 80));
   return '';
 }

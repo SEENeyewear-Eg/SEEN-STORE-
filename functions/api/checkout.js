@@ -34,12 +34,31 @@ export async function onRequestPost({ request, env: bindings }) {
   const o = priceOrder(body, cat, live);
   if (o.errors.length) return json({ error: o.errors[0] }, 400);
 
+  const cod = body.pay === 'cod';
+  if (cod && body.delivery !== 'home') return json({ error: 'Cash on delivery is for home delivery orders only.' }, 400);
   const methods = jsonEnv('PAYMOB_INTEGRATIONS', {})[body.pay];
-  if (!env('PAYMOB_SECRET_KEY') || !env('PAYMOB_PUBLIC_KEY') || !methods || !methods.length || !ordersReady(bindings))
+  if (!cod && (!env('PAYMOB_SECRET_KEY') || !env('PAYMOB_PUBLIC_KEY') || !methods || !methods.length))
     return json({ error: 'Online payment is not connected yet. Please try again later.' }, 503);
+  if (!ordersReady(bindings)) return json({ error: 'Online payment is not connected yet. Please try again later.' }, 503);
 
   const site = (env('SITE_URL') || new URL(request.url).origin).replace(/\/$/, '');
   const no = 'SEEN-' + new Date().toISOString().slice(2, 10).replace(/-/g, '') + '-' + Math.floor(1000 + Math.random() * 9000);
+  // The Shoof item ids go with each line, so the sales team can make the invoice in Shoof for exactly that item.
+  const record = (extra) => ({
+    no, created: new Date().toISOString(),
+    customer: { name, phone, email },
+    delivery: body.delivery === 'home' ? 'home' : 'pickup',
+    branch: body.delivery === 'home' ? '' : (BRANCHES[+body.branch] || BRANCHES[0]),
+    address: body.delivery === 'home' ? { gov: String(body.gov), city: String(body.city).slice(0, 60), addr: String(body.addr).slice(0, 200) } : null,
+    lang: String(body.lang || 'en').slice(0, 5),
+    pay: body.pay, promo: o.discount ? String(body.promo).toUpperCase() : '',
+    items: o.items.map(i => ({ brand: i.b, model: i.n, colour: i.col, qty: i.q, price: i.p, shoofIds: i.ids || [] })),
+    sub: o.sub, discount: o.discount, fee: o.fee, total: o.total, ...extra,
+  });
+  if (cod) {
+    await saveOrder(bindings, record({ status: 'cod', paymobIntention: '' }));
+    return json({ order: no, total: o.total, cod: true });
+  }
   const [first, ...rest] = name.split(/\s+/);
   const items = o.items.map(i => ({ name: (i.b + ' ' + i.n).slice(0, 50), amount: i.p * 100, quantity: i.q, description: 'Color ' + i.col }));
   if (o.fee) items.push({ name: 'Home delivery', amount: o.fee * 100, quantity: 1, description: String(body.gov) });
@@ -67,17 +86,7 @@ export async function onRequestPost({ request, env: bindings }) {
     return json({ error: 'Could not start the payment. Please try again.' }, 502);
   }
   // Keep the order in the site before the shopper goes to pay. The Paymob callback finds it by its number and marks it paid.
-  // The Shoof item ids go with each line, so the sales team can make the invoice in Shoof for exactly that item.
-  await saveOrder(bindings, {
-    no, status: 'pending', created: new Date().toISOString(),
-    customer: { name, phone, email },
-    delivery: body.delivery === 'home' ? 'home' : 'pickup',
-    branch: body.delivery === 'home' ? '' : (BRANCHES[+body.branch] || BRANCHES[0]),
-    address: body.delivery === 'home' ? { gov: String(body.gov), city: String(body.city).slice(0, 60), addr: String(body.addr).slice(0, 200) } : null,
-    lang: String(body.lang || 'en').slice(0, 5),
-    pay: body.pay, promo: o.discount ? String(body.promo).toUpperCase() : '',
-    items: o.items.map(i => ({ brand: i.b, model: i.n, colour: i.col, qty: i.q, price: i.p, shoofIds: i.ids || [] })),
-    sub: o.sub, discount: o.discount, fee: o.fee, total: o.total, paymobIntention: d.id || '',
-  });
+  // Keep the order in the site before the shopper goes to pay. The Paymob callback finds it by its number and marks it paid.
+  await saveOrder(bindings, record({ status: 'pending', paymobIntention: d.id || '' }));
   return json({ order: no, total: o.total, url: PAYMOB + '/unifiedcheckout/?publicKey=' + encodeURIComponent(env('PAYMOB_PUBLIC_KEY')) + '&clientSecret=' + encodeURIComponent(d.client_secret) });
 }

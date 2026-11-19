@@ -114,3 +114,40 @@
     a.addEventListener('click', function (e) { e.preventDefault(); location.href = '/'; });
   });
 })();
+
+// Mobile bottom bar (Home, All Shop, Brands, Favourites, Bag, Account) on the separate pages, same as the home page.
+// On the home page the bar is already in the page, so this does nothing there.
+(function () {
+  if (document.getElementById('bnav')) return;
+  var st = document.createElement('style');
+  st.textContent = '.bnav{display:none}' +
+    '@media (max-width:900px){' +
+    '.bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;direction:ltr;justify-content:space-around;align-items:stretch;background:#fff;color:#111;border-top:0.5px solid #d9dee2;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}' +
+    '.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#8a8f96;font:inherit;font-size:10px;font-weight:500;padding:6px 0 4px;cursor:pointer;border-radius:14px}' +
+    '.bnav button.cur{color:#111}.bnav button.cur svg{stroke:#5AC8FA}' +
+    '.bnav svg{width:21px;height:21px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}' +
+    'body{padding-bottom:72px}}' +
+    '.dk .bnav{background:#151618;color:#fff;border-top-color:#2a2d31}.dk .bnav button.cur{color:#fff}';
+  document.head.appendChild(st);
+  var ITEMS = [
+    ['home', 'Home', '/', '<path d="M4 11l8-7 8 7v9h-5v-6h-6v6H4z"/>'],
+    ['shop', 'All Shop', '/shop', '<path d="M4 9l1.5-5h13L20 9"/><path d="M4 9h16v11H4z"/><path d="M9 20v-6h6v6"/>'],
+    ['brands', 'Brands', '/shop', '<rect x="4" y="4" width="6" height="6" rx="1"/><rect x="14" y="4" width="6" height="6" rx="1"/><rect x="4" y="14" width="6" height="6" rx="1"/><rect x="14" y="14" width="6" height="6" rx="1"/>'],
+    ['fav', 'Favourites', '/#favourites', '<path d="M12 19.5s-7.2-4.4-7.2-9.6a4 4 0 0 1 7.2-2.4 4 4 0 0 1 7.2 2.4c0 5.2-7.2 9.6-7.2 9.6z"/>'],
+    ['bag', 'Bag', '/cart', '<path d="M6 8h12l1 12H5z"/><path d="M9 8V6.5a3 3 0 0 1 6 0V8"/>'],
+    ['acc', 'Account', '/#account', '<circle cx="12" cy="12" r="9"/><circle cx="12" cy="10" r="3.2"/><path d="M6.5 18.2c1.4-2.2 3.2-3.2 5.5-3.2s4.1 1 5.5 3.2"/>']
+  ];
+  var path = location.pathname.replace(/\/+$/, '') || '/';
+  var cur = path === '/' && !location.hash ? 'home' : path.indexOf('/shop') === 0 ? 'shop' : '';
+  var nav = document.createElement('nav');
+  nav.className = 'bnav'; nav.id = 'bnav'; nav.setAttribute('aria-label', 'Quick links');
+  nav.innerHTML = ITEMS.map(function (x) {
+    return '<button type="button" data-go="' + x[2] + '"' + (x[0] === cur ? ' class="cur"' : '') + '>' +
+      '<svg viewBox="0 0 24 24" aria-hidden="true">' + x[3] + '</svg><span>' + x[1] + '</span></button>';
+  }).join('');
+  nav.addEventListener('click', function (e) {
+    var b = e.target.closest('button[data-go]');
+    if (b) location.href = b.getAttribute('data-go');
+  });
+  document.body.appendChild(nav);
+})();

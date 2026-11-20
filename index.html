@@ -538,7 +538,7 @@ if(a=='gv'){gv=+t.dataset.j;pdp(pi)}else if(a=='sw'){st[pi]=+t.dataset.j;pdp(pi)
 else if(a=='acc'){const b=t.nextElementSibling;b.hidden=!b.hidden;t.lastElementChild.outerHTML=ico(b.hidden?'plus':'minus')}else if(a=='store')$('stores').hidden=!$('stores').hidden});
 const PSLUG={},PBRAND={},SEO_CAT_R={Sunglasses:'sunglasses',Optical:'optical'};TYPES().forEach(t=>{const s=catSlug(t);SEO_CAT_R[t]=s;SEO_CAT[s]=t});P.forEach((p,i)=>PSLUG[SEO_SLUG[p.id]||p.id]=i);Object.keys(SEO_BRAND).forEach(b=>PBRAND[SEO_BRAND[b]]=b);
 const productPath=p=>'/product/'+(SEO_SLUG[p.id]||p.id);
-function cartView(){const p=location.pathname.replace(/\/+$/,'');return p=='/cart'?'#cart':p=='/checkout'?'#checkout':location.hash}
+function cartView(){const p=location.pathname.replace(/\/+$/,'');return p=='/cart'?'#cart':p=='/checkout'?'#checkout':p=='/shop'?'#shop'+location.search:location.hash}
 function go(u){if(u!==location.pathname+location.search+location.hash)history.pushState(null,'',u);route()}
 function rep(u){history.replaceState(null,'',u);route()}
 function shopUrl(){const u=new URLSearchParams(qs().slice(1)),t=[...F.types],b=[...F.brands];let base='/shop';if(t.length==1&&!b.length&&SEO_CAT_R[t[0]]){base='/shop/'+SEO_CAT_R[t[0]];u.delete('t')}else if(b.length==1&&!t.length&&SEO_BRAND[b[0]]){base='/brands/'+SEO_BRAND[b[0]];u.delete('b')}const s=u.toString();return base+(s?'?'+s:'')}

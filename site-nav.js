@@ -127,10 +127,10 @@
     '@media (max-width:900px){' +
     '.bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;direction:ltr;justify-content:space-around;align-items:stretch;background:#fff;color:#111;border-top:0.5px solid #d9dee2;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}' +
     '.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#8a8f96;font:inherit;font-size:10px;font-weight:500;padding:6px 0 4px;cursor:pointer;border-radius:14px}' +
-    '.bnav button.cur{color:#111}.bnav button.cur svg{stroke:#5AC8FA}' +
-    '.bnav svg{width:40px;height:40px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}' +
+    '.bnav button.cur{color:#111}.bnav button.cur svg{stroke:#5AC8FA}.bnav,.bnav button,.bnav span{line-height:normal!important}.bnav span{padding:0!important;margin:0!important}.bnav{height:59px!important;box-sizing:border-box!important;align-items:stretch!important}.bnav button{height:46px!important;min-height:0!important;max-height:46px!important;padding:6px 0 4px!important;overflow:hidden!important;justify-content:center!important}' +
+    '.bnav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}' +
     'body{padding-bottom:72px}}' +
-    '.dk .bnav{background:#151618;color:#fff;border-top-color:#2a2d31}.dk .bnav button.cur{color:#fff}' + '.ftr-g{display:none!important}.ftr{display:block!important;padding:14px 16px 18px!important;border-top:1px solid #e3e5e7;margin-top:24px}.ftr .ftr-b{display:flex!important;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 18px}@media (max-width:900px){input,select,textarea{font-size:16px!important}.bnav svg{width:40px!important;height:40px!important}.bnav button{font-size:11px!important;position:relative;min-width:0;overflow:hidden}.bnav button span{white-space:nowrap;overflow:visible;line-height:1.6;padding-bottom:2px;max-width:100%}.bnav button.cur::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:3px;background:#5AC8FA}}';
+    '.dk .bnav{background:#151618;color:#fff;border-top-color:#2a2d31}.dk .bnav button.cur{color:#fff}' + '.ftr-g{display:none!important}.ftr{display:block!important;padding:14px 16px 18px!important;border-top:1px solid #e3e5e7;margin-top:24px}.ftr .ftr-b{display:flex!important;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 18px}@media (max-width:900px){input,select,textarea{font-size:16px!important}.bnav svg{width:22px!important;height:22px!important}.bnav button{font-size:11px!important;position:relative;min-width:0;overflow:hidden}.bnav button span{white-space:nowrap;overflow:visible;line-height:1.6;padding-bottom:2px;max-width:100%}.bnav button.cur::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:3px;background:#5AC8FA}}';
   document.head.appendChild(st);
   var ITEMS = [
     ['home', 'Home', '/', '<path d="M4 11l8-7 8 7v9h-5v-6h-6v6H4z"/>'],
@@ -142,15 +142,29 @@
   ];
   var path = location.pathname.replace(/\/+$/, '') || '/';
   var cur = path === '/' && !location.hash ? 'home' : path.indexOf('/shop') === 0 ? 'shop' : '';
+  var OVER = { acc: '/#account', fav: '/#account/saved', bag: '/#cart' };
+  function openPanel(src) {
+    if (document.getElementById('bpanel')) return;
+    var w = document.createElement('div'); w.id = 'bpanel';
+    w.style.cssText = 'position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.45);display:flex;justify-content:flex-end';
+    var f = document.createElement('iframe'); f.src = src;
+    f.style.cssText = 'width:min(100%,460px);height:100%;border:0;background:#fff';
+    var x = document.createElement('button'); x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
+    x.style.cssText = 'position:absolute;top:10px;left:10px;z-index:2;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font-size:26px;line-height:1;cursor:pointer';
+    var close = function () { w.remove(); };
+    x.addEventListener('click', close);
+    w.addEventListener('click', function (e) { if (e.target === w) close(); });
+    w.appendChild(f); w.appendChild(x); document.body.appendChild(w);
+  }
   var nav = document.createElement('nav');
   nav.className = 'bnav'; nav.id = 'bnav'; nav.setAttribute('aria-label', 'Quick links');
   nav.innerHTML = ITEMS.map(function (x) {
-    return '<button type="button" data-go="' + x[2] + '"' + (x[0] === cur ? ' class="cur"' : '') + '>' +
+    return '<button type="button" data-k="' + x[0] + '" data-go="' + x[2] + '"' + (x[0] === cur ? ' class="cur"' : '') + '>' +
       '<svg viewBox="0 0 24 24" aria-hidden="true">' + x[3] + '</svg><span>' + x[1] + '</span></button>';
   }).join('');
   nav.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-go]');
-    if (b) location.href = b.getAttribute('data-go');
+    if (b) { var k = b.getAttribute('data-k'); if (!document.getElementById('home') && OVER[k]) openPanel(OVER[k]); else location.href = b.getAttribute('data-go'); }
   });
   document.body.appendChild(nav);
   // Keep the bar on the visible bottom edge when the phone's browser toolbar moves.

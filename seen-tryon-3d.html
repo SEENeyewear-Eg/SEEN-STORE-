@@ -106,4 +106,5 @@ function end(){stream?.getTracks().forEach(t=>t.stop());stream=null;v.srcObject=
 function setMode(m){mode=m;stage.classList.toggle('m3d',m=='3d');$('#mFace').setAttribute('aria-pressed',String(m=='face'));$('#m3d').setAttribute('aria-pressed',String(m=='3d'));if(m=='3d'){$('#err').classList.remove('on')}else{frame.visible=false;if(!stream)begin()}}
 $('#mFace').onclick=()=>setMode('face');$('#m3d').onclick=()=>setMode('3d');$('#retry').onclick=begin;
 inner.addEventListener('pointerdown',e=>{if(mode=='3d'){drag={x:e.clientX,s:spin};inner.setPointerCapture(e.pointerId)}});inner.addEventListener('pointermove',e=>{if(drag)spin=drag.s+(e.clientX-drag.x)*.01});inner.addEventListener('pointerup',()=>drag=null);inner.addEventListener('pointercancel',()=>drag=null);
-window.addEventListener('pagehide',end);resize();loop();begin();</script></body></html>
+window.addEventListener('pagehide',end);resize();loop();begin();</script><script src="/site-nav.js" defer></script>
+</body></html>

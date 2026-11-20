@@ -22,6 +22,7 @@ const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
 const SITE = 'https://seeneyeweareg.com';
 const LIVE_URL = SITE + '/api/catalog';
 const CATALOG_FILE = path.join(ROOT, '.local-api', 'catalog.json');
+const PIXEL = fs.readFileSync(path.join(ROOT, 'tools', 'seen-pixel.html'), 'utf8');
 const TODAY = new Date().toISOString().slice(0, 10);
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
@@ -282,6 +283,7 @@ ${alternates.map(a => `<link rel="alternate" hreflang="${a.hreflang}" href="${a.
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${SITE}${urlPath}">
 ${image ? `<meta property="og:image" content="${esc(image)}">` : ''}
+${PIXEL}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#F6F8F9">
 ${ld.map(jsonld).join('\n')}

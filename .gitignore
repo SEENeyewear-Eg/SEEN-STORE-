@@ -10,3 +10,5 @@ docs/
 
 # Wrangler local cache (account info, do not publish)
 workers/shoof-cron/.wrangler/
+
+Online-Product-Image/

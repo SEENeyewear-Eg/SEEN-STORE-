@@ -1,3 +1,4 @@
+import { COLOUR_NAMES } from './colour-names.js';
 import { brandActivities, BRANDS_WITH_SITE_DATA } from './brand-activities.js';
 // Builds the catalogue from the Shoof snapshot saved in KV (binding SHOOF, key "catalog").
 // Shoof field names are not confirmed yet, so each field tries a list of likely names.
@@ -155,7 +156,7 @@ export function appProducts(snap) {
           return own.length ? own : brandActivities(p.b, p.n); })(),
         BRANDS_WITH_SITE_DATA.has(String(p.b).toUpperCase()) ? 1 : 0],
       // k[6]: the colour's Shoof item ids (comma-separated), used by the product page's live stock check.
-      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], baseColour(k[2]), (k[5] || []).join(','), k[6] || '']),
+      k: p.k.map((k, j) => [SW[j % 4][0], SW[j % 4][1], k[2], '', k[4], (COLOUR_NAMES[p.n+'|'+k[2]] || baseColour(k[2])), (k[5] || []).join(','), k[6] || '']),
     };
   });
 }

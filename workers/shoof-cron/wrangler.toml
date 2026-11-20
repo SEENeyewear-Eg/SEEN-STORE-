@@ -12,4 +12,4 @@ crons = ["0 * * * *"]
 # Replace the id below with the namespace id from Workers & Pages > KV > seen-shoof.
 [[kv_namespaces]]
 binding = "SHOOF"
-id = "REPLACE_WITH_SEEN_SHOOF_NAMESPACE_ID"
+id = "7ab8df819f8a4fc4ab6ae63ccbbb8a82"

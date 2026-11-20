@@ -34,8 +34,9 @@ export async function onRequestPost({ request, env: bindings }) {
   const o = priceOrder(body, cat, live);
   if (o.errors.length) return json({ error: o.errors[0] }, 400);
 
-  const cod = body.pay === 'cod';
-  if (cod && body.delivery !== 'home') return json({ error: 'Cash on delivery is for home delivery orders only.' }, 400);
+  // Online payment is switched off for now: every order is cash (pay at the branch or on delivery).
+  body.pay = 'cod';
+  const cod = true;
   const methods = jsonEnv('PAYMOB_INTEGRATIONS', {})[body.pay];
   if (!cod && (!env('PAYMOB_SECRET_KEY') || !env('PAYMOB_PUBLIC_KEY') || !methods || !methods.length))
     return json({ error: 'Online payment is not connected yet. Please try again later.' }, 503);

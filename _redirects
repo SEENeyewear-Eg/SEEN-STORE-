@@ -1859,5 +1859,5 @@
 /product/1856 /product/alexander-mcqueen-am0450s 301
 /product/1857 /product/alexander-mcqueen-am0445s 301
 
-/shop      /index.html   200
-/shop/*    /index.html   200
+/shop      /   200
+/shop/*    /   200

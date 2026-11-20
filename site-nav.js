@@ -23,7 +23,7 @@
       [{ h: 'Brands', i: [['Polaroid', '/shop'], ['Prive Revaux', '/shop'], ['Puma', '/shop'], ['Ray-Ban', '/shop'], ['Saint Laurent', '/shop'], ['Society', '/shop'], ['Tommy Hilfiger', '/shop'], ['Valentino', '/shop'], ['Vogue', '/shop']] }]
     ] },
     svc: { cols: [
-      [{ h: 'Book a visit', i: [['Hotel pick-up booking', '/#hotel']] }],
+      [{ h: 'Book a visit', i: [['Hotel pick-up booking', '/hotel-pickup/index.html']] }],
       [{ h: 'Consultation', i: [['Frame consultation', 'https://wa.me/201112299665'], ['Eye examination', 'https://wa.me/201112299665']] }],
       [{ h: 'Explore', i: [['Try on frames', '/seen-tryon-3d.html'], ['Find your face shape', '/frames/index.html'], ['Lens colour preview', '/lens/index.html'], ['Interactive 3D', '/3d.html']] }]
     ] },
@@ -83,7 +83,7 @@
   // Phone menu: the header links are hidden on small screens, so the menu button opens them in a panel.
   var PANEL_LINKS = [
     ['Home', '/'], ['Sunglasses', '/shop/sunglasses'], ['Optical', '/shop/optical'], ['Brands', '/shop'],
-    ['Hotel pick-up booking', '/#hotel'], ['Eye examination', 'https://wa.me/201112299665'], ['Frame consultation', 'https://wa.me/201112299665'],
+    ['Hotel pick-up booking', '/hotel-pickup/index.html'], ['Eye examination', 'https://wa.me/201112299665'], ['Frame consultation', 'https://wa.me/201112299665'],
     ['Try on frames', '/seen-tryon-3d.html'], ['Find your face shape', '/frames/index.html'], ['Lens colour preview', '/lens/index.html'], ['Interactive 3D', '/3d.html'],
     ['Visit Us', '/visit/index.html'], ['Blog', '/blog/index.html'], ['Offers', '/black-friday/index.html']
   ];
@@ -94,11 +94,11 @@
       p.id = 'navPanel';
       p.setAttribute('role', 'dialog');
       p.setAttribute('aria-label', 'Menu');
-      p.style.cssText = 'position:fixed;inset:0;z-index:90;background:#fff;overflow:auto;padding:70px 22px 40px;font-family:Jost,system-ui,sans-serif;color:#111';
+      p.style.cssText = 'position:fixed;inset:0;z-index:90;background:#fff;overflow:auto;padding:16px 22px 20px;font-family:Jost,system-ui,sans-serif;color:#111';
       p.innerHTML = '<button type="button" id="navClose" aria-label="Close menu" style="position:absolute;top:16px;right:16px;background:none;border:0;font-size:32px;line-height:1;cursor:pointer;color:#111">&times;</button><ul style="list-style:none;margin:0;padding:0">' +
         PANEL_LINKS.map(function (x) {
           var ext = /^https?:/.test(x[1]);
-          return '<li style="border-bottom:1px solid #e3e5e7"><a href="' + x[1] + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + ' style="display:block;padding:16px 4px;font-size:18px;color:#111;text-decoration:none">' + x[0] + '</a></li>';
+          return '<li style="border-bottom:1px solid #e3e5e7"><a href="' + x[1] + '"' + (ext ? ' target="_blank" rel="noopener"' : '') + ' style="display:block;padding:8px 4px;font-size:16px;color:#111;text-decoration:none">' + x[0] + '</a></li>';
         }).join('') + '</ul>';
       document.body.appendChild(p);
       document.getElementById('navClose').addEventListener('click', function () { p.style.display = 'none'; });
@@ -143,18 +143,20 @@
   var path = location.pathname.replace(/\/+$/, '') || '/';
   var cur = path === '/' && !location.hash ? 'home' : path.indexOf('/shop') === 0 ? 'shop' : '';
   var OVER = { acc: '/#account', fav: '/#account/saved', bag: '/#cart' };
-  function openPanel(src) {
+  function openPanel(src, pct) {
+    var W = pct || 50;
     if (document.getElementById('bpanel')) return;
     var w = document.createElement('div'); w.id = 'bpanel';
     w.style.cssText = 'position:fixed;inset:0;z-index:95;background:rgba(0,0,0,.45);display:flex;justify-content:flex-end';
-    var f = document.createElement('iframe'); f.src = src;
-    f.style.cssText = 'width:min(100%,460px);height:100%;border:0;background:#fff';
+    var f = document.createElement('iframe'); f.src = src.replace('/#', '/?panel=1#');
+    f.style.cssText = 'width:' + W + 'vw;height:100%;border:0;background:#fff;animation:bpIn .4s cubic-bezier(.2,.7,.2,1)';
+    if (!document.getElementById('bpanelCss')) { var kf = document.createElement('style'); kf.id = 'bpanelCss'; kf.textContent = '@keyframes bpIn{from{transform:translateX(100%)}to{transform:none}}'; document.head.appendChild(kf); }
     var x = document.createElement('button'); x.type = 'button'; x.setAttribute('aria-label', 'Close'); x.textContent = '×';
-    x.style.cssText = 'position:absolute;top:10px;left:10px;z-index:2;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font-size:26px;line-height:1;cursor:pointer';
+    x.style.cssText = 'position:absolute;top:10px;left:calc(' + W + 'vw + 10px);z-index:2;width:40px;height:40px;border-radius:50%;border:0;background:#fff;font-size:26px;line-height:1;cursor:pointer';
     var close = function () { w.remove(); };
     x.addEventListener('click', close);
     w.addEventListener('click', function (e) { if (e.target === w) close(); });
-    w.appendChild(f); w.appendChild(x); document.body.appendChild(w);
+    w.appendChild(f); document.body.appendChild(w);
   }
   var nav = document.createElement('nav');
   nav.className = 'bnav'; nav.id = 'bnav'; nav.setAttribute('aria-label', 'Quick links');
@@ -164,7 +166,7 @@
   }).join('');
   nav.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-go]');
-    if (b) { var k = b.getAttribute('data-k'); if (!document.getElementById('home') && OVER[k]) openPanel(OVER[k]); else location.href = b.getAttribute('data-go'); }
+    if (b) { var k = b.getAttribute('data-k'); if (!document.getElementById('home') && OVER[k]) openPanel(OVER[k], 80); else location.href = b.getAttribute('data-go'); }
   });
   document.body.appendChild(nav);
   // Keep the bar on the visible bottom edge when the phone's browser toolbar moves.

@@ -288,6 +288,7 @@ ${PIXEL}
 <meta name="theme-color" content="#F6F8F9">
 ${ld.map(jsonld).join('\n')}
 <style>${CSS}</style>
+<link rel="stylesheet" href="/footer-bottom.css">
 </head><body>
 <header><a href="/">${t.brand}</a><a href="/shop">${t.allEyewear}</a></header>
 <main>${crumbHtml}${body}</main>

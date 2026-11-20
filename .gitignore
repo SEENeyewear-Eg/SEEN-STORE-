@@ -7,3 +7,6 @@ docs/
 
 # Local copy of the Cloudflare catalog API, used only by the local preview server
 .local-api/
+
+# Wrangler local cache (account info, do not publish)
+workers/shoof-cron/.wrangler/

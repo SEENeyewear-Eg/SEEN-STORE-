@@ -8,6 +8,11 @@ compatibility_date = "2024-09-23"
 [triggers]
 crons = ["0 * * * *"]
 
+# Logs of each run, so the owner can see "Shoof sync {...}" in the dashboard.
+[observability.logs]
+enabled = true
+invocation_logs = true
+
 # The same KV namespace the Pages site reads ("seen-shoof" in the dashboard).
 # Replace the id below with the namespace id from Workers & Pages > KV > seen-shoof.
 [[kv_namespaces]]

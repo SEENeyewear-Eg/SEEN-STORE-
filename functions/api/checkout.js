@@ -35,7 +35,8 @@ export async function onRequestPost({ request, env: bindings }) {
   if (o.errors.length) return json({ error: o.errors[0] }, 400);
 
   // Online payment is switched off for now: every order is cash (pay at the branch or on delivery).
-  body.pay = 'cod';
+  // Online card and instalment payments are off for now. Allowed: mobile wallet, InstaPay and cash on delivery; all are paid at delivery.
+  if (!['cod', 'wallet', 'insta'].includes(body.pay)) body.pay = 'cod';
   const cod = true;
   const methods = jsonEnv('PAYMOB_INTEGRATIONS', {})[body.pay];
   if (!cod && (!env('PAYMOB_SECRET_KEY') || !env('PAYMOB_PUBLIC_KEY') || !methods || !methods.length))

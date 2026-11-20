@@ -1,0 +1,48 @@
+<!doctype html>
+<html lang="en" dir="ltr">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="description" content="SEEN Eyewear branch: City Center Mall, Hurghada.">
+<title>City Center Mall, Hurghada | SEEN Eyewear</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<link rel="stylesheet" href="/footer-bottom.css">
+<style>
+:root{--ink:#0b0b0b;--gray:#606060;--line:#E2E9ED;--sky:#5AC8FA;--bg:#F6F8F9}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{font-family:Jost,"IBM Plex Sans Arabic",sans-serif;font-weight:300;color:var(--ink);background:#fff;line-height:1.7}
+header{background:var(--bg);border-bottom:1px solid var(--line);padding:16px}
+header a{text-decoration:none;color:var(--gray);font-size:14px}
+main{max-width:680px;margin:0 auto;padding:32px 16px 48px}
+h1{font-size:30px;font-weight:400;line-height:1.25;margin:0 0 12px}
+p{font-size:17px}
+.btn{display:inline-block;margin:8px 8px 0 0;padding:12px 18px;border-radius:999px;border:1px solid var(--ink);color:var(--ink);text-decoration:none;font-size:15px}
+.btn.b{background:var(--ink);color:#fff}
+</style>
+</head>
+<body>
+<header><a href="/blog/index.html" data-i="back">← SEEN Journal</a></header>
+<main>
+<p data-i="bh" style="color:var(--gray);margin:0">Our branch</p>
+<h1>City Center Mall, Hurghada</h1>
+<p><strong data-i="addr">Address</strong><br>City Center Mall, Hurghada</p>
+<p data-i="free">Free pick-up from this branch</p>
+<p><a class="btn" href="https://maps.app.goo.gl/qELR42bu6Amims959" target="_blank" rel="noopener" data-i="map">Open in Google Maps</a></p>
+<a class="btn b" href="/shop" data-i="shop">Shop frames</a>
+</main>
+<script>
+(function(){
+  var T={"en": {"title": "City Center Mall, Hurghada | SEEN Eyewear", "bh": "Our branch", "addr": "Address", "free": "Free pick-up from this branch", "map": "Open in Google Maps", "shop": "Shop frames", "back": "← SEEN Journal"}, "ar": {"title": "سيتي سنتر، الغردقة | SEEN Eyewear", "bh": "فرعنا", "addr": "العنوان", "free": "استلام مجاني من الفرع ده", "map": "افتح في خرايط جوجل", "shop": "تسوق النظارات", "back": "← مجلة SEEN"}, "de": {"title": "City Center Mall, Hurghada | SEEN Eyewear", "bh": "Unsere Filiale", "addr": "Adresse", "free": "Kostenlose Abholung in dieser Filiale", "map": "In Google Maps öffnen", "shop": "Brillen ansehen", "back": "← SEEN Journal"}, "es": {"title": "City Center Mall, Hurghada | SEEN Eyewear", "bh": "Nuestra sucursal", "addr": "Dirección", "free": "Recogida gratuita en esta sucursal", "map": "Abrir en Google Maps", "shop": "Ver gafas", "back": "← SEEN Journal"}, "it": {"title": "City Center Mall, Hurghada | SEEN Eyewear", "bh": "La nostra filiale", "addr": "Indirizzo", "free": "Ritiro gratuito in questa filiale", "map": "Apri in Google Maps", "shop": "Vedi occhiali", "back": "← SEEN Journal"}, "fr": {"title": "City Center Mall, Hurghada | SEEN Eyewear", "bh": "Notre boutique", "addr": "Adresse", "free": "Retrait gratuit dans cette boutique", "map": "Ouvrir dans Google Maps", "shop": "Voir les lunettes", "back": "← SEEN Journal"}, "ru": {"title": "City Center, Хургада | SEEN Eyewear", "bh": "Наш филиал", "addr": "Адрес", "free": "Бесплатный самовывоз из этого филиала", "map": "Открыть в Google Maps", "shop": "Смотреть очки", "back": "← SEEN Journal"}};
+  var l='en';try{l=localStorage.seenLang||'en'}catch(e){}
+  if(!T[l])l='en';
+  var els=document.querySelectorAll('[data-i]');
+  els.forEach(function(el){if(el.__en==null)el.__en=el.innerHTML});
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==='ar')?'rtl':'ltr';
+  els.forEach(function(el){var k=el.getAttribute('data-i');el.innerHTML=(T[l][k]!=null)?T[l][k]:el.__en});
+  document.title=T[l].title;
+})();
+</script>
+</body>
+</html>

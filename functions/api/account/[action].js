@@ -62,7 +62,7 @@ export async function onRequest({ request, env: bindings, params }) {
   if (!env('SESSION_SECRET') || !bindings.ACCOUNTS) return json({ error: 'Accounts are not connected yet. Please try again later.' }, 503);
   const action = params.action;
   const store = kvStore(bindings.ACCOUNTS);
-  const withOrders = async u => ({ ...pub(u), orders: await ordersForPhone(bindings, u.phone) });
+  const withOrders = async u => ({ ...pub(u), orders: await ordersForPhone(bindings, u.phone), cart: Array.isArray(u.cart) ? u.cart : [], wish: Array.isArray(u.wish) ? u.wish : [] });
 
   if (action === 'me') {
     const phone = await readSession(request), u = phone && await store.get(phone, { type: 'json' });
@@ -72,6 +72,14 @@ export async function onRequest({ request, env: bindings, params }) {
   if (request.method !== 'POST') return json({ error: 'Method not allowed' }, 405);
 
   const b = await request.json().catch(() => ({}));
+  if (action === 'cart') {
+    const me = await readSession(request), u = me && await store.get(me, { type: 'json' });
+    if (!u) return json({ error: 'Not signed in' }, 401);
+    const clean = a => (Array.isArray(a) ? a : []).slice(0, 60).map(x => String(x).slice(0, 200));
+    u.cart = clean(b.cart); u.wish = clean(b.wish);
+    await store.setJSON(me, u);
+    return json({ ok: true, cart: u.cart, wish: u.wish });
+  }
   if (action === 'update') {
     const me = await readSession(request), u = me && await store.get(me, { type: 'json' });
     if (!u) return json({ error: 'Not signed in' }, 401);

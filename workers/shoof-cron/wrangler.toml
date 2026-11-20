@@ -1,0 +1,15 @@
+# Cloudflare Worker that runs the Shoof sync every hour.
+# Deploy with the steps in README.md (run wrangler yourself; nothing here holds a secret).
+name = "seen-shoof-sync"
+main = "src/index.js"
+compatibility_date = "2024-09-23"
+
+# Every hour, on the hour (UTC).
+[triggers]
+crons = ["0 * * * *"]
+
+# The same KV namespace the Pages site reads ("seen-shoof" in the dashboard).
+# Replace the id below with the namespace id from Workers & Pages > KV > seen-shoof.
+[[kv_namespaces]]
+binding = "SHOOF"
+id = "REPLACE_WITH_SEEN_SHOOF_NAMESPACE_ID"

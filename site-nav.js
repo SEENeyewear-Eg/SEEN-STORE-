@@ -125,7 +125,7 @@
   var st = document.createElement('style');
   st.textContent = '.bnav{display:none}' +
     '@media (max-width:900px){' +
-    '.bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;direction:ltr;justify-content:space-around;align-items:stretch;background:#fff;color:#111;border-top:0.5px solid #d9dee2;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}' +
+    '.bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;direction:inherit;justify-content:space-around;align-items:stretch;background:#fff;color:#111;border-top:0.5px solid #d9dee2;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}' +
     '.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#8a8f96;font:inherit;font-size:10px;font-weight:500;padding:6px 0 4px;cursor:pointer;border-radius:14px}' +
     '.bnav button.cur{color:#111}.bnav button.cur svg{stroke:#5AC8FA}.bnav,.bnav button,.bnav span{line-height:normal!important}.bnav span{padding:0!important;margin:0!important}.bnav{height:59px!important;box-sizing:border-box!important;align-items:stretch!important}.bnav button{height:46px!important;min-height:0!important;max-height:46px!important;padding:6px 0 4px!important;overflow:hidden!important;justify-content:center!important}' +
     '.bnav svg{width:22px;height:22px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}' +
@@ -159,10 +159,11 @@
     w.appendChild(f); document.body.appendChild(w);
   }
   var nav = document.createElement('nav');
+  var BT={ar:['الرئيسية','كل المتجر','البراندات','المفضلة','الحقيبة','الحساب'],de:['Startseite','Alle Brillen','Marken','Favoriten','Tasche','Konto'],es:['Inicio','Todas las gafas','Marcas','Favoritos','Bolsa','Cuenta'],fr:['Accueil','Toutes les lunettes','Marques','Favoris','Panier','Compte'],it:['Home','Tutti gli occhiali','Marchi','Preferiti','Borsa','Account'],ru:['Главная','Все очки','Бренды','Избранное','Сумка','Аккаунт']};var LG='en';try{LG=localStorage.seenLang||'en'}catch(e){}var BL=BT[LG]||null;
   nav.className = 'bnav'; nav.id = 'bnav'; nav.setAttribute('aria-label', 'Quick links');
   nav.innerHTML = ITEMS.map(function (x) {
     return '<button type="button" data-k="' + x[0] + '" data-go="' + x[2] + '"' + (x[0] === cur ? ' class="cur"' : '') + '>' +
-      '<svg viewBox="0 0 24 24" aria-hidden="true">' + x[3] + '</svg><span>' + x[1] + '</span></button>';
+      '<svg viewBox="0 0 24 24" aria-hidden="true">' + x[3] + '</svg><span>' + (BL ? BL[ITEMS.indexOf(x)] : x[1]) + '</span></button>';
   }).join('');
   nav.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-go]');

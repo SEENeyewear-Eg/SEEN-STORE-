@@ -1,0 +1,44 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Eye examination | SEEN Eyewear</title>
+<link rel="icon" href="/favicon.svg" type="image/svg+xml">
+<style>
+body{margin:0;font-family:Jost,"IBM Plex Sans Arabic",system-ui,sans-serif;color:#111;background:#fff;line-height:1.7}
+header{padding:16px;border-bottom:1px solid #e3e5e7}
+header a{color:#5d6670;text-decoration:none;font-size:14px}
+main{max-width:640px;margin:0 auto;padding:48px 20px 64px;text-align:center}
+h1{font-weight:400;font-size:30px;margin:0 0 12px}
+p{font-size:18px;color:#5d6670;margin:0 0 28px}
+.soon{display:inline-block;padding:10px 20px;border-radius:999px;background:#f2f4f6;font-size:15px}
+.btn{display:inline-block;margin-top:24px;padding:12px 22px;border-radius:999px;background:#0b0b0b;color:#fff;text-decoration:none;font-size:15px}
+</style>
+</head>
+<body>
+<header><a href="/" id="back">← SEEN Eyewear</a></header>
+<main>
+<h1 id="title">Eye examination</h1>
+<p id="intro">This service will be available soon.</p>
+<span class="soon" id="soon">Coming soon</span>
+<div><a class="btn" href="/" id="home">Back to home</a></div>
+</main>
+<script>
+(function(){
+  var T={"en":{"back":"← SEEN Eyewear","intro":"This service will be available soon.","soon":"Coming soon","home":"Back to home","title":"Eye examination"},"ar":{"back":"→ SEEN Eyewear","intro":"هذه الخدمة ستتوفر قريباً.","soon":"قريباً","home":"الرجوع للرئيسية","title":"فحص النظر"},"de":{"back":"← SEEN Eyewear","intro":"Dieser Service wird bald verfügbar sein.","soon":"Demnächst","home":"Zur Startseite","title":"Augenuntersuchung"},"es":{"back":"← SEEN Eyewear","intro":"Este servicio estará disponible pronto.","soon":"Próximamente","home":"Volver al inicio","title":"Examen de la vista"},"fr":{"back":"← SEEN Eyewear","intro":"Ce service sera bientôt disponible.","soon":"Bientôt disponible","home":"Retour à l’accueil","title":"Examen de la vue"},"it":{"back":"← SEEN Eyewear","intro":"Questo servizio sarà disponibile presto.","soon":"In arrivo","home":"Torna alla home","title":"Esame della vista"},"ru":{"back":"← SEEN Eyewear","intro":"Эта услуга скоро будет доступна.","soon":"Скоро","home":"На главную","title":"Проверка зрения"}};
+  var l="en";try{l=localStorage.seenLang||"en"}catch(e){}
+  if(!T[l]) l="en";
+  var t=T[l];
+  document.getElementById("back").textContent=t.back;
+  document.getElementById("title").textContent=t.title;
+  document.getElementById("intro").textContent=t.intro;
+  document.getElementById("soon").textContent=t.soon;
+  document.getElementById("home").textContent=t.home;
+  document.documentElement.lang=l;
+  document.documentElement.dir=(l==="ar")?"rtl":"ltr";
+  document.title=t.title+" | SEEN Eyewear";
+})();
+</script>
+</body>
+</html>

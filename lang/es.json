@@ -418,7 +418,23 @@
     "All Shop": "Todas las gafas",
     "Celebrating the launch of SEEN ONLINE": "Con motivo del lanzamiento de SEEN ONLINE",
     "Installments up to 12 months": "Pagos a plazos de hasta 12 meses",
-    "through these banks": "a través de estos bancos"
+    "through these banks": "a través de estos bancos",
+    "Change password": "Cambiar contraseña",
+    "Current password": "Contraseña actual",
+    "New password (8+ characters)": "Nueva contraseña (mín. 8 caracteres)",
+    "Profile photo": "Foto de perfil",
+    "Gallery": "Galería",
+    "Camera": "Cámara",
+    "My account": "Mi cuenta",
+    "ONLINE": "EN LÍNEA",
+    "Launch": "Lanzamiento",
+    "Installments": "Cuotas",
+    "Months": "meses",
+    "Triple": "Triple",
+    "Shop Now": "Comprar ahora",
+    "More": "Más",
+    "Pay in installments 18 months at checkout, through Valu*": "Pague en 18 cuotas al finalizar la compra, con Valu*",
+    "Shop now": "Comprar ahora"
   },
   "Shop brands": "Marcas globales"
 }

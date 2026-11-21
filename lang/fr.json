@@ -418,7 +418,23 @@
     "All Shop": "Toutes les lunettes",
     "Celebrating the launch of SEEN ONLINE": "Pour le lancement de SEEN ONLINE",
     "Installments up to 12 months": "Paiement en plusieurs fois jusqu'à 12 mois",
-    "through these banks": "via ces banques"
+    "through these banks": "via ces banques",
+    "Change password": "Changer le mot de passe",
+    "Current password": "Mot de passe actuel",
+    "New password (8+ characters)": "Nouveau mot de passe (8 caractères min.)",
+    "Profile photo": "Photo de profil",
+    "Gallery": "Galerie",
+    "Camera": "Appareil photo",
+    "My account": "Mon compte",
+    "ONLINE": "EN LIGNE",
+    "Launch": "Lancement",
+    "Installments": "Paiement échelonné",
+    "Months": "mois",
+    "Triple": "Triple",
+    "Shop Now": "Acheter maintenant",
+    "More": "Plus",
+    "Pay in installments 18 months at checkout, through Valu*": "Payez en 18 mensualités à la caisse, avec Valu*",
+    "Shop now": "Acheter maintenant"
   },
   "Shop brands": "Marques internationales"
 }

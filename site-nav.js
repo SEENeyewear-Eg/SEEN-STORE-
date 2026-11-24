@@ -77,10 +77,15 @@
   });
   hd.addEventListener('mouseenter', function () { clearTimeout(closeT); });
   hd.addEventListener('mouseleave', function () { clearTimeout(hoverT); closeT = setTimeout(close, 160); });
-  // Header buttons that need the home page go there.
+  // Header buttons: account, bag and favourites open their own side panel (same as the bottom bar);
+  // search still goes to the home page.
+  var HDR_PANEL = { ba: 'acc', bb: 'bag', bfv: 'fav' };
   ['bs', 'ba', 'bb', 'bfv'].forEach(function (id) {
     var el = document.getElementById(id);
-    if (el) el.addEventListener('click', function () { location.href = '/'; });
+    if (el) el.addEventListener('click', function () {
+      if (HDR_PANEL[id] && window.__seenPanelFor && window.__seenPanelFor(HDR_PANEL[id])) return;
+      location.href = '/';
+    });
   });
   var mbt = document.getElementById('mbt');
   // Phone menu: the header links are hidden on small screens, so the menu button opens them in a panel.
@@ -189,7 +194,13 @@
   ];
   var path = location.pathname.replace(/\/+$/, '') || '/';
   var cur = path === '/' && !location.hash ? 'home' : path.indexOf('/shop') === 0 ? 'shop' : '';
-  var OVER = { acc: '/#account', fav: '/#account/saved', bag: '/#cart' };
+  var OVER = { acc: '/#account', fav: '/#favourites', bag: '/#cart' };
+  // Shared with the header buttons (desktop): opens the same side panel; false if it cannot.
+  window.__seenPanelFor = function (k) {
+    if (!OVER[k] || document.getElementById('home')) return false;
+    openPanel(OVER[k], window.innerWidth > 900 ? 34 : 80);
+    return true;
+  };
   function openPanel(src, pct) {
     var W = pct || 50;
     if (document.getElementById('bpanel')) return;

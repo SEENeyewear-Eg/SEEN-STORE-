@@ -30,7 +30,7 @@
       [{ h: 'Explore', i: [['Find your face shape', '/frames/index.html'], ['Lens colour preview', '/lens/index.html'], ['Interactive 3D', '/3d.html'], ['Try on frames', '/try-on-frames/index.html']] }]
     ] },
     loc: { h: 'Our branches', i: [['City Center Mall · Hurghada', 'https://maps.app.goo.gl/qELR42bu6Amims959'], ['El Kawthar · Hurghada', 'https://maps.app.goo.gl/hTF2RTVjtiixjvKc7'], ['Sheraton Miramar · El Gouna', 'https://wa.me/201112299665']] },
-    off: { h: 'Offers', i: [['Black Friday', '/offers']] }
+    off: { h: 'Offers', i: [['Black Friday', '/offers/index.html']] }
   };
   function close() {
     mega.classList.remove('open');
@@ -87,7 +87,7 @@
   var PANEL_LINKS = [
     ['Home', '/'], ['Sunglasses', '/shop/sunglasses'], ['Optical', '/shop/optical'], ['Brands', '/shop'],
     ['Hotel pick-up booking', '/hotel-pickup/index.html'],     ['Find your face shape', '/frames/index.html'], ['Lens colour preview', '/lens/index.html'], ['Interactive 3D', '/3d.html'],
-    ['Try on frames', '/try-on-frames/index.html'], ['Visit Us', '/visit/index.html'], ['Blog', '/blog/index.html'], ['Offers', '/offers']
+    ['Try on frames', '/try-on-frames/index.html'], ['Visit Us', '/visit/index.html'], ['Blog', '/blog/index.html'], ['Offers', '/offers/index.html']
   ];
   function openPanel() {
     var p = document.getElementById('navPanel');
@@ -170,7 +170,7 @@
 (function () {
   if (document.getElementById('bnav')) return;
   var st = document.createElement('style');
-  st.textContent = '.bnav{display:none}' +
+  st.textContent = '.bnav{display:none}.bnav{box-sizing:border-box;width:100%;max-width:100vw}.bnav button{min-width:0;flex:1 1 0;overflow:hidden}' +
     '@media (max-width:900px){' +
     '.bnav{display:flex;position:fixed;left:0;right:0;bottom:0;z-index:60;direction:inherit;justify-content:space-around;align-items:stretch;background:#fff;color:#111;border-top:0.5px solid #d9dee2;padding:6px 4px calc(6px + env(safe-area-inset-bottom,0px))}' +
     '.bnav button{flex:1;display:flex;flex-direction:column;align-items:center;gap:3px;background:none;border:0;color:#8a8f96;font:inherit;font-size:10px;font-weight:500;padding:6px 0 4px;cursor:pointer;border-radius:14px}' +
@@ -214,7 +214,7 @@
   }).join('');
   nav.addEventListener('click', function (e) {
     var b = e.target.closest('button[data-go]');
-    if (b) { var k = b.getAttribute('data-k'); location.href = b.getAttribute('data-go'); }
+    if (b) { var k = b.getAttribute('data-k'); if (!document.getElementById('home') && OVER[k]) openPanel(OVER[k], 80); else location.href = b.getAttribute('data-go'); }
   });
   document.body.appendChild(nav);
   // Keep the bar on the visible bottom edge when the phone's browser toolbar moves.

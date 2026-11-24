@@ -1861,4 +1861,4 @@
 
 /shop      /   200
 /shop/*    /   200
-/offers    /black-friday/index.html   200
+/black-friday/*    /offers/   301

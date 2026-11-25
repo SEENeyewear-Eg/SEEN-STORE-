@@ -33,7 +33,7 @@ footer a{color:var(--gray);margin:0 8px;text-decoration:none}
 <label>Name<input id="hn" required autocomplete="name"></label>
 <label>Phone<input id="hp" type="tel" required autocomplete="tel"></label>
 <label>Hotel name<input id="hh" required></label>
-<label>Preferred day<input id="hd" type="date" required></label>
+<label>Preferred day<input id="hdy" type="date" required></label>
 <label>Preferred time<select id="ht"><option>Morning</option><option>Afternoon</option><option>Evening</option></select></label>
 <button class="btn" type="submit">Send booking on WhatsApp</button>
 </form>
@@ -48,7 +48,7 @@ footer a{color:var(--gray);margin:0 8px;text-decoration:none}
 <script>
 document.getElementById('hf').addEventListener('submit',function(e){
 e.preventDefault();
-var m='Hotel pick-up booking%0AName: '+encodeURIComponent(document.getElementById('hn').value)+'%0APhone: '+encodeURIComponent(document.getElementById('hp').value)+'%0AHotel: '+encodeURIComponent(document.getElementById('hh').value)+'%0ADay: '+document.getElementById('hd').value+'%0ATime: '+document.getElementById('ht').value;
+var m='Hotel pick-up booking%0AName: '+encodeURIComponent(document.getElementById('hn').value)+'%0APhone: '+encodeURIComponent(document.getElementById('hp').value)+'%0AHotel: '+encodeURIComponent(document.getElementById('hh').value)+'%0ADay: '+document.getElementById('hdy').value+'%0ATime: '+document.getElementById('ht').value;
 location.href='https://wa.me/201112299665?text='+m;
 });
 </script>

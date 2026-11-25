@@ -1,5 +1,6 @@
 // POST /api/checkout — validates the order against the catalogue, creates a Paymob intention
 // and returns the Unified Checkout URL the shopper is sent to. (Cloudflare Pages Function; ported from netlify/functions/checkout.mjs.)
+import { normPhone } from '../_lib/phone.js';
 import { setEnv, env, jsonEnv, json, catalog, priceOrder } from '../_lib/store.js';
 import { shoofReady } from '../_lib/shoof.js';
 import { liveStock } from '../_lib/live-stock.js';
@@ -13,9 +14,9 @@ export async function onRequestPost({ request, env: bindings }) {
   let body;
   try { body = await request.json(); } catch { return json({ error: 'Invalid request' }, 400); }
 
-  const c = body.customer || {}, name = String(c.name || '').trim().slice(0, 80), phone = String(c.phone || '').replace(/\s/g, '');
+  const c = body.customer || {}, name = String(c.name || '').trim().slice(0, 80), phone = normPhone(c.phone);
   const email = /^\S+@\S+\.\S+$/.test(c.email || '') ? c.email.trim() : '';
-  if (!name || !/^01[0125]\d{8}$/.test(phone)) return json({ error: 'Please check your name and mobile number' }, 400);
+  if (!name || !phone) return json({ error: 'Please check your name and mobile number' }, 400);
   if (body.delivery === 'home' && !(body.gov && String(body.city || '').trim() && String(body.addr || '').trim()))
     return json({ error: 'Please complete your delivery address' }, 400);
 
@@ -71,7 +72,7 @@ export async function onRequestPost({ request, env: bindings }) {
     amount, currency: 'EGP', payment_methods: methods, special_reference: no,
     items: o.discount ? [{ name: 'SEEN order ' + no, amount, quantity: 1, description: o.items.map(i => i.n + ' x' + i.q).join(', ').slice(0, 250) }] : items,
     billing_data: {
-      first_name: first, last_name: rest.join(' ') || first, phone_number: '+2' + phone, email: email || 'customer@example.com',
+      first_name: first, last_name: rest.join(' ') || first, phone_number: phone[0] === '+' ? phone : '+2' + phone, email: email || 'customer@example.com',
       street: body.delivery === 'home' ? String(body.addr).slice(0, 120) : 'NA', city: body.delivery === 'home' ? String(body.city).slice(0, 60) : 'Hurghada',
       state: body.delivery === 'home' ? String(body.gov) : 'Red Sea', country: 'EG', apartment: 'NA', floor: 'NA', building: 'NA'
     },

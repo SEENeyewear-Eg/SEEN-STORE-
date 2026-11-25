@@ -4,9 +4,10 @@
 import { setEnv, env, json } from '../../_lib/store.js';
 import { kvStore } from '../../_lib/kv.js';
 import { ordersForPhone } from '../../_lib/orders.js';
+import { normPhone } from '../../_lib/phone.js';
 
 const DAY = 864e5, LOCK = 15 * 60e3, MAX_FAILS = 5, COOKIE = 'seen_s', ITER = 100000;
-const PHONE = /^01[0125]\d{8}$/, EMAIL = /^\S+@\S+\.\S+$/;
+const EMAIL = /^\S+@\S+\.\S+$/;
 const enc = new TextEncoder();
 
 const toHex = buf => [...new Uint8Array(buf)].map(b => b.toString(16).padStart(2, '0')).join('');
@@ -98,8 +99,8 @@ export async function onRequest({ request, env: bindings, params }) {
     await store.setJSON(me, u);
     return json({ ok: true });
   }
-  const phone = String(b.phone || '').replace(/\s/g, ''), pw = String(b.password || '');
-  if (!PHONE.test(phone)) return json({ error: 'Enter an 11-digit mobile number starting with 010, 011, 012 or 015' }, 400);
+  const phone = normPhone(b.phone), pw = String(b.password || '');
+  if (!phone) return json({ error: 'Enter a valid mobile number: 01xxxxxxxxx, or with the country code (e.g. +49...)' }, 400);
 
   if (action === 'signup') {
     const name = String(b.name || '').trim().slice(0, 80), email = String(b.email || '').trim().slice(0, 120);

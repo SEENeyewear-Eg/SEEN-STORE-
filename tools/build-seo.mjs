@@ -23,6 +23,9 @@ const SITE = 'https://seeneyeweareg.com';
 const LIVE_URL = SITE + '/api/catalog';
 const CATALOG_FILE = path.join(ROOT, '.local-api', 'catalog.json');
 const PIXEL = fs.readFileSync(path.join(ROOT, 'tools', 'seen-pixel.html'), 'utf8');
+// Google Tag Manager (container GTM-T4PS7CGW): script right after <head>, noscript right after <body> (same snippets as tools/add-gtm.py).
+const GTM_HEAD = fs.readFileSync(path.join(ROOT, 'tools', 'seen-gtm-head.html'), 'utf8').trim();
+const GTM_BODY = fs.readFileSync(path.join(ROOT, 'tools', 'seen-gtm-body.html'), 'utf8').trim();
 const TODAY = new Date().toISOString().slice(0, 10);
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
@@ -269,7 +272,8 @@ function shell({ lang = 'en', title, desc, path: urlPath, robots = 'index,follow
     ? `<nav class="crumbs" aria-label="Breadcrumb">${crumbs.map(c => (c.href ? `<a href="${c.href}">${esc(c.name)}</a>` : esc(c.name))).join(' › ')}</nav>`
     : '';
   return `<!doctype html>
-<html lang="${t.lang}" dir="${t.dir}"><head><meta charset="utf-8">
+<html lang="${t.lang}" dir="${t.dir}"><head>
+${GTM_HEAD}<meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
 <title>${esc(title)}</title>
 <meta name="description" content="${esc(desc)}">
@@ -290,6 +294,7 @@ ${ld.map(jsonld).join('\n')}
 <style>${CSS}</style>
 <link rel="stylesheet" href="/footer-bottom.css">
 </head><body>
+${GTM_BODY}
 <header><a href="/">${t.brand}</a><a href="/shop">${t.allEyewear}</a></header>
 <main>${crumbHtml}${body}</main>
 <footer>${t.brand} · ${t.footer} · <a href="/">${t.home}</a></footer>

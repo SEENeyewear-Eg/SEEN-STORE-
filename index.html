@@ -56,7 +56,7 @@ nav{display:flex;gap:2px}nav button,nav a{padding:0 18px;height:46px;display:fle
 .hero{overflow:hidden}.hero>*{position:relative;z-index:1}.hero .hbg{position:absolute;inset:0;z-index:0}
 .hbg img,.hbg video{position:absolute;inset:0;width:100%;height:100%;object-fit:cover;opacity:0;transform:scale(1.06);transition:opacity 1.2s ease,transform 7s ease-out}.hbg img.on,.hbg video.on{opacity:1;transform:none}
 .hbg::after{content:'';position:absolute;inset:0;background:linear-gradient(to top,rgba(0,0,0,.7),rgba(0,0,0,.12) 55%,rgba(0,0,0,.3))}
-.hero.hl{color:#0b0b0b}
+.hero.hl{color:#fff}.hero.hl #h1s,.hero.hl #h1,.hero.hl #hp{text-shadow:0 1px 18px rgba(0,0,0,.38),0 0 2px rgba(0,0,0,.18)}
 .hero.hl .hbg::after{background:linear-gradient(160deg,#ffffff 0%,#f0faff 40%,#cdeefc 75%,#e6f6fd 100%);background-size:180% 180%;opacity:0;animation:hbgWave 16s ease-in-out infinite}
 .hero:not(.hl) .hwm{display:none}
 [dir=rtl] .hero .hwm{left:33%}
@@ -66,11 +66,11 @@ nav{display:flex;gap:2px}nav button,nav a{padding:0 18px;height:46px;display:fle
 @keyframes hbgWave{0%,100%{background-position:0% 40%}50%{background-position:100% 60%}}
 .hero .hwm{position:absolute;left:67%;top:50%;width:min(40vw,480px);aspect-ratio:1;transform:translate(-50%,-50%);pointer-events:none;z-index:0}
 .hwm-rings{position:absolute;inset:0;width:100%;height:100%;overflow:visible}
-.hwm-rings circle{fill:none;stroke:#5AC8FA;stroke-opacity:.5;stroke-width:1.2}
-.hwm-rings .dots circle{fill:#5AC8FA;stroke:none;fill-opacity:.7}
+.hwm-rings circle{fill:none;stroke:#5AC8FA;stroke-opacity:.8;stroke-width:2}
+.hwm-rings .dots circle{fill:#5AC8FA;stroke:none;fill-opacity:.95}
 .hwm-rings .ro{transform-box:view-box;transform-origin:200px 200px;animation:hwmCCW 46s linear infinite}
 .hwm-rings .ri{transform-box:view-box;transform-origin:200px 200px;animation:hwmCW 28s linear infinite}
-.hwm-rings .rp circle{stroke-opacity:.35;animation:hwmRip 5s ease-out infinite;transform-box:view-box;transform-origin:200px 200px}
+.hwm-rings .rp circle{stroke-opacity:.55;animation:hwmRip 5s ease-out infinite;transform-box:view-box;transform-origin:200px 200px}
 @keyframes hwmCCW{to{transform:rotate(-360deg)}}
 @keyframes hwmCW{to{transform:rotate(360deg)}}
 @keyframes hwmRip{0%{transform:scale(.82);opacity:.5}100%{transform:scale(1.08);opacity:0}}
@@ -452,13 +452,13 @@ hd.onmouseleave=()=>{clearTimeout(ot);ct2=setTimeout(closeM,160)};hd.onmouseente
 addEventListener('scroll',()=>{if(tk)return;tk=true;requestAnimationFrame(()=>{const y=scrollY;solid();if(cur===null)hd.classList.toggle('hide',y>last&&y>220);last=y;tk=false})},{passive:true});
 const bs=[...document.querySelectorAll('#bar span')];let bn=0,rm=matchMedia('(prefers-reduced-motion:reduce)').matches;
 if(!rm)setInterval(()=>{bs[bn].classList.remove('on');bn=(bn+1)%bs.length;bs[bn].classList.add('on')},4000);
-const HS=[['New season','AW26 collection.','Discover the new SEEN eyewear.','Shop now'],['Face shape finder','Find your fit.','Pick your face shape to see which frames suit you best, then try them on.','Open the wheel'],['Try them on','Love them.','Open your camera and see any frame on your face.','Try on now'],['Order online,','collect today.','Pick up at City Center, El Gouna or El Kawthar.','Choose a branch'],['40+ brands.','100% authentic.','Ray-Ban, Maui Jim, Gucci, Carrera and more.','Shop brands']],HIMG=['img/hero/hero-aw26.mp4','img/hero/_16x9_1920x1080_260709_BALENCIAGA_EYEWEAR_CK_02_115_LOGO.jpg','1577803645773-f96470509666','1509695507497-903c140c43b0','1473496169904-658ba7c44d8a'];let hi=0,paused=rm,ht;
-$('hbg').innerHTML=HIMG.map((id,j)=>/\.(mp4|webm)$/i.test(id)?'<video muted autoplay playsinline preload="auto" onended="vidEnd(this)" src="'+id+'"></video>':'<img alt="" '+(j?'loading="lazy" ':'')+'src="'+(id.startsWith('img/')?id:'https://images.unsplash.com/photo-'+id+'?w=2400&q=80&auto=format&fit=crop')+'">').join('');
-let vidPlays=0;function vidEnd(v){if(hi!=0)return;if(++vidPlays<1){v.currentTime=0;v.play()}else{hs(hi+1);ar()}}
-function hs(i){hi=(i+HS.length)%HS.length;const s=HS[hi];if(hi==0){vidPlays=0;const v=$('hbg').querySelector('video');if(v){v.currentTime=0;v.play().catch(()=>{})}}document.querySelector('.hero').classList.toggle('hl',hi==1);[...$('hbg').children].forEach((m,j)=>m.classList.toggle('on',j==hi));$('h1s').textContent=s[0];$('h1').textContent=s[1];$('hp').textContent=s[2];$('hc').textContent=s[3];$('bars').innerHTML=HS.map((_,j)=>'<i class="'+(j==hi?'on':'')+'"></i>').join('')}
-function ar(){clearInterval(ht);if(!paused&&hi!=0)ht=setInterval(()=>hs(hi+1),5000)}
+const HS=[['Face shape finder','Find your fit.','Pick your face shape to see which frames suit you best, then try them on.','Open the wheel'],['New season','AW26 collection.','Discover the new SEEN eyewear.','Shop now'],['Try them on','Love them.','Open your camera and see any frame on your face.','Try on now'],['Order online,','collect today.','Pick up at City Center, El Gouna or El Kawthar.','Choose a branch'],['40+ brands.','100% authentic.','Ray-Ban, Maui Jim, Gucci, Carrera and more.','Shop brands']],HIMG=['img/hero/_16x9_1920x1080_260709_BALENCIAGA_EYEWEAR_CK_02_115_LOGO.jpg','img/hero/hero-aw26.mp4','1577803645773-f96470509666','1509695507497-903c140c43b0','1473496169904-658ba7c44d8a'];let hi=0,paused=rm,ht;
+$('hbg').innerHTML=HIMG.map((id,j)=>/\.(mp4|webm)$/i.test(id)?'<video muted playsinline preload="auto" onended="vidEnd(this)" src="'+id+'"></video>':'<img alt="" '+(j?'loading="lazy" ':'')+'src="'+(id.startsWith('img/')?id:'https://images.unsplash.com/photo-'+id+'?w=2400&q=80&auto=format&fit=crop')+'">').join('');
+let vidPlays=0;function vidEnd(v){if(hi!=1)return;if(++vidPlays<1){v.currentTime=0;v.play()}else{hs(hi+1);ar()}}
+function hs(i){hi=(i+HS.length)%HS.length;const s=HS[hi];if(hi==1){vidPlays=0;const v=$('hbg').querySelector('video');if(v){v.currentTime=0;v.play().catch(()=>{})}}document.querySelector('.hero').classList.toggle('hl',hi==0);[...$('hbg').children].forEach((m,j)=>m.classList.toggle('on',j==hi));$('h1s').textContent=s[0];$('h1').textContent=s[1];$('hp').textContent=s[2];$('hc').textContent=s[3];$('bars').innerHTML=HS.map((_,j)=>'<i class="'+(j==hi?'on':'')+'"></i>').join('')}
+function ar(){clearInterval(ht);if(!paused&&hi!=1)ht=setInterval(()=>hs(hi+1),5000)}
 $('pv').onclick=()=>{hs(hi-1);ar()};$('nx').onclick=()=>{hs(hi+1);ar()};$('pp').onclick=()=>{paused=!paused;$('pp').innerHTML=ico(paused?'play':'pause');ar()};hs(0);ar();// The first slide's button opens the 3D try-on with the Ray-Ban RB3025; the others scroll to the featured frames.
-$('hc').onclick=()=>{if(hi==0){go('/shop');return}if(hi==1){location.href='/frames/index.html';return}if(hi==3){location.href='/visit/index.html';return}if(hi==4){go('/shop');return}const i=P.findIndex(p=>p.b=='Ray-Ban'&&p.n=='RB3025');if(hi==2&&i>=0){vtoAsk(()=>openTry(tryUrl(P[i],st[i])));return}$('grid').scrollIntoView({behavior:'smooth'})};
+$('hc').onclick=()=>{if(hi==1){go('/shop');return}if(hi==0){location.href='/frames/index.html';return}if(hi==3){location.href='/visit/index.html';return}if(hi==4){go('/shop');return}const i=P.findIndex(p=>p.b=='Ray-Ban'&&p.n=='RB3025');if(hi==2&&i>=0){vtoAsk(()=>openTry(tryUrl(P[i],st[i])));return}$('grid').scrollIntoView({behavior:'smooth'})};
 
 let pi=0,gv=0;const VW=['','scale(.82)','rotateY(-38deg)','scale(2.3) translateX(21%)','rotateY(-68deg) scale(.92)'];// Product page sections: details from Shoof (p.d = model name, gender, material, shape), size from p.z, and the owner's warranty and exchange rules.
 const rwH=(l,v)=>v?'<div class="rw"><span>'+l+'</span><b>'+esc(v)+'</b></div>':'';

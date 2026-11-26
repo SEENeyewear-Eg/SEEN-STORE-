@@ -101,5 +101,16 @@ height="0" width="0" style="display:none;visibility:hidden"></iframe></noscript>
   document.title=T[l].title;
 })();
 </script>
+<!-- Google Ads: WhatsApp click conversion -->
+<script>
+window.dataLayer = window.dataLayer || [];
+function gtag(){ dataLayer.push(arguments); }
+document.addEventListener('click', function (e) {
+  var a = e.target.closest && e.target.closest('a[href*="wa.me"], a[href*="api.whatsapp.com"]');
+  if (a) {
+    gtag('event', 'conversion', { send_to: 'AW-18461690499/uYooCMnkx7YdEIOVnONE' });
+  }
+}, true);
+</script>
 </body>
 </html>

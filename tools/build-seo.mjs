@@ -26,6 +26,7 @@ const PIXEL = fs.readFileSync(path.join(ROOT, 'tools', 'seen-pixel.html'), 'utf8
 // Google Tag Manager (container GTM-T4PS7CGW): script right after <head>, noscript right after <body> (same snippets as tools/add-gtm.py).
 const GTM_HEAD = fs.readFileSync(path.join(ROOT, 'tools', 'seen-gtm-head.html'), 'utf8').trim();
 const GTM_BODY = fs.readFileSync(path.join(ROOT, 'tools', 'seen-gtm-body.html'), 'utf8').trim();
+const WA_CONV = fs.readFileSync(path.join(ROOT, 'tools', 'seen-wa-conversion.html'), 'utf8').trim();
 const TODAY = new Date().toISOString().slice(0, 10);
 const html = fs.readFileSync(path.join(ROOT, 'index.html'), 'utf8');
 
@@ -305,6 +306,7 @@ ${GTM_BODY}
 <footer>${t.brand} · ${t.footer} · <a href="/">${t.home}</a></footer>
 <noscript><p><a href="${noscriptHref}">${t.open}</a></p></noscript>
 <script src="/site-nav.js" defer></script>
+${WA_CONV}
 </body></html>
 `;
 }

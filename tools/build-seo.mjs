@@ -1,7 +1,7 @@
 // Generates the static SEO pages from the product catalogue.
 // Run from the repo root:
 //   node tools/build-seo.mjs          reads .local-api/catalog.json (the local copy of /api/catalog)
-//   node tools/build-seo.mjs --live   reads the live https://seeneyeweareg.com/api/catalog instead
+//   node tools/build-seo.mjs --live   reads the live https://www.seeneyeweareg.com/api/catalog instead
 //   node tools/build-seo.mjs --listings  also rebuilds shop, brand, cart and checkout pages (off by default)
 //
 // Writes:
@@ -19,7 +19,7 @@ import path from 'node:path';
 import { fileURLToPath } from 'node:url';
 
 const ROOT = path.resolve(path.dirname(fileURLToPath(import.meta.url)), '..');
-const SITE = 'https://seeneyeweareg.com';
+const SITE = 'https://www.seeneyeweareg.com';
 const LIVE_URL = SITE + '/api/catalog';
 const CATALOG_FILE = path.join(ROOT, '.local-api', 'catalog.json');
 const PIXEL = fs.readFileSync(path.join(ROOT, 'tools', 'seen-pixel.html'), 'utf8');
@@ -46,12 +46,14 @@ if (!Array.isArray(catalog.rows)) throw new Error('catalogue is not a list: ' + 
 const allP = catalog.rows;
 
 // Photos still come from the BIMG map in index.html (not part of the product list).
+// The BIMG map now lives in seen-cards.js (the shared card code), so it is read from there.
+const cardsJs = fs.readFileSync(path.join(ROOT, 'seen-cards.js'), 'utf8');
 function slice(from, to) {
-  const a = html.indexOf(from);
+  const a = cardsJs.indexOf(from);
   if (a < 0) throw new Error('marker not found: ' + from);
-  const b = html.indexOf(to, a);
+  const b = cardsJs.indexOf(to, a);
   if (b < 0) throw new Error('end marker not found: ' + to);
-  return html.slice(a, b);
+  return cardsJs.slice(a, b);
 }
 const BIMG = new Function(`${slice('const BIMG=', 'const bims=(p,k)')};\nreturn BIMG;`)();
 
@@ -238,7 +240,9 @@ const productUrl = p => `/product/${slugOf(p)}`;
 const urlFor = (p, lang) => (lang === 'en' ? productUrl(p) : `/${lang}${productUrl(p)}`);
 const catSlug = t => (t === 'Optical' ? 'optical' : 'sunglasses');
 const imageOf = p => {
-  const b = BIMG[p.b];
+  // The catalogue writes MAUI JIM / VOGUE, the photo map writes Maui Jim / Vogue: match without case.
+  const key = Object.keys(BIMG).find(k => k.toLowerCase() === String(p.b).toLowerCase());
+  const b = key ? BIMG[key] : null;
   if (!b || !p.k[0]) return '';
   const f = b[2][p.n.trim() + '|' + p.k[0][2]];
   if (!f) return '';
@@ -286,7 +290,8 @@ ${alternates.map(a => `<link rel="alternate" hreflang="${a.hreflang}" href="${a.
 <meta property="og:title" content="${esc(title)}">
 <meta property="og:description" content="${esc(desc)}">
 <meta property="og:url" content="${SITE}${urlPath}">
-${image ? `<meta property="og:image" content="${esc(image)}">` : ''}
+<meta property="og:image" content="${esc(image || SITE + '/img/seen-og-share.jpg')}">
+<meta name="twitter:card" content="summary_large_image">
 ${PIXEL}
 <link rel="icon" href="/favicon.svg" type="image/svg+xml">
 <meta name="theme-color" content="#F6F8F9">
@@ -424,7 +429,7 @@ for (const b of brands) {
   const body = `<h1>${esc(b)}</h1><p class="muted">${list.length} styles</p>${openInStore(urlPath)}
 <ul class="grid">${list.map(listItem).join('')}</ul>`;
   write(urlPath.slice(1) + '/index.html', shell({
-    title, desc, path: urlPath, ld: [itemList(b, list)], body,
+    title, desc, path: urlPath, ld: [itemList(b, list)], body, image: SITE + '/img/share/brand-' + SEO_BRAND[b] + '.png',
     crumbs: [{ name: 'Home', href: '/' }, { name: 'Shop', href: '/shop' }, { name: b }],
     noscriptHref: `/?r=${encodeURIComponent(urlPath)}`,
   }));

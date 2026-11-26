@@ -3,12 +3,12 @@
 // Usage:
 //   node scripts/sync-local-catalog.cjs                 (downloads from the live site)
 //   node scripts/sync-local-catalog.cjs --from <file>   (uses a JSON file saved from the browser)
-// Set SITE_URL to change the site (default: https://seeneyeweareg.com).
+// Set SITE_URL to change the site (default: https://www.seeneyeweareg.com).
 const fs = require('fs');
 const path = require('path');
 
 const OUT = path.join(__dirname, '..', '.local-api', 'catalog.json');
-const SITE = process.env.SITE_URL || 'https://seeneyeweareg.com';
+const SITE = process.env.SITE_URL || 'https://www.seeneyeweareg.com';
 
 async function load() {
   const i = process.argv.indexOf('--from');

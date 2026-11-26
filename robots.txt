@@ -3,4 +3,4 @@ Allow: /
 Disallow: /api/
 Disallow: /.netlify/
 
-Sitemap: https://seeneyeweareg.com/sitemap.xml
+Sitemap: https://www.seeneyeweareg.com/sitemap.xml

@@ -1,0 +1,5 @@
+/* Brand page banner: one wide photo of a model wearing the brand, at the very top of the page (not clickable). */
+.bad{display:block;width:100%;margin:0 0 20px;border-radius:14px;overflow:hidden;background:#eef1f3;aspect-ratio:16/10;max-height:560px}
+.bad img{display:block;width:100%;height:100%;object-fit:cover;object-position:50% 35%}
+.bad[hidden]{display:none}
+@media (min-width:760px){.bad{aspect-ratio:2.8/1}}

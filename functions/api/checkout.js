@@ -55,8 +55,8 @@ export async function onRequestPost({ request, env: bindings }) {
     address: body.delivery === 'home' ? { gov: String(body.gov), city: String(body.city).slice(0, 60), addr: String(body.addr).slice(0, 200) } : null,
     lang: String(body.lang || 'en').slice(0, 5),
     pay: body.pay, promo: o.discount ? String(body.promo).toUpperCase() : '',
-    items: o.items.map(i => ({ brand: i.b, model: i.n, colour: i.col, qty: i.q, price: i.p, shoofIds: i.ids || [] })),
-    sub: o.sub, discount: o.discount, fee: o.fee, total: o.total, ...extra,
+    items: o.items.map(i => ({ brand: i.b, model: i.n, colour: i.col, qty: i.q, price: i.p, free: i.free || 0, shoofIds: i.ids || [] })),
+    sub: o.sub, offer: o.offer, offerName: o.offer ? 'Buy 1 Get 1 Free' : '', discount: o.discount, fee: o.fee, total: o.total, ...extra,
   });
   if (cod) {
     await saveOrder(bindings, record({ status: 'cod', paymobIntention: '' }));
@@ -70,7 +70,7 @@ export async function onRequestPost({ request, env: bindings }) {
   const amount = o.total * 100;
   const payload = {
     amount, currency: 'EGP', payment_methods: methods, special_reference: no,
-    items: o.discount ? [{ name: 'SEEN order ' + no, amount, quantity: 1, description: o.items.map(i => i.n + ' x' + i.q).join(', ').slice(0, 250) }] : items,
+    items: (o.discount || o.offer) ? [{ name: 'SEEN order ' + no, amount, quantity: 1, description: o.items.map(i => i.n + ' x' + i.q).join(', ').slice(0, 250) }] : items,
     billing_data: {
       first_name: first, last_name: rest.join(' ') || first, phone_number: phone[0] === '+' ? phone : '+2' + phone, email: email || 'customer@example.com',
       street: body.delivery === 'home' ? String(body.addr).slice(0, 120) : 'NA', city: body.delivery === 'home' ? String(body.city).slice(0, 60) : 'Hurghada',

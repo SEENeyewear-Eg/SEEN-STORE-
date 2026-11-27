@@ -262,7 +262,8 @@
   function sdCore() {
     if (!SD.coreP) SD.coreP = Promise.all([
       sdScript('/seen-cards.js', function () { return !!window.SEEN_CARDS; }),
-      sdScript('/seo-slugs.js', function () { return typeof SEO_SLUG !== 'undefined'; })
+      sdScript('/seo-slugs.js', function () { return typeof SEO_SLUG !== 'undefined'; }),
+      sdScript('/seen-offer.js', function () { return !!window.SEEN_OFFER; })
     ]);
     return SD.coreP;
   }
@@ -310,6 +311,7 @@
     st.textContent =
       '#sd{position:fixed;inset:0;z-index:9000;background:rgba(0,0,0,0);display:flex;justify-content:flex-end;transition:background .4s cubic-bezier(.2,.7,.2,1)}#sd.on{background:rgba(0,0,0,.45)}' +
       '#sd .sd-p{position:relative;width:min(400px,100%);height:100%;background:#fff;color:#111;display:flex;flex-direction:column;font-family:inherit;transform:translateX(100%);transition:transform .4s cubic-bezier(.2,.7,.2,1)}#sd.on .sd-p{transform:none}' +
+      '#sd.sd-now,#sd.sd-now .sd-p{transition:none}' +
       '@media (max-width:900px){#sd .sd-p{width:80vw}}' +
       '#sd[dir=rtl] .sd-p{transform:translateX(-100%)}#sd[dir=rtl].on .sd-p{transform:none}' +
       '#sd .sd-h{display:flex;align-items:center;justify-content:space-between;padding:18px 20px;border-bottom:1px solid #e3e5e7}' +
@@ -340,6 +342,9 @@
     document.head.appendChild(st);
     var l = document.createElement('link'); l.id = 'sdCardCss'; l.rel = 'stylesheet'; l.href = '/seen-cards.css'; document.head.appendChild(l);
   }
+  function sdPreload() { try { if (sdRead('seenBag').length || sdRead('seenWish').length) { sdCss(); sdLoad(); } } catch (e) {} }
+  function sdPreloadSoon() { if (window.requestIdleCallback) requestIdleCallback(sdPreload, { timeout: 2500 }); else setTimeout(sdPreload, 1200); }
+  if (document.readyState === 'complete') sdPreloadSoon(); else window.addEventListener('load', sdPreloadSoon);
   function sdKill() { var d = document.getElementById('sd'); if (d) d.remove(); document.removeEventListener('keydown', sdKey); }
   function sdClose() {
     var d = document.getElementById('sd'); document.removeEventListener('keydown', sdKey); sdBar(null);
@@ -353,6 +358,14 @@
     var bag = sdRead('seenBag');
     if (!bag.length) return { title: 'Bag', body: '<div class="sd-empty"><h3>Your bag is empty</h3><a href="/shop">Continue shopping</a></div>', foot: '' };
     var total = 0, count = 0;
+    // Buy 1 Get 1 Free (temporary; rule and end date in /seen-offer.js): the real price and quantity of every line, then what the bag saves.
+    var lines = bag.map(function (x) {
+      var p = sdFind(cat, x[0], x[1]), ck = p ? p.k.filter(function (c) { return c[2] === x[2]; })[0] : null, q = +x[3] || 1;
+      var cap = ck ? Math.max(0, Math.min(+ck[4] || 0, 10)) : 10;
+      if (cap > 0 && q > cap) q = cap;
+      return { p: p ? p.p : 0, q: q };
+    });
+    var O = window.SEEN_OFFER, oc = O && O.active() && bag.length ? O.calc(lines) : { save: 0, free: lines.map(function () { return 0; }) };
     var rows = bag.map(function (x, i) {
       var b = x[0], n = x[1], col = x[2], q = +x[3] || 1, p = sdFind(cat, b, n);
       // Same stock rule as the home page: at most the colour's stock, never more than 10.
@@ -366,12 +379,35 @@
       return '<div class="sd-it"><a class="sd-th" href="' + href + '">' + sdThumb(p, col) + '</a><div class="sd-in">' +
         '<a href="' + href + '"><b>' + sdEsc(b) + '</b>' + sdEsc(n) + '</a><small>' + sdEsc(col) + '</small>' +
         '<div class="sd-row"><span class="sd-q"><button type="button" data-sd="dec" data-i="' + i + '" aria-label="Less">&minus;</button><span>' + q +
-        '</span><button type="button" data-sd="inc" data-i="' + i + '" aria-label="More"' + (q >= cap ? ' disabled style="opacity:.35;cursor:default"' : '') + '>+</button></span><span>' + (p ? sdMoney(price) : '') + '</span></div>' +
+        '</span><button type="button" data-sd="inc" data-i="' + i + '" aria-label="More"' + (q >= cap ? ' disabled style="opacity:.35;cursor:default"' : '') + '>+</button></span><span>' + (p ? (oc.free[i] ? '<s style="opacity:.55;font-weight:400">' + sdMoney(price) + '</s> ' + (q > oc.free[i] ? sdMoney(p.p * (q - oc.free[i])) : 'Free') : sdMoney(price)) : '') + '</span></div>' +
+        (oc.free[i] ? '<small style="color:#1a9fd6;font-weight:600">Buy 1 Get 1 Free' + (oc.free[i] > 1 ? ' &times; ' + oc.free[i] : '') + '</small>' : '') +
         (note ? '<small style="color:#c0392b">' + note + '</small>' : '') +
         '<button type="button" class="sd-rm" data-sd="rm" data-i="' + i + '">Remove</button></div></div>';
     }).join('');
     return { title: 'Bag (' + count + ')', body: rows,
-      foot: '<div class="sd-tot"><span>Total</span><b>' + sdMoney(total) + '</b></div><a class="sd-btn" href="/checkout">Checkout</a><a class="sd-btn alt" href="/cart">View bag</a>' };
+      foot: (oc.save ? '<div class="sd-tot" style="color:#1a9fd6"><span>Buy 1 Get 1 Free</span><b>-' + sdMoney(oc.save) + '</b></div>' : '') + '<div class="sd-tot"><span>Total</span><b>' + sdMoney(total - oc.save) + '</b></div><a class="sd-btn" href="/checkout">Checkout</a><a class="sd-btn alt" href="/cart">View bag</a>' };
+  }
+  // The same lists straight from this browser's storage, with Remove: shown at once while the catalogue and the card files load
+  // (the 3D page is heavy and can take seconds), then replaced by the full drawer. Nothing here needs the network.
+  function sdBagQuick() {
+    var bag = sdRead('seenBag'), count = 0;
+    if (!bag.length) return sdBagHtml([], {});
+    var rows = bag.map(function (x, i) {
+      var q = +x[3] || 1; count += q;
+      return '<div class="sd-it"><div class="sd-in"><b>' + sdEsc(x[0]) + '</b>' + sdEsc(x[1]) + '<small>' + sdEsc(x[2]) + '</small>' +
+        '<div class="sd-row"><span>&times; ' + q + '</span></div><button type="button" class="sd-rm" data-sd="rm" data-i="' + i + '">Remove</button></div></div>';
+    }).join('');
+    return { title: 'Bag (' + count + ')', body: rows, foot: '<a class="sd-btn" href="/checkout">Checkout</a><a class="sd-btn alt" href="/cart">View bag</a>' };
+  }
+  function sdFavQuick() {
+    var w = sdWishList();
+    if (!w.length) return { title: 'Saved frames', body: '<div class="sd-empty"><h3>No saved frames yet</h3><a href="/shop">Browse eyewear</a></div>', foot: '' };
+    var rows = w.map(function (key, i) {
+      var s2 = String(key).split('|');
+      return '<div class="sd-it"><div class="sd-in"><b>' + sdEsc(s2[0]) + '</b>' + sdEsc(s2.slice(1).join('|')) +
+        '<div class="sd-row"><button type="button" class="sd-rm" data-sd="unsave" data-i="' + i + '">Remove</button></div></div></div>';
+    }).join('');
+    return { title: 'Saved frames (' + w.length + ')', body: rows, foot: '' };
   }
   // Favourites: the home page's own product cards (photo, colours, Try on, heart, Add to bag), from seen-cards.js.
   function sdFavHtml(cat) {
@@ -431,13 +467,15 @@
     if (SD.me && SD.me.saved) SD.me.saved.forEach(function (k) { if (w.indexOf(k) < 0) w.push(k); });
     return w;
   }
-  function openDrawer(kind) {
-    // The favourites drawer is the home page's own (seen-cards.js): wait for the file the first time.
-    if (kind === 'fav' && !window.SEEN_CARDS) { sdCore().then(function () { openDrawer('fav'); }); return; }
+  function openDrawer(kind, instant) {
+    // The favourites drawer is the home page's own (seen-cards.js). Until that file is here a simple list (with Remove) is shown
+    // at once and swapped for the real drawer as soon as the file arrives.
+    var quickFav = kind === 'fav' && !window.SEEN_CARDS;
     sdKill(); sdCss();
     var d = document.createElement('div'); d.id = 'sd'; d.setAttribute('role', 'dialog'); d.setAttribute('aria-modal', 'true');
     d.setAttribute('dir', document.documentElement.getAttribute('dir') || 'ltr'); d.setAttribute('lang', document.documentElement.getAttribute('lang') || 'en');
-    var fav = kind === 'fav';
+    var fav = kind === 'fav' && !quickFav;
+    if (instant) d.className = 'sd-now';
     d.innerHTML = fav ? SEEN_CARDS.favShell() : '<div class="sd-p"><div class="sd-h"><h2></h2><button type="button" class="sd-x" aria-label="Close">&times;</button></div><div class="sd-b"></div><div class="sd-f"></div></div>';
     document.body.appendChild(d); void d.offsetWidth; d.classList.add('on'); sdBar(kind);
     if (fav) d.querySelector('#drf').classList.add('on');
@@ -448,8 +486,15 @@
     function paint(r) { if (fav) { d.querySelector('#favl').innerHTML = r.body; return; } h2.textContent = r.title; bd.innerHTML = r.body; ft.innerHTML = r.foot; ft.style.display = r.foot ? '' : 'none'; }
     if (kind !== 'bag') sdWho();
     function render() {
+      if (quickFav) {
+        paint(sdFavQuick());
+        if (!d.__up) { d.__up = true; sdLoad().then(function () { if (document.getElementById('sd') === d) openDrawer('fav', true); }); }
+        return Promise.resolve();
+      }
+      if (kind === 'bag' && !SD.ready) paint(sdBagQuick());
       if (kind === 'acc') return SD.meP.then(function (u) { paint(sdAccHtml(u)); });
       if (kind === 'bag') return sdLoad().then(function (v) { SD.catList = v[0]; paint(sdBagHtml(v[0], v[1])); });
+      if (!SD.ready) paint({ body: sdFavQuick().body });
       Promise.all([sdLoad(), SD.meP]).then(function (v) { SD.catList = v[0][0]; paint(sdFavHtml(v[0][0], v[0][1])); });
     }
     // Clicks on a product card in the favourites drawer: open, colour, heart, add to bag (the same actions as on the home page).

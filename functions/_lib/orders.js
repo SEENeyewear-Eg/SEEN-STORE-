@@ -39,8 +39,8 @@ export async function ordersForPhone(bindings, phone) {
     const o = await getOrder(bindings, no);
     if (o) out.push({ no: o.no, created: o.created, status: o.status || '', pay: o.pay || '', delivery: o.delivery || '', branch: o.branch || '',
       address: o.address || null, customer: { name: (o.customer && o.customer.name) || '', phone: (o.customer && o.customer.phone) || '', email: (o.customer && o.customer.email) || '' },
-      items: (o.items || []).map(i => ({ brand: i.brand, model: i.model, colour: i.colour, qty: i.qty, price: i.price })),
-      sub: o.sub || 0, discount: o.discount || 0, fee: o.fee || 0, total: o.total || 0, promo: o.promo || '' });
+      items: (o.items || []).map(i => ({ brand: i.brand, model: i.model, colour: i.colour, qty: i.qty, price: i.price, free: i.free || 0 })),
+      sub: o.sub || 0, offer: o.offer || 0, discount: o.discount || 0, fee: o.fee || 0, total: o.total || 0, promo: o.promo || '' });
   }
   return out;
 }

@@ -3,6 +3,8 @@
 // callbacks are verified with HMAC-SHA512 (Web Crypto, no Node modules needed).
 
 import { catalogFromSnapshot } from './catalog-kv.js';
+// The temporary Buy 1 Get 1 Free offer: one file shared with the website (seen-offer.js sets globalThis.SEEN_OFFER).
+import '../../seen-offer.js';
 
 let ENV = {};
 export const setEnv = e => { ENV = e || {}; };
@@ -84,11 +86,14 @@ export function priceOrder(body, cat, live) {
   if (home && items.some(i => i.rx)) errors.push('Prescription frames are picked up from a branch');
   const sub = items.reduce((a, i) => a + i.p * i.q, 0);
   const rate = jsonEnv('PROMO_CODES', {})[String(body.promo || '').trim().toUpperCase()] || 0;
-  const discount = Math.round(sub * rate);
+  // The offer comes off first; a promo code (e.g. the new-account 10%) is then taken from what is left.
+  const off = globalThis.SEEN_OFFER && globalThis.SEEN_OFFER.active() ? globalThis.SEEN_OFFER.calc(items) : { save: 0, free: items.map(() => 0) };
+  items.forEach((i, n) => { i.free = off.free[n]; });
+  const discount = Math.round((sub - off.save) * rate);
   const gfee = home ? feeFor(String(body.gov)) : 0;
   if (home && gfee == null) errors.push('The delivery fee for ' + body.gov + ' is not set yet. Please choose pick-up.');
   const fee = gfee || 0;
-  return { errors, items, sub, discount, fee, total: sub - discount + fee };
+  return { errors, items, sub, offer: off.save, discount, fee, total: sub - off.save - discount + fee };
 }
 
 // Paymob "transaction processed" callback: the listed fields are concatenated in this order and signed with SHA-512.

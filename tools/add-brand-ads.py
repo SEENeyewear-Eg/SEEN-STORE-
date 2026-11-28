@@ -14,7 +14,7 @@ SRC = sys.argv[1] if len(sys.argv) > 1 else None
 OUT = os.path.join(ROOT, "img", "brand-ads"); os.makedirs(OUT, exist_ok=True)
 NAMES = {"ray-ban": "Ray-Ban"}
 # Where the face/glasses are in each original (fraction of width, fraction of height), so the 2:1 crop keeps them. Default: centre, a little above the middle.
-FOCUS = {"hugo": (.55, .40), "david-beckham": (.45, .35), "tommy-hilfiger": (.48, .50), "carrera": (.5, .35), "carrera-ducati": (.5, .35),
+FOCUS = {"balenciaga": (.5, .32), "alexander-mcqueen": (.45, .15), "armani-exchange": (.5, .33), "prive-revaux": (.52, .25), "vogue": (.76, .38), "ray-ban": (.55, .50), "hugo": (.55, .40), "david-beckham": (.45, .35), "tommy-hilfiger": (.48, .50), "carrera": (.5, .35), "carrera-ducati": (.5, .35),
          "polaroid": (.45, .30), "calvin-klein": (.5, .35), "converse": (.5, .60), "nike": (.5, .0), "puma": (.5, .45), "maui-jim": (.5, .40),
          "clocks-colours": (.85, .5), "fila": (.35, .30), "guy-laroche": (.5, .30), "hugo-boss": (.5, .22), "dunhill": (.4, .4), "lacoste": (.5, .4)}
 def nice(slug):

@@ -339,7 +339,15 @@
       '#sd .sd-empty{padding:48px 0;text-align:center;font-size:15px;color:#333}' +
       '#sd .sd-empty h3{font-weight:400;font-size:24px;margin:0 0 10px}' +
       '#sd .sd-empty a{color:#111}' +
-      '#sd .sd-acc{padding:28px 0;text-align:center}#sd .sd-acc p{color:#606060;font-size:14px;margin:0 0 18px}';
+      '#sd .sd-acc{padding:28px 0;text-align:center}#sd .sd-acc p{color:#606060;font-size:14px;margin:0 0 18px}' +
+      '#sd.sd-accm .sd-h{display:none}#sd.sd-accm .sd-b{padding:24px 20px 32px}#sd.sd-accm .sd-acc{padding:0}' +
+      '#sd .sd-xa{position:absolute;top:12px;inset-inline-start:12px;z-index:2;display:flex;align-items:center;justify-content:center;padding:0}' +
+      '#sd .sd-av{width:64px;height:64px;border-radius:50%;object-fit:cover;flex:none;display:flex;align-items:center;justify-content:center;background:#EAF7FD;color:#0b0b0b;font-size:22px;font-weight:500;margin:0 0 14px}' +
+      '#sd .sd-nm{text-align:center;min-height:36px;display:flex;justify-content:center;align-items:center}#sd .sd-nm b{font-weight:400;font-size:22px}' +
+      '#sd .sd-bt{display:flex;align-items:center;justify-content:center;box-sizing:border-box;width:100%;height:40px;border:0;border-radius:999px;background:#f2f2f2;color:#0b0b0b;font:inherit;font-size:14px;font-weight:400;text-decoration:none;cursor:pointer}#sd .sd-bt.b{background:#0b0b0b;color:#fff}' +
+      '#sd .sd-ln{display:flex;justify-content:space-between;align-items:center;padding:14px 4px;border-bottom:1px solid #e3e5e7;color:#111;text-decoration:none;font-size:16px;font-weight:300}' +
+      '@media (min-width:901px){#sd .sd-bt{height:48px;font-size:17px}}' +
+      '#sd #sdLang,#sd #sdCur{display:inline-block;vertical-align:top;width:calc(50% - 10px);box-sizing:border-box;margin-top:16px!important}#sd #sdLang{margin-inline-end:20px}';
     document.head.appendChild(st);
     var l = document.createElement('link'); l.id = 'sdCardCss'; l.rel = 'stylesheet'; l.href = '/seen-cards.css'; document.head.appendChild(l);
   }
@@ -431,14 +439,25 @@
       '<button type="button" data-sdtg="sdCurList" aria-expanded="false" style="' + btn + '"><span>' + sdEsc(cu) + '</span><span aria-hidden="true">&#9662;</span></button>' +
       '<div id="sdCurList" hidden style="margin-top:8px">' + CURS.map(function (c) { return '<a href="#" data-cu2="' + c[0] + '" style="display:flex;justify-content:space-between;padding:10px 6px;color:#111;text-decoration:none;font-size:16px;border-radius:10px' + (c[0] === cu ? ';color:#5AC8FA;font-weight:500' : '') + '"><span>' + c[0] + '</span><span style="color:#777;font-size:14px">' + sdEsc(c[1]) + '</span></a>'; }).join('') + '</div></div>';
   }
+  // The account drawer is the home page's own (accRender in index.html): round close button at the corner, avatar, first name,
+  // "My account" + the list (phones) or "My profile" (wide screens), Sign out, then Language and Currency side by side. No e-mail.
   function sdAccHtml(u) {
+    var X = '<button type="button" class="sd-x sd-xa" aria-label="Close"><svg viewBox="0 0 24 24" width="16" height="16" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18"/></svg></button>';
+    var narrow = window.matchMedia && matchMedia('(max-width:760px)').matches;
     if (u) {
-      var L = [['orders', 'Orders'], ['saved', 'Saved frames'], ['addresses', 'Addresses'], ['rx', 'Prescription'], ['points', 'Points']];
-      return { title: 'Account', body: '<div class="sd-acc" style="text-align:start"><b style="font-size:16px">' + sdEsc(u.name || '') + '</b><p style="margin:2px 0 14px">' + sdEsc(u.email || u.phone || '') + '</p>' +
-        L.map(function (x) { return '<a class="sd-btn alt" style="text-align:start" href="/#account/' + x[0] + '">' + x[1] + '</a>'; }).join('') +
-        '<button type="button" class="sd-rm" data-sd="logout" style="margin-top:16px">Sign out</button>' + sdPrefs() + '</div>', foot: '' };
+      var nm = String(u.name || u.email || u.phone || '').trim(), pp = nm.split(/\s+/), first = pp[0] || '';
+      var ini = ((pp[0] ? pp[0].charAt(0) : '') + (pp.length > 1 ? pp[pp.length - 1].charAt(0) : '')).toUpperCase();
+      var av = u.avatar ? '<img class="sd-av" src="' + sdEsc(u.avatar) + '" alt="">' : '<span class="sd-av">' + sdEsc(ini) + '</span>';
+      var L = [['orders', 'Orders'], ['saved', 'Saved'], ['addresses', 'Addresses'], ['rx', 'Prescription'], ['points', 'Points'], ['share', 'Share bag']];
+      return { title: 'Account', foot: '', body: X + '<div class="sd-acc" style="text-align:start"><div style="display:flex;justify-content:center;margin-bottom:6px">' + av + '</div>' +
+        '<div class="sd-nm"><b>' + sdEsc(first) + '</b></div>' +
+        (narrow ? '<a class="sd-bt a" href="/#account" style="margin:10px 0 6px">My account</a><div style="margin-top:8px">' +
+          L.map(function (x) { return '<a class="sd-ln" href="/#account/' + x[0] + '"><span>' + x[1] + '</span></a>'; }).join('') + '</div>'
+          : '<a class="sd-bt b" href="/#account" style="margin:6px 0 10px">My profile</a>') +
+        '<button type="button" class="sd-bt a" data-sd="logout" style="margin-top:14px">Sign out</button>' + sdPrefs() + '</div>' };
     }
-    return { title: 'Account', body: '<div class="sd-acc"><p>Sign in to see your profile, orders, addresses and prescription.</p><a class="sd-btn" href="/#account">Sign in</a><a class="sd-btn alt" href="/#account">Create account</a>' + sdPrefs() + '</div>', foot: '' };
+    return { title: 'Account', foot: '', body: X + '<div class="sd-acc" style="text-align:start"><div class="sd-nm" style="margin-top:36px"><b>Your SEEN account</b></div>' +
+      '<a class="sd-bt b" href="/#account" style="margin:14px 0 8px">Sign in</a><a class="sd-bt a" href="/#account">Create account</a>' + sdPrefs() + '</div>' };
   }
   // Same account service as the home page (/api/account/*). Until the site has that API, the home page
   // keeps demo accounts in this browser (seenDemoAcc / seenDemoMe); this mirrors that fallback.
@@ -478,6 +497,7 @@
     var fav = kind === 'fav' && !quickFav;
     if (instant) d.className = 'sd-now';
     d.innerHTML = fav ? SEEN_CARDS.favShell() : '<div class="sd-p"><div class="sd-h"><h2></h2><button type="button" class="sd-x" aria-label="Close">&times;</button></div><div class="sd-b"></div><div class="sd-f"></div></div>';
+    if (kind === 'acc') d.classList.add('sd-accm');
     document.body.appendChild(d); void d.offsetWidth; d.classList.add('on'); sdBar(kind);
     if (fav) d.querySelector('#drf').classList.add('on');
     var tx = 0, ty = 0;

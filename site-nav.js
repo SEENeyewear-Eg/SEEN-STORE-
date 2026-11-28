@@ -1,4 +1,5 @@
 (function(){if(window.__imgRetry)return;var s=document.createElement('script');s.src='/seen-img-retry.js';document.head.appendChild(s)})();
+(function(){if(window.__seenConsentUI||document.querySelector('script[src*="seen-consent.js"]'))return;var s=document.createElement('script');s.src='/seen-consent.js';document.head.appendChild(s)})();
 (function () {
   // Translation for the separate pages: the SAME dictionaries as the home page. /lang/<code>.json = { d: {English text: translation}, x: [[pattern, replacement], …] }
   // (de, es, fr, it, ru by hand; ar is generated from index.html by tools/build-lang-ar.py). No word list lives in this file.
@@ -291,6 +292,7 @@
     '.bnav button.cur{color:#5AC8FA!important}.bnav button.cur svg{stroke:#5AC8FA}.bnav,.bnav button,.bnav span{line-height:normal!important}.bnav span{padding:0!important;margin:0!important}.bnav{height:59px!important;box-sizing:border-box!important;align-items:stretch!important}.bnav button{height:46px!important;min-height:0!important;max-height:46px!important;padding:6px 0 4px!important;overflow:hidden!important;justify-content:center!important}' +
     '.bnav .bc{position:absolute;top:0;inset-inline-end:calc(50% - 20px);min-width:16px;height:16px;padding:0 4px;border-radius:8px;background:#5AC8FA;color:#111;font-size:10px;font-weight:600;line-height:16px!important;text-align:center;display:none}.bnav .bc.on{display:block}' +
     '.bnav.sd-wait button>span{visibility:hidden}' +
+    '.bnav button svg{flex:0 0 auto!important;width:22px!important;height:22px!important}' +   // the same icon size as the home page bar
     '.bnav svg{width:28px;height:28px;fill:none;stroke:currentColor;stroke-width:1.5;stroke-linecap:round;stroke-linejoin:round}' +
     'body{padding-bottom:72px}}' +
     '.dk .bnav{background:#151618;color:#fff;border-top-color:#2a2d31}.dk .bnav button.cur{color:#fff}' + '.ftr-g{display:none!important}.ftr{display:block!important;padding:14px 16px 18px!important;border-top:1px solid #e3e5e7;margin-top:24px}.ftr .ftr-b{display:flex!important;flex-wrap:wrap;justify-content:space-between;align-items:center;gap:10px 18px}@media (max-width:900px){input,select,textarea{font-size:16px!important}.bnav svg{width:28px!important;height:28px!important}.bnav button{font-size:11px!important;position:relative;min-width:0;overflow:hidden}.bnav button span{white-space:nowrap;overflow:visible;line-height:1.6;padding-bottom:2px;max-width:100%}.bnav button.cur::before{content:"";position:absolute;top:-6px;left:50%;transform:translateX(-50%);width:30px;height:3px;border-radius:3px;background:#5AC8FA}}';

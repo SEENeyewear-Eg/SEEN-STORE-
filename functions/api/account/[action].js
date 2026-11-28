@@ -81,6 +81,18 @@ export async function onRequest({ request, env: bindings, params }) {
     await store.setJSON(me, u);
     return json({ ok: true, cart: u.cart, wish: u.wish });
   }
+  if (action === 'delete-request') {
+    // The customer asks for the account and personal data to be deleted. The team reviews it and deletes by hand (owner's decision):
+    // the request is kept in KV under "del:<phone>" (ORDERS, or ACCOUNTS) and the account is marked with the date.
+    const me = await readSession(request), u = me && await store.get(me, { type: 'json' });
+    if (!u) return json({ error: 'Not signed in' }, 401);
+    const kv = bindings.ORDERS || bindings.ACCOUNTS, key = 'del:' + me;
+    if (await kv.get(key)) return json({ ok: true, already: true });
+    const at = new Date().toISOString();
+    await kv.put(key, JSON.stringify({ phone: me, name: u.name || '', email: u.email || '', requested: at, status: 'new', source: 'website account' }));
+    u.deleteRequested = at; await store.setJSON(me, u);
+    return json({ ok: true });
+  }
   if (action === 'update') {
     const me = await readSession(request), u = me && await store.get(me, { type: 'json' });
     if (!u) return json({ error: 'Not signed in' }, 401);

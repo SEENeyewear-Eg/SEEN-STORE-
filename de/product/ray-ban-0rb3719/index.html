@@ -1,6 +1,6 @@
 <!doctype html>
 <html lang="de" dir="ltr"><head>
-<!-- Google Tag Manager -->
+<script>window.dataLayer=window.dataLayer||[];function gtag(){dataLayer.push(arguments)}(function(){var c=null;try{c=JSON.parse(localStorage.getItem('seenConsent')||'null')}catch(e){}if(!c||c.v!==1)c=null;var a=c&&c.a?'granted':'denied',m=c&&c.m?'granted':'denied';gtag('consent','default',{analytics_storage:a,ad_storage:m,ad_user_data:m,ad_personalization:m,functionality_storage:'granted',security_storage:'granted',wait_for_update:500});window.__seenConsent=c})();</script><!-- Google Tag Manager -->
 <script>(function(w,d,s,l,i){w[l]=w[l]||[];w[l].push({'gtm.start':
 new Date().getTime(),event:'gtm.js'});var f=d.getElementsByTagName(s)[0],
 j=d.createElement(s),dl=l!='dataLayer'?'&l='+l:'';j.async=true;j.src=
@@ -40,12 +40,11 @@ n.queue=[];t=b.createElement(e);t.async=!0;
 t.src=v;s=b.getElementsByTagName(e)[0];
 s.parentNode.insertBefore(t,s)}(window, document,'script',
 'https://connect.facebook.net/en_US/fbevents.js');
+fbq('consent',(window.__seenConsent&&window.__seenConsent.m)?'grant':'revoke');
 fbq('init', '2544640586030668');
 fbq('track', 'PageView');
 </script>
-<noscript><img height="1" width="1" style="display:none"
-src="https://www.facebook.com/tr?id=2544640586030668&ev=PageView&noscript=1"
-/></noscript>
+
 <!-- End Meta Pixel Code -->
 <script>
 fbq('track', 'ViewContent', {content_name: document.title});

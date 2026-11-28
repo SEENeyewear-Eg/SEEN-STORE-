@@ -76,7 +76,7 @@ for w, b in reversed(rules):
     if k in seen: continue
     seen.add(k); out.append((w, b))
 out.reverse()
-css = '@import url("https://fonts.googleapis.com/css2?family=Jost:wght@300;400;500&family=IBM+Plex+Sans+Arabic:wght@300;400;500;600;700&display=swap");#sd{font-family:Jost,"IBM Plex Sans Arabic",sans-serif;font-weight:300}'
+css = '#sd{font-family:Jost,"IBM Plex Sans Arabic",sans-serif;font-weight:300}'
 i = 0
 while i < len(out):
     w = out[i][0]; j = i

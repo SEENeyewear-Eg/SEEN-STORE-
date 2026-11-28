@@ -1862,3 +1862,4 @@
 /shop      /   200
 /shop/*    /   200
 /black-friday/*    /offers/   301
+/brands/:slug/    /brands/:slug   301

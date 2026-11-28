@@ -5,7 +5,7 @@
 
 * converts each original to img/brand-ads/<slug>.webp (max 1800 px wide, quality 80),
 * lists the brands that have a photo in index.html (const BAD_OK, used by the app's brand view),
-* puts the banner at the top of brands/<slug>/index.html (the static brand pages) and links /brand-ad.css.
+(There are no static brand pages any more: /brands/<slug> is the app itself, served by functions/brands/[slug].js.)
 Safe to re-run. A brand without a photo shows no banner. The banner box and its look live in brand-ad.css."""
 import os, re, sys, glob
 from PIL import Image
@@ -43,14 +43,4 @@ def rw(p, fn):
 def app(s):
     return re.sub(r"const BAD_OK=new Set\(\[[^\]]*\]\);", "const BAD_OK=new Set([" + ",".join("'%s'" % x for x in have) + "]);", s, count=1)
 rw(os.path.join(ROOT, "index.html"), app)
-def page(slug):
-    def fn(s):
-        s = re.sub(r'<div class="bad">.*?</div>\n?', "", s, flags=re.S)
-        if slug in have:
-            s = s.replace('<main class="br">', '<main class="br">\n<div class="bad"><img src="/img/brand-ads/%s.webp" alt="%s sunglasses and optical frames" decoding="async"></div>' % (slug, nice(slug)), 1)
-            if "/brand-ad.css" not in s: s = s.replace("</head>", '<link rel="stylesheet" href="/brand-ad.css">\n</head>', 1)
-        return s
-    return fn
-for d in sorted(glob.glob(os.path.join(ROOT, "brands", "*", "index.html"))):
-    rw(d, page(os.path.basename(os.path.dirname(d))))
 print("brands with a banner:", len(have))

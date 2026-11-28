@@ -1,13 +1,19 @@
 /* Image retry: a photo that fails to load (weak mobile network, many requests at once) is retried up to 3 times
    (1.5 s, 4 s, 9 s) before the page's own onerror (hide / remove / show the name) is allowed to run.
-   Broken photos are also retried when the connection comes back or the tab is shown again. */
+   Broken photos are also retried when the connection comes back or the tab is shown again.
+   A relative address ("img/x.webp") is retried from the site root, because a page opened at /product/... or /brands/... would
+   otherwise look for /product/img/x.webp. */
 (function () {
   if (window.__imgRetry) return; window.__imgRetry = 1;
   var DELAY = [1500, 4000, 9000];
-  function base(u) { return u.replace(/([?&])_r=\d+&?/, '$1').replace(/[?&]$/, ''); }
-  function bust(u, n) { return base(u) + (u.indexOf('?') < 0 ? '?' : '&') + '_r=' + n; }
+  function base(u) {
+    u = u.replace(/([?&])_r=\d+(&|$)/, function (m, a, b) { return b ? a : ''; });
+    if (!/^(\/|[a-z]+:)/i.test(u)) u = '/' + u.replace(/^\.\//, '');
+    return u;
+  }
+  function bust(u, n) { var b = base(u); return b + (b.indexOf('?') < 0 ? '?' : '&') + '_r=' + n; }
   function retry(img, n) {
-    var u = img.getAttribute('src'); if (!u || /^data:/.test(u)) return false;
+    var u = img.getAttribute('src'); if (!u || /^(data|blob):/.test(u)) return false;
     var k = +img.__rt || 0; if (k >= DELAY.length) return false;
     img.__rt = k + 1; clearTimeout(img.__rtT);
     img.__rtT = setTimeout(function () { if (img.isConnected) img.src = bust(u, k + 1); }, n == null ? DELAY[k] : n);

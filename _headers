@@ -13,3 +13,7 @@
 
 /fonts.css
   Cache-Control: public, max-age=86400, stale-while-revalidate=604800
+
+# Parked material (not part of the site).
+/parked/*
+  X-Robots-Tag: noindex

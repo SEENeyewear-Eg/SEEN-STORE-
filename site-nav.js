@@ -776,7 +776,12 @@
   // The page's own words from the shared dictionary (header, footer and whatever text the dictionary knows). Not on the pages that carry their own
   // translator (the home page and its copies define AR) and not on the language product pages, which are written in their language already.
   if (typeof AR === 'undefined' && !/^\/(ar|de|es|it|fr|ru)\//.test(location.pathname)) sdTrDom(document.body);
-  else SEEN_TR.apply(document.querySelector('footer.ftr'), false);   // footer words (Follow us, Terms apply, links) from the shared dictionary
+  else {
+    // The pages that carry their own copy of the home code translate with their own dictionary; whatever that one does not know comes from the shared one,
+    // so a word added to the shared dictionary shows on every page at once (Arabic included).
+    var lgNow = 'en'; try { lgNow = localStorage.seenLang || 'en'; } catch (e) {}
+    if (typeof AR !== 'undefined' && lgNow === 'ar') sdTrDom(document.body); else SEEN_TR.apply(document.querySelector('footer.ftr'), false);
+  }
   sdCounts(); addEventListener('storage', sdCounts); addEventListener('pageshow', sdCounts); addEventListener('focus', sdCounts); document.addEventListener('visibilitychange', sdCounts);
   // Keep the bar on the visible bottom edge when the phone's browser toolbar moves.
   function fitBar() { var vv = window.visualViewport; if (!vv) return; var gap = Math.max(0, window.innerHeight - vv.height - vv.offsetTop); nav.style.bottom = gap + 'px'; }

@@ -1,0 +1,23 @@
+<!doctype html>
+<meta charset="utf-8">
+<meta name="robots" content="noindex">
+<title>Parked: installment banks strip (not used by any page)</title>
+<!--
+  PARKED, ON PURPOSE. No page loads this file.
+
+  This is the scrolling strip of installment-bank logos that used to sit under the home page ad and the offers page ad.
+  The current offer is Valu only, so it must not be shown there. It is kept for another topic (a bank list).
+
+  To use it again:
+    1. Paste the <div class="bkm"> ... </div> block (marked below) where it should appear, inside <div class="la-strips"> if it goes under an ad.
+    2. Paste the <style> block (marked below) into that page's <head> (or into a stylesheet).
+    3. The logos are in /img/banks/01 ... 13 (valu-official.png is the Valu logo for the ad).
+    4. Add the aria-label words to the shared dictionary ("Installment banks": lang/*.json and the Arabic list in index.html)
+       and run: python tools/check-translations.py
+-->
+
+<!-- ===== MARKUP ===== -->
+<div class="bkm" role="region" aria-label="Installment banks"><div class="bkm-t"><img src="img/banks/01.webp" alt="" loading="lazy" height="28"><img src="img/banks/02.png" alt="" loading="lazy" height="28"><img src="img/banks/03.png" alt="" loading="lazy" height="28"><img src="img/banks/04.png" alt="" loading="lazy" height="28"><img src="img/banks/05.png" alt="" loading="lazy" height="28"><img src="img/banks/06.png" alt="" loading="lazy" height="28"><img src="img/banks/07.png" alt="" loading="lazy" height="28"><img src="img/banks/08.png" alt="" loading="lazy" height="28"><img src="img/banks/09.png" alt="" loading="lazy" height="28"><img src="img/banks/10.png" alt="" loading="lazy" height="28"><img src="img/banks/11.png" alt="" loading="lazy" height="28"><img src="img/banks/12.png" alt="" loading="lazy" height="28"><img src="img/banks/13.png" alt="" loading="lazy" height="28"><img src="img/banks/01.webp" alt="" loading="lazy" height="28"><img src="img/banks/02.png" alt="" loading="lazy" height="28"><img src="img/banks/03.png" alt="" loading="lazy" height="28"><img src="img/banks/04.png" alt="" loading="lazy" height="28"><img src="img/banks/05.png" alt="" loading="lazy" height="28"><img src="img/banks/06.png" alt="" loading="lazy" height="28"><img src="img/banks/07.png" alt="" loading="lazy" height="28"><img src="img/banks/08.png" alt="" loading="lazy" height="28"><img src="img/banks/09.png" alt="" loading="lazy" height="28"><img src="img/banks/10.png" alt="" loading="lazy" height="28"><img src="img/banks/11.png" alt="" loading="lazy" height="28"><img src="img/banks/12.png" alt="" loading="lazy" height="28"><img src="img/banks/13.png" alt="" loading="lazy" height="28"></div></div>
+
+<!-- ===== STYLE ===== -->
+<style>.la-strips .bkm{margin:0!important;background:rgba(246,248,249,.7)!important;opacity:1!important}.la-strips .bkm{border-radius:0!important;border-left:0!important;border-right:0!important;overflow:hidden}.la-strips .bkm-t{animation:bkScroll 40s linear infinite!important}.la-strips .bkm{width:100%!important;max-width:none!important;margin:0!important;border-radius:0!important}.la-strips .bkm{padding:4px 10px!important;height:auto!important}.la-strips .bkm-t img{height:16px!important;width:auto}.bkm{max-width:1180px;margin:12px auto 0;overflow:hidden;background:#F6F8F9;border:1px solid #E2E9ED;border-radius:999px;padding:8px 0}.bkm-t{display:flex;align-items:center;width:max-content;animation:bkScroll 40s linear infinite}.bkm:hover .bkm-t{animation-play-state:paused}.bkm img{flex:none;height:28px;width:auto;margin:0 16px;object-fit:contain}.bkm-t{animation:none}.bkm{margin:12px 16px 0;border-radius:20px}section#la .la-strips .bkm{padding:3px 0!important;margin:6px 0 0!important}section#la .la-strips .bkm img{height:15px!important;margin:0 9px!important}</style>

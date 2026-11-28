@@ -1,0 +1,4 @@
+# Photos: keep in the browser for a day, and serve the stored copy instantly while checking for a new one in the background (up to a week).
+# (Not "immutable": banners and product photos get replaced under the same name.)
+/img/*
+  Cache-Control: public, max-age=86400, stale-while-revalidate=604800

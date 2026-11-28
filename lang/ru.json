@@ -1,5 +1,41 @@
 {
   "d": {
+    "Main Color": "Основной цвет",
+    "Lens width": "Ширина линзы",
+    "Bridge": "Мостик",
+    "Temple": "Дужка",
+    "mm": "мм",
+    "Pair of sunglasses": "Солнцезащитные очки",
+    "Sunglasses for men": "Солнцезащитные очки для мужчин",
+    "Sunglasses for women": "Солнцезащитные очки для женщин",
+    "Sunglasses for men and women": "Солнцезащитные очки унисекс",
+    "Sunglasses for kids": "Детские солнцезащитные очки",
+    "Optical frame": "Оправа для очков",
+    "Optical frame for men": "Оправа для мужчин",
+    "Optical frame for women": "Оправа для женщин",
+    "Optical frame for men and women": "Оправа унисекс",
+    "Optical frame for kids": "Детская оправа",
+    "Frame shape": "Форма оправы",
+    "Frame material": "Материал оправы",
+    "Authentic, with the official brand warranty": "100% оригинал с официальной гарантией бренда",
+    "After-sales service by SEEN Eyewear": "Послепродажное обслуживание SEEN Eyewear",
+    "Rectangular / square": "Прямоугольная / квадратная",
+    "Round / oval": "Круглая / овальная",
+    "Pilot": "Авиатор",
+    "Geometric": "Геометрическая",
+    "Panthos": "Пантос",
+    "Butterfly": "«Бабочка»",
+    "Pillow": "«Подушка»",
+    "Flat top": "С прямым верхом",
+    "Acetate": "Ацетат",
+    "Eco acetate": "Экоацетат",
+    "Recycled acetate": "Переработанный ацетат",
+    "Metal": "Металл",
+    "Injected plastic": "Литой пластик",
+    "Polyamide": "Полиамид",
+    "Polycarbonate": "Поликарбонат",
+    "Titanium": "Титан",
+    "Plastic": "Пластик",
     
     "A new collection": "Новая коллекция",
     "About": "О нас",
@@ -884,5 +920,5 @@
     "Buy 1 Get 1 Free": "Купите 1 — второй в подарок"
   },
   "Shop brands": "Мировые бренды",
-  "x": [["^Bag \\((\\d+)\\)$", "Корзина ($1)"], ["^Saved frames \\((\\d+)\\)$", "Сохранённые оправы ($1)"], ["^Only (\\d+) in stock$", "Осталось только $1"], ["^(.+), (\\d+) styles$", "$1, $2 моделей"]]
+  "x": [["^Bag \\((\\d+)\\)$", "Корзина ($1)"], ["^Saved frames \\((\\d+)\\)$", "Сохранённые оправы ($1)"], ["^Only (\\d+) in stock$", "Осталось только $1"], ["^(.+), (\\d+) styles$", "$1, $2 моделей"], ["^(\\d+) pcs$", "$1 шт."]]
 }

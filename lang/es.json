@@ -1,5 +1,41 @@
 {
   "d": {
+    "Main Color": "Color principal",
+    "Lens width": "Ancho de lente",
+    "Bridge": "Puente",
+    "Temple": "Varilla",
+    "mm": "mm",
+    "Pair of sunglasses": "Gafas de sol",
+    "Sunglasses for men": "Gafas de sol para hombre",
+    "Sunglasses for women": "Gafas de sol para mujer",
+    "Sunglasses for men and women": "Gafas de sol unisex",
+    "Sunglasses for kids": "Gafas de sol para niños",
+    "Optical frame": "Montura graduada",
+    "Optical frame for men": "Montura graduada para hombre",
+    "Optical frame for women": "Montura graduada para mujer",
+    "Optical frame for men and women": "Montura graduada unisex",
+    "Optical frame for kids": "Montura graduada para niños",
+    "Frame shape": "Forma de la montura",
+    "Frame material": "Material de la montura",
+    "Authentic, with the official brand warranty": "100 % auténtica, con la garantía oficial de la marca",
+    "After-sales service by SEEN Eyewear": "Servicio posventa de SEEN Eyewear",
+    "Rectangular / square": "Rectangular / cuadrada",
+    "Round / oval": "Redonda / ovalada",
+    "Pilot": "Aviador",
+    "Geometric": "Geométrica",
+    "Panthos": "Panthos",
+    "Butterfly": "Mariposa",
+    "Pillow": "Almohada",
+    "Flat top": "Parte superior plana",
+    "Acetate": "Acetato",
+    "Eco acetate": "Acetato ecológico",
+    "Recycled acetate": "Acetato reciclado",
+    "Metal": "Metal",
+    "Injected plastic": "Plástico inyectado",
+    "Polyamide": "Poliamida",
+    "Polycarbonate": "Policarbonato",
+    "Titanium": "Titanio",
+    "Plastic": "Plástico",
     
     "A new collection": "Una nueva colección",
     "About": "Acerca de",
@@ -884,5 +920,5 @@
     "Buy 1 Get 1 Free": "Compra 1 y llévate otro gratis"
   },
   "Shop brands": "Marcas globales",
-  "x": [["^Bag \\((\\d+)\\)$", "Bolsa ($1)"], ["^Saved frames \\((\\d+)\\)$", "Monturas guardadas ($1)"], ["^Only 1 in stock$", "Solo queda 1 en stock"], ["^Only (\\d+) in stock$", "Solo quedan $1 en stock"], ["^(.+), (\\d+) styles$", "$1, $2 modelos"]]
+  "x": [["^Bag \\((\\d+)\\)$", "Bolsa ($1)"], ["^Saved frames \\((\\d+)\\)$", "Monturas guardadas ($1)"], ["^Only 1 in stock$", "Solo queda 1 en stock"], ["^Only (\\d+) in stock$", "Solo quedan $1 en stock"], ["^(.+), (\\d+) styles$", "$1, $2 modelos"], ["^(\\d+) pcs$", "$1 uds."]]
 }

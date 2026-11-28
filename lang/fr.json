@@ -1,5 +1,41 @@
 {
   "d": {
+    "Main Color": "Couleur principale",
+    "Lens width": "Largeur du verre",
+    "Bridge": "Pont",
+    "Temple": "Branche",
+    "mm": "mm",
+    "Pair of sunglasses": "Lunettes de soleil",
+    "Sunglasses for men": "Lunettes de soleil pour homme",
+    "Sunglasses for women": "Lunettes de soleil pour femme",
+    "Sunglasses for men and women": "Lunettes de soleil mixtes",
+    "Sunglasses for kids": "Lunettes de soleil pour enfant",
+    "Optical frame": "Monture optique",
+    "Optical frame for men": "Monture optique pour homme",
+    "Optical frame for women": "Monture optique pour femme",
+    "Optical frame for men and women": "Monture optique mixte",
+    "Optical frame for kids": "Monture optique pour enfant",
+    "Frame shape": "Forme de la monture",
+    "Frame material": "Matériau de la monture",
+    "Authentic, with the official brand warranty": "100 % authentique, avec la garantie officielle de la marque",
+    "After-sales service by SEEN Eyewear": "Service après-vente SEEN Eyewear",
+    "Rectangular / square": "Rectangulaire / carrée",
+    "Round / oval": "Ronde / ovale",
+    "Pilot": "Aviateur",
+    "Geometric": "Géométrique",
+    "Panthos": "Pantos",
+    "Butterfly": "Papillon",
+    "Pillow": "Coussin",
+    "Flat top": "Haut plat",
+    "Acetate": "Acétate",
+    "Eco acetate": "Acétate écologique",
+    "Recycled acetate": "Acétate recyclé",
+    "Metal": "Métal",
+    "Injected plastic": "Plastique injecté",
+    "Polyamide": "Polyamide",
+    "Polycarbonate": "Polycarbonate",
+    "Titanium": "Titane",
+    "Plastic": "Plastique",
     
     "A new collection": "Une nouvelle collection",
     "About": "À propos",
@@ -884,5 +920,5 @@
     "Buy 1 Get 1 Free": "1 acheté, 1 offert"
   },
   "Shop brands": "Marques internationales",
-  "x": [["^Bag \\((\\d+)\\)$", "Panier ($1)"], ["^Saved frames \\((\\d+)\\)$", "Montures enregistrées ($1)"], ["^Only (\\d+) in stock$", "Plus que $1 en stock"], ["^(.+), (\\d+) styles$", "$1, $2 modèles"]]
+  "x": [["^Bag \\((\\d+)\\)$", "Panier ($1)"], ["^Saved frames \\((\\d+)\\)$", "Montures enregistrées ($1)"], ["^Only (\\d+) in stock$", "Plus que $1 en stock"], ["^(.+), (\\d+) styles$", "$1, $2 modèles"], ["^(\\d+) pcs$", "$1 pcs"]]
 }
